@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Property Details</title>
+    <link rel="stylesheet" href="../css/property-detail.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin-right: 0;
+            border-radius: 10px;
+        }
+
+        .u-lo li {
+            position: relative;
+            display: inline-block;
+            margin-right: 20px;
+            z-index: 10; /* Đảm bảo menu cha hiển thị trên cùng */
+        }
+
+        ul li a {
+            text-decoration: none;
+            display: inline-block;
+            color: #333;
+        }
+
+        /* Thiết lập cho menu con */
+        ul li ul {
+            display: none; /* Ẩn menu con mặc định */
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: #f9f9f9;
+            min-width: 200px;
+            padding: 10px 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 999; /* Đảm bảo menu con hiển thị trên các phần tử khác */
+        }
+
+        ul li ul li {
+            display: block;
+            margin: 0;
+        }
+
+        ul li ul li a {
+            padding: 10px 15px;
+            color: #333;
+            display: block;
+        }
+
+        /* Hiển thị menu con khi hover */
+        ul li:hover ul {
+            display: block;
+        }
+
+        /* Style cho menu con khi hover */
+        ul li ul li a:hover {
+            background-color: #eee;
+            text-decoration: none;
+
+        }
+        .heart-container {
+            position: relative;
+            display: inline-block;
+            padding-top: 5px;
+        }
+
+
+
+        .heart-icon1 {
+            width: 15px !important; /* Kích thước hình ảnh */
+            height: 15px !important; /* Kích thước hình ảnh */
+            margin-left: 10px; /* Khoảng cách bên trái */
+            transition: transform 0.2s; /* Hiệu ứng chuyển động mượt mà */
+            margin-bottom: 12px;
+
+        }
+
+        .heart-icon1:hover {
+            transform: scale(1.1); /* Tăng kích thước khi di chuột qua */
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .property-detail {
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .main-image {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .thumbnails {
+            display: flex;
+            overflow-x: auto;
+            margin-top: 10px;
+        }
+
+        .thumbnail {
+            flex: 0 0 auto;
+            width: 100px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .thumbnail img {
+            width: 100%;
+        }
+
+        .related-properties {
+            margin-top: 20px;
+        }
+
+        .related-properties-container {
+            display: flex;
+            overflow-x: auto;
+            height: 300px;
+        }
+
+        .related-property {
+            flex: 0 0 auto;
+            width: 200px;
+            margin-right: 10px;
+            text-align: center;
+        }
+
+        .related-property img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .footer {
+            margin-top: 50px;
+            padding: 20px;
+            background-color: #f8f8f8;
+            text-align: center;
+        }
+        .floating-cart {
+            position: fixed; /* Đảm bảo vị trí cố định trên trang */
+            bottom: 20px; /* Khoảng cách với mép dưới trang */
+            right: 20px; /* Khoảng cách với mép phải của trang */
+            width: 40px !important; /* Giảm chiều rộng của biểu tượng giỏ hàng */
+            height: 40px !important; /* Giảm chiều cao của biểu tượng giỏ hàng */
+            background-color: transparent; /* Màu nền của biểu tượng */
+            border-radius: 50%; /* Biểu tượng có hình tròn */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Đổ bóng nhẹ để nổi bật */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000; /* Đảm bảo nằm trên các thành phần khác */
+            cursor: pointer;
+            transition: background-color 0.3s ease; /* Hiệu ứng chuyển màu khi hover */
+        }
+
+        /* Khi hover vào floating-cart */
+        .floating-cart:hover {
+            background-color: transparent;
+            transform: scale(1.1);
+        }
+
+        /* Style cho biểu tượng giỏ hàng (cart-icon) */
+        .floating-cart .cart-icon {
+            width: 40px; /* Giảm kích thước icon */
+            height: 40px;
+            object-fit: contain; /* Đảm bảo ảnh vừa khung mà không bị méo */
+        }
+
+        /* Hiển thị mini-cart khi hover vào floating-cart */
+        .floating-cart:hover .mini-cart {
+            display: block; /* Hiển thị mini-cart khi hover */
+        }
+
+        /* Style cho mini-cart */
+        .mini-cart {
+            display: none; /* Mặc định ẩn mini-cart */
+            position: absolute;
+            bottom: 80px; /* Đặt mini-cart ngay trên biểu tượng giỏ hàng */
+            right: 0;
+            width: 250px; /* Giảm chiều rộng của mini-cart */
+            max-height: 400px; /* Giới hạn chiều cao để tránh quá dài */
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Đổ bóng nhẹ */
+            overflow-y: auto; /* Cho phép cuộn khi nội dung quá dài */
+            padding: 10px;
+        }
+
+        /* Style cho danh sách sản phẩm trong mini-cart */
+        .mini-cart ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .mini-cart li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .mini-cart li img {
+            width: 40px; /* Kích thước hình ảnh nhỏ hơn */
+            height: 40px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+
+        .mini-cart .item-info {
+            font-size: 14px;
+        }
+
+        .mini-cart .item-info h4 {
+            margin: 0;
+            font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis; /* Thêm dấu "..." khi tên sách quá dài */
+        }
+
+        .item-count {
+            position: absolute;
+            top: 5px; /* Vị trí từ đầu biểu tượng giỏ hàng */
+            right: 5px; /* Vị trí từ bên phải biểu tượng giỏ hàng */
+            background-color: red; /* Màu nền */
+            color: white; /* Màu chữ */
+            border-radius: 50%; /* Hình tròn */
+            width: 20px; /* Chiều rộng */
+            height: 20px; /* Chiều cao */
+            display: flex;
+            justify-content: center; /* Canh giữa */
+            align-items: center; /* Canh giữa */
+            font-size: 12px; /* Kích thước chữ */
+            font-weight: bold; /* Đậm chữ */
+        }
+        .heart-icon {
+            position: absolute;
+            bottom: 5px; /* Di chuyển trái tim xuống góc dưới */
+            right: 5px; /* Đặt trái tim ở góc phải */
+            z-index: 10; /* Đảm bảo trái tim nằm trên tất cả các phần tử khác */
+            cursor: pointer;
+            margin-bottom: 2px;
+            margin-right: 10px;
+        }
+
+        .heart-icon img {
+            width: 20px !important; /* Kích thước nhỏ hơn của trái tim */
+            height: 20px !important; /* Kích thước nhỏ hơn của trái tim */
+            transition: transform 0.3s ease, filter 0.3s ease; /* Hiệu ứng chuyển động */
+
+
+        }
+
+        .heart-icon:hover img {
+            transform: scale(1.2); /* Phóng to biểu tượng trái tim khi hover */
+            filter: brightness(1.5); /* Tăng độ sáng khi hover */
+        }
+
+    </style>
+</head>
+<body>
+<header class="header">
+    <div class="header-top" style="width: 100%; position: sticky; top: 0; z-index: 1000;">
+        <div class="header-left">
+
+            <div class="contact-item">
+                <img src="../jpg/phone-call.png" class="icon">
+                <span>098 664 1965</span>
+            </div>
+            <div class="contact-item">
+                <img src="../jpg/email.png" class="icon">
+                <span>khoangoquan@gmail.com</span>
+            </div>
+            <div class="contact-item">
+
+                <img src="../jpg/location.png" class="icon">
+                <span>123 Đường 12, Quận 9, TP.HCM</span>
+            </div>
+
+
+        </div>
+        <div class="header-right" style="margin-top: 10px">
+            <a href="login.html" class="btn"><h3>Đăng nhập</h3></a>
+            <a href="register.html" class="btn"><h3>Đăng ký</h3></a>
+            <a href="post-status.html" class="btn"><h3>Đăng tin</h3></a>
+
+        </div>
+        <a href="cart.html" class="floating-cart" id="floating-cart" onclick="toggleMiniCart()"
+           style="border: 1px solid #ccc; border-radius:100%;">
+            <img src="../jpg/heart%20(1).png" style="width: 30px!important; height: 30px !important;" alt="Giỏ hàng"
+                 class="cart-icon">
+            <div class="item-count">0</div>
+            <div class="mini-cart">
+                <h4>Bất động sản đã lưu</h4>
+                <ul id="cart-items"></ul>
+                <button id="go-to-cart" onclick="goToCart()">Đi tới xem bất động sản đã lưu</button>
+            </div>
+        </a>
+
+    </div>
+    <div class="menu">
+        <div class="header-bottom" style="height:60px;margin-top: 0">
+            <div class="store-name">
+                <h1><a href="index.html">
+                    <span class="color1">HOME</span>
+                    <span class="color2">LANDER</span>
+                </a></h1>
+            </div>
+            <nav>
+                <ul class="u-lo">
+                    <li><a href="property-for-sale.html">Nhà Đất Bán</a>
+                        <ul>
+                            <li><a href="apartment-sale.html">Bán căn hộ chung cư</a></li>
+                            <li><a href="house-sale.html">Bán nhà riêng</a></li>
+                            <li><a href="villa-sale.html">Bán nhà biệt thự liền kề</a></li>
+                            <li><a href="street_houses-sale.html">Bán nhà mặt phố</a></li>
+                            <li><a href="farm_resort-sale.html">Bán trang trại khu nghỉ dưỡng</a></li>
+                            <li><a href="warehouses_factories-sale.html">Bán kho , nhà xưởng</a></li>
+                            <li><a href="other_real_estate-sale.html">Bán loại bất động sản khác</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="property-for-rent.html">Nhà Đất Cho Thuê</a>
+                        <ul>
+                            <li><a href="apartment-rental.html">Cho thuê căn hộ chung cư</a></li>
+                            <li><a href="house-rental.html">Cho thuê nhà riêng</a></li>
+                            <li><a href="villa-rental.html">Cho thuê nhà biệt thự, liền kề</a></li>
+                            <li><a href="street_houses-rental.html">Cho thuê nhà mặt phố</a></li>
+                            <li><a href="accommodation-rental.html">Cho thuê phòng trọ , nhà trọ</a></li>
+                            <li><a href="office-rental.html">Cho thuê văn phòng</a></li>
+                            <li><a href="other_real_estate-rental.html">Cho thuê loại bất động sản khác</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="project.html">Dự Án</a>
+                        <ul>
+                            <li><a href="#">Các dự án nổi bật</a></li>
+                            <li><a href="#">Dự án nhà ở</a></li>
+                            <li><a href="#">Dự án chung cư</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="news.html">Tin Tức</a>
+                        <ul>
+                            <li><a href="#">Tin thị trường</a></li>
+                            <li><a href="#">Xu hướng bất động sản</a></li>
+                            <li><a href="#">Phân tích và đánh giá</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="wiki.html">Wiki BĐS</a>
+                        <ul>
+                            <li><a href="#">Mua bán</a></li>
+                            <li><a href="#">Cho thuê</a></li>
+                            <li><a href="#">Tài chính</a></li>
+                            <li><a href="#">Phong thủy</a></li>
+                        </ul>
+                    </li>
+                </ul>
+
+            </nav>
+
+            <div class="contact-info">
+                <img src="../jpg/phone-call.png" alt="Phone Icon" class="phone-icon">
+                <span class="phone-number">0123 456 789</span>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="container" style="max-width:80%">
+    <div class="property-detail">
+        <h2> Nhà ở Bình Dương</h2>
+
+        <!-- Main image to be zoomed -->
+        <div class="image-wrapper" onmousemove="zoomImage(event)" onmouseleave="resetZoom()">
+            <img id="mainImage" class="main-image" src="../jpg/DaNang.jpg" alt="Tiêu đề bất động sản">
+            <!-- Zoom effect area -->
+            <div id="zoomArea" class="zoom-area"></div>
+        </div>
+
+        <!-- Thumbnails -->
+        <div class="thumbnails">
+            <div class="thumbnail" onclick="changeMainImage('1.jpg', this)">
+                <img src="../jpg/1.jpg" alt="Thumbnail">
+            </div>
+            <div class="thumbnail" onclick="changeMainImage('2.jpg', this)">
+                <img src="../jpg/2.jpg" alt="Thumbnail">
+            </div>
+            <div class="thumbnail" onclick="changeMainImage('3.jpg', this)">
+                <img src="../jpg/3.jpg" alt="Thumbnail">
+            </div>
+        </div>
+
+        <p><i class="fas fa-map-marker-alt"></i> Địa chỉ: Địa chỉ bất động sản</p>
+        <p><i class="fas fa-tag"></i> Giá: 1.5 tỷ</p>
+        <p><i class="fas fa-ruler-combined"></i> Diện tích: 100 m²</p>
+        <p><i class="fas fa-info-circle"></i> Mô tả: Mô tả chi tiết về bất động sản.</p>
+        <div class="heart-icon" onclick="addToFavorites('1', 'Căn hộ cao cấp', 5.0, 100, 'jpg/property1.jpg', 'TP.HCM, Quận 1')">
+            <img src="../jpg/heartred.png" alt="Heart Icon" class="heart-image">
+        </div>
+    </div>
+
+    <div class="sender-info">
+        <h3>Thông tin người đăng</h3>
+        <div class="sender-image">
+            <img src="../jpg/hinh-nen-gai-xinh.jpg" alt="Người đăng" class="sender-avatar">
+        </div>
+        <div class="info-box">
+            <span id="sender-name">Nguyễn Văn A</span>
+        </div>
+        <div class="info-box">
+            <span class="icon" style="margin-bottom: 12px;">✉️</span>
+            <span id="sender-email">nguyenvana@example.com</span>
+        </div>
+        <div class="info-box">
+            <span class="icon" style="margin-bottom: 12px;">📱</span>
+            <span id="sender-zalo">https://zalo.me/123456789</span>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Khu vực zoom ngoài hình ảnh */
+    .zoom-area {
+        position: absolute;
+        width: 200px; /* Kích thước khu vực zoom */
+        height: 200px;
+        border: 2px solid #ddd;
+        display: none; /* Ẩn khu vực zoom khi không di chuột */
+        background-repeat: no-repeat;
+        background-size: 400%; /* Phóng to ảnh trong khu vực zoom */
+        pointer-events: none; /* Không cản trở các sự kiện chuột */
+        transition: all 0.2s ease-out; /* Chuyển động mượt mà */
+        z-index: 100; /* Đảm bảo khu vực zoom nằm trên ảnh */
+    }
+
+    /* Main image */
+    .image-wrapper {
+        position: relative;
+        width: 100%;
+        height: 400px; /* Điều chỉnh chiều cao nếu cần */
+        overflow: hidden;
+    }
+
+    .main-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.1s ease-out;
+    }
+
+    /* Thumbnail click effect */
+    .thumbnail.active img {
+        transform: scale(1.1); /* Zoom in the clicked thumbnail */
+    }
+
+    /* Hover effect on thumbnails */
+    .thumbnail:hover img {
+        transform: scale(1.1); /* Slight zoom effect */
+    }
+</style>
+
+<script>
+    // Hiệu ứng Zoom khi di chuột trên hình ảnh chính
+    function zoomImage(event) {
+        const zoomArea = document.getElementById('zoomArea');
+        const image = document.getElementById('mainImage');
+
+        // Hiển thị khu vực zoom khi chuột di chuyển trên ảnh chính
+        zoomArea.style.display = 'block';
+
+        const rect = image.getBoundingClientRect(); // Lấy vị trí của ảnh
+        const x = event.clientX - rect.left; // Vị trí X của chuột
+        const y = event.clientY - rect.top;  // Vị trí Y của chuột
+
+        // Đặt vị trí của khu vực zoom sao cho chuột luôn ở giữa khu vực zoom
+        zoomArea.style.left = `${event.clientX + 20}px`; // Vị trí bên phải ảnh chính
+        zoomArea.style.top = `${event.clientY + 20}px`; // Vị trí dưới ảnh chính
+
+        // Tạo hiệu ứng zoom cho ảnh chính
+        const zoomFactor = 2; // Hệ số zoom, có thể điều chỉnh giá trị này
+        image.style.transform = `scale(${zoomFactor})`;
+        image.style.transformOrigin = `${x}px ${y}px`; // Tập trung zoom vào vị trí chuột
+
+        // Hiển thị ảnh zoomed vào trong khu vực zoom
+        zoomArea.style.backgroundImage = `url(${image.src})`;
+        zoomArea.style.backgroundPosition = `-${x * zoomFactor - zoomArea.offsetWidth / 2}px -${y * zoomFactor - zoomArea.offsetHeight / 2}px`;
+    }
+
+    // Reset hiệu ứng zoom khi chuột rời khỏi ảnh
+    function resetZoom() {
+        const zoomArea = document.getElementById('zoomArea');
+        const image = document.getElementById('mainImage');
+
+        zoomArea.style.display = 'none';  // Ẩn khu vực zoom
+        image.style.transform = 'scale(1)'; // Reset zoom của ảnh chính
+    }
+</script>
+
+
+<div class="property-features">
+    <h3>Đặc điểm bất động sản</h3>
+    <div class="features-container">
+        <div class="features-column">
+            <div class="feature-item">
+                <i class="fas fa-ruler-combined feature-icon"></i>
+                <span><strong>Diện tích:</strong> 121 m²</span>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-tag feature-icon"></i>
+                <span><strong>Mức giá:</strong> 9,3 tỷ</span>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-border-all feature-icon"></i>
+                <span><strong>Mặt tiền:</strong> 6,3 m</span>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-road feature-icon"></i>
+                <span><strong>Đường vào:</strong> 6 m</span>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-building feature-icon"></i>
+                <span><strong>Số tầng:</strong> 4 tầng</span>
+            </div>
+        </div>
+        <div class="features-column">
+            <div class="feature-item">
+                <i class="fas fa-bed feature-icon"></i>
+                <span><strong>Số phòng ngủ:</strong> 5 phòng</span>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-bath feature-icon"></i>
+                <span><strong>Số toilet:</strong> 4 phòng</span>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-file-alt feature-icon"></i>
+                <span><strong>Pháp lý:</strong> Sổ đỏ/ Sổ hồng</span>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-couch feature-icon"></i>
+                <span><strong>Nội thất:</strong> Đầy đủ</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="bottom-banner">
+    <img src="../jpg/bank-loan-offer-banner-web.jpg" alt="Banner quảng cáo" style="width: 100%; border-radius: 5px;">
+</div>
+
+<!-- Đặc điểm bất động sản -->
+
+<div class="map-container">
+    <h3>Bản đồ vị trí bất động sản</h3>
+    <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.3602677852815!2d-122.4009425846817!3d37.79281677975801!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8085808cbd76b6bb%3A0xf1390594e40361b1!2sSalesforce%20Tower!5e0!3m2!1sen!2sus!4v1614694698710!5m2!1sen!2sus"
+            width="100%"
+            height="200"
+            style="border:5px;"
+            allowfullscreen=""
+            loading="lazy"></iframe>
+</div>
+
+
+<div class="additional-info">
+    <h3>Thông tin bổ sung</h3>
+    <div class="info-container">
+        <div class="info-item">
+            <i class="fas fa-calendar-alt info-icon"></i>
+            <span><strong>Ngày đăng:</strong> 22/10/2024</span>
+        </div>
+        <div class="info-item">
+            <i class="fas fa-calendar-times info-icon"></i>
+            <span><strong>Ngày hết hạn:</strong> 01/11/2024</span>
+        </div>
+        <div class="info-item">
+            <i class="fas fa-info-circle info-icon"></i>
+            <span><strong>Loại tin:</strong> Tin thường</span>
+        </div>
+        <div class="info-item">
+            <i class="fas fa-hashtag info-icon"></i>
+            <span><strong>Mã tin:</strong> 41288902</span>
+        </div>
+    </div>
+</div>
+
+
+<div class="related-properties" style="width:63%">
+    <h3>Các sản phẩm liên quan</h3>
+    <div class="related-properties-container" id="relatedProductsContainer">
+        <a href="property-detail.html?id=1" style="text-decoration: none;">
+            <div class="related-property">
+                <img src="../jpg/1.jpg" alt="Sản phẩm 1">
+                <h4>Nhà Vinhomes Riverside</h4>
+                <p style="display: flex; justify-content: space-between; color: red;">
+                    <span>Giá: 1.5 tỷ</span>
+                    <span>Diện tích: 100m²</span>
+                </p>
+                <p style="display: flex; align-items: center;">
+                    <img src="../jpg/location.png" alt="Location Icon" class="location-icon" style="width: 16px; height: 16px; margin-right: 5px;">
+                    Địa chỉ: HCM
+                </p>
+            </div>
+        </a>
+        <a href="property-detail.html?id=1" style="text-decoration: none;">
+            <div class="related-property">
+                <img src="../jpg/2.jpg" alt="Sản phẩm 2">
+                <h4>Nhà Sunrise City</h4>
+                <p style="display: flex; justify-content: space-between; color: red;">
+                    <span>Giá: 1.5 tỷ</span>
+                    <span>Diện tích: 100m²</span>
+                </p>
+                <p style="display: flex; align-items: center;">
+                    <img src="../jpg/location.png" alt="Location Icon" class="location-icon" style="width: 16px; height: 16px; margin-right: 5px;">
+                    Địa chỉ: HCM
+                </p>
+            </div>
+        </a>
+        <a href="property-detail.html?id=1" style="text-decoration: none;">
+            <div class="related-property">
+                <img src="../jpg/20.jpg" alt="Sản phẩm 3">
+                <h4>Nhà Masteri Thảo Điền</h4>
+                <p style="display: flex; justify-content: space-between; color: red;">
+                    <span>Giá: 1.5 tỷ</span>
+                    <span>Diện tích: 100m²</span>
+                </p>
+                <p style="display: flex; align-items: center;">
+                    <img src="../jpg/location.png" alt="Location Icon" class="location-icon" style="width: 16px; height: 16px; margin-right: 5px;">
+                    Địa chỉ: HCM
+                </p>
+            </div>
+        </a>
+        <a href="property-detail.html?id=1" style="text-decoration: none;">
+            <div class="related-property">
+                <img src="../jpg/18.jpg" alt="Sản phẩm 4">
+                <h4>Nhà Landmark 81</h4>
+                <p style="display: flex; justify-content: space-between; color: red;">
+                    <span>Giá: 1.5 tỷ</span>
+                    <span>Diện tích: 100m²</span>
+                </p>
+                <p style="display: flex; align-items: center;">
+                    <img src="../jpg/location.png" alt="Location Icon" class="location-icon" style="width: 16px; height: 16px; margin-right: 5px;">
+                    Địa chỉ: HCM
+                </p>
+            </div>
+        </a>
+        <a href="property-detail.html?id=1" style="text-decoration: none;">
+            <div class="related-property">
+                <img src="../jpg/22.jpg" alt="Sản phẩm 5">
+                <h4>Nhà Sala Đại Quang Minh</h4>
+                <p style="display: flex; justify-content: space-between; color: red;">
+                    <span>Giá: 1.5 tỷ</span>
+                    <span>Diện tích: 100m²</span>
+                </p>
+                <p style="display: flex; align-items: center;">
+                    <img src="../jpg/location.png" alt="Location Icon" class="location-icon" style="width: 16px; height: 16px; margin-right: 5px;">
+                    Địa chỉ: HCM
+                </p>
+            </div>
+        </a>
+        <a href="property-detail.html?id=1" style="text-decoration: none;">
+            <div class="related-property">
+                <img src="../jpg/6.jpg" alt="Sản phẩm 6">
+                <h4>Nhà The Manor</h4>
+                <p style="display: flex; justify-content: space-between; color: red;">
+                    <span>Giá: 1.5 tỷ</span>
+                    <span>Diện tích: 100m²</span>
+                </p>
+                <p style="display: flex; align-items: center;">
+                    <img src="../jpg/location.png" alt="Location Icon" class="location-icon" style="width: 16px; height: 16px; margin-right: 5px;">
+                    Địa chỉ: HCM
+                </p>
+            </div>
+        </a>
+        <a href="property-detail.html?id=1" style="text-decoration: none;">
+            <div class="related-property">
+                <img src="../jpg/7.jpg" alt="Sản phẩm 7">
+                <h4>Nhà Empire City</h4>
+                <p style="display: flex; justify-content: space-between; color: red;">
+                    <span>Giá: 1.5 tỷ</span>
+                    <span>Diện tích: 100m²</span>
+                </p>
+                <p style="display: flex; align-items: center;">
+                    <img src="../jpg/location.png" alt="Location Icon" class="location-icon" style="width: 16px; height: 16px; margin-right: 5px;">
+                    Địa chỉ: HCM
+                </p>
+            </div>
+        </a>
+
+
+        <<div class="more-products">
+        <button class="scroll-left-btn"> < </button>
+        <button class="scroll-right-btn"> > </button>
+    </div>
+    </div>
+</div>
+
+<div class="related-properties" style="width:63%">
+    <h3>Các tin đăng đã xem</h3>
+    <div class="related-properties-container" id="relatedProductsContainer">
+        <a href="property-detail.html?id=1" style="text-decoration: none;">
+            <div class="related-property">
+                <img src="../jpg/8.jpg" alt="Nhà Times City" style="height: 150px">
+                <h4>Nhà Times City</h4>
+                <p style="display: flex; justify-content: space-between; color: red;">
+                    <span>Giá: 1.5 tỷ</span>
+                    <span>Diện tích: 100m²</span>
+                </p>
+                <p style="display: flex; align-items: center;">
+                    <img src="../jpg/location.png" alt="Location Icon" class="location-icon" style="width: 16px; height: 16px; margin-right: 5px;">
+                    Địa chỉ: HCM
+                </p>
+            </div>
+        </a>
+        <a href="property-detail.html?id=1" style="text-decoration: none;">
+            <div class="related-property">
+                <img src="../jpg/9.jpg" alt="Nhà Royal City">
+                <h4>Nhà Royal City</h4>
+                <p style="display: flex; justify-content: space-between; color: red;">
+                    <span>Giá: 1.5 tỷ</span>
+                    <span>Diện tích: 100m²</span>
+                </p>
+                <p style="display: flex; align-items: center;">
+                    <img src="../jpg/location.png" alt="Location Icon" class="location-icon" style="width: 16px; height: 16px; margin-right: 5px;">
+                    Địa chỉ: HCM
+                </p>
+            </div>
+        </a>
+        <a href="property-detail.html?id=1" style="text-decoration: none;">
+            <div class="related-property">
+                <img src="../jpg/10.jpg" alt="Nhà Vinhomes Central Park">
+                <h4>Nhà Vinhomes Central Park</h4>
+                <p style="display: flex; justify-content: space-between; color: red;">
+                    <span>Giá: 1.5 tỷ</span>
+                    <span>Diện tích: 100m²</span>
+                </p>
+                <p style="display: flex; align-items: center;">
+                    <img src="../jpg/location.png" alt="Location Icon" class="location-icon" style="width: 16px; height: 16px; margin-right: 5px;">
+                    Địa chỉ: HCM
+                </p>
+            </div>
+        </a>
+        <a href="property-detail.html?id=1" style="text-decoration: none;">
+            <div class="related-property">
+                <img src="../jpg/11.jpg" alt="Nhà Phú Mỹ Hưng">
+                <h4>Nhà Phú Mỹ Hưng</h4>
+                <p style="display: flex; justify-content: space-between; color: red;">
+                    <span>Giá: 1.5 tỷ</span>
+                    <span>Diện tích: 100m²</span>
+                </p>
+                <p style="display: flex; align-items: center;">
+                    <img src="../jpg/location.png" alt="Location Icon" class="location-icon" style="width: 16px; height: 16px; margin-right: 5px;">
+                    Địa chỉ: HCM
+                </p>
+            </div>
+        </a>
+        <a href="property-detail.html?id=1" style="text-decoration: none;">
+            <div class="related-property">
+                <img src="../jpg/20.jpg" alt="Nhà The Vista">
+                <h4>Nhà The Vista</h4>
+                <p style="display: flex; justify-content: space-between; color: red;">
+                    <span>Giá: 1.5 tỷ</span>
+                    <span>Diện tích: 100m²</span>
+                </p>
+                <p style="display: flex; align-items: center;">
+                    <img src="../jpg/location.png" alt="Location Icon" class="location-icon" style="width: 16px; height: 16px; margin-right: 5px;">
+                    Địa chỉ: HCM
+                </p>
+            </div>
+        </a>
+
+
+        <div class="more-products">
+            <button class="scroll-left-btn"> < </button>
+            <button class="scroll-right-btn"> > </button>
+        </div>
+
+    </div>
+</div>
+
+
+<script>
+    // Lấy tất cả các nút cuộn và container
+    const scrollLeftBtns = document.querySelectorAll('.scroll-left-btn');
+    const scrollRightBtns = document.querySelectorAll('.scroll-right-btn');
+    const containers = document.querySelectorAll('.related-properties-container');
+
+    // Lặp qua tất cả các nút cuộn trái
+    scrollLeftBtns.forEach((btn, index) => {
+        btn.addEventListener('click', function () {
+            containers[index].scrollBy({
+                top: 0,
+                left: -200, // Cuộn 200px sang trái
+                behavior: 'smooth'
+            });
+        });
+    });
+
+    // Lặp qua tất cả các nút cuộn phải
+    scrollRightBtns.forEach((btn, index) => {
+        btn.addEventListener('click', function () {
+            containers[index].scrollBy({
+                top: 0,
+                left: 200, // Cuộn 200px sang phải
+                behavior: 'smooth'
+            });
+        });
+    });
+
+    // Lắng nghe sự kiện cuộn hết bên trái và quay lại từ đầu
+    containers.forEach((container) => {
+        let isScrolling = false; // Biến để kiểm tra trạng thái cuộn
+
+        container.addEventListener('scroll', function () {
+            if (isScrolling) return; // Ngừng nếu đang cuộn
+
+            if (container.scrollLeft <= 0) {
+                // Nếu cuộn hết bên trái
+                container.scrollTo({
+                    top: 0,
+                    left: container.scrollWidth / 2, // Quay lại từ đầu
+                    behavior: 'smooth'
+                });
+            } else if (container.scrollLeft + container.clientWidth >= container.scrollWidth) {
+                // Nếu cuộn hết bên phải
+                container.scrollTo({
+                    top: 0,
+                    left: 0, // Quay lại từ đầu
+                    behavior: 'smooth'
+                });
+            }
+        });
+
+        // Đặt lại trạng thái khi cuộn xong
+        container.addEventListener('scrollend', function () {
+            isScrolling = false;
+        });
+
+        // Giả lập sự kiện scrollend khi ngừng cuộn (tùy vào hỗ trợ của trình duyệt)
+        container.addEventListener('wheel', function () {
+            if (container.scrollLeft <= 0 || container.scrollLeft + container.clientWidth >= container.scrollWidth) {
+                isScrolling = true;
+            }
+        });
+    });
+</script>
+<div class="comment-section" style="padding-left: 135px">
+    <h3>Để lại bình luận của bạn:</h3>
+
+        <input type="hidden" name="productId">
+        <textarea name="comment" rows="5" placeholder="Nhập bình luận của bạn..." required></textarea>
+        <button type="submit">Gửi bình luận</button>
+
+</div>
+
+<div class="login-prompt">
+    <p style=" margin-left: 135px;margin-top: 30px">Vui lòng <a href="login.html">đăng nhập</a> để có thể để lại bình
+        luận.</p>
+</div>
+
+
+
+
+<!-- Thêm banner dưới danh sách sản phẩm -->
+<div class="copyright">
+    <p>© Mọi quyền thuộc về Homelander. Mọi thông tin liên quan vui lòng liên hệ với chúng tôi.</p>
+</div>
+
+<style>
+
+    .related-properties {
+        margin-top: 30px; /* Giảm khoảng cách giữa các phần */
+        padding-left: 135px; /* Khoảng cách với lề trái */
+        position: relative; /* Để định vị các nút */
+
+    }
+
+
+    .related-properties-container {
+        display: flex;
+        overflow-x: auto; /* Ẩn thanh cuộn mặc định */
+        height: 250px; /* Chiều cao cố định cho sản phẩm liên quan */
+        padding-bottom: 10px; /* Khoảng cách cho nút cuộn */
+
+
+    }
+
+    .related-properties-container::-webkit-scrollbar {
+        height: 0px; /* Chiều cao của thanh cuộn */
+    }
+
+    .related-property {
+        flex: 0 0 auto; /* Không cho phép co lại */
+        width: 200px; /* Chiều rộng của mỗi sản phẩm liên quan */
+        margin-right: 10px;
+        text-align: left;
+        overflow: visible; /* Cho phép hình ảnh hiển thị bên ngoài */
+        border: 1px solid gainsboro;
+        border-radius: 10px;
+        position: relative; /* Để z-index có hiệu lực */
+        transition: transform 0.3s; /* Thêm hiệu ứng chuyển tiếp */
+    }
+
+    .related-property:hover {
+        transform: translateY(-5px); /* Nổi lên trên 5px */
+        z-index: 15; /* Đưa sản phẩm lên trên cùng để không bị che khuất */
+    }
+
+
+    .related-property img {
+        width: 100%; /* Đảm bảo hình ảnh phù hợp với kích thước chứa */
+        height: auto; /* Tự động điều chỉnh chiều cao */
+        border: 2px solid transparent; /* Border mặc định là trong suốt */
+        border-radius: 10px; /* Bo tròn góc cho hình ảnh */
+        transition: border-color 0.3s; /* Hiệu ứng chuyển tiếp cho border */
+    }
+
+    .more-products {
+        position: absolute; /* Định vị tuyệt đối */
+        top: 0; /* Căn lên cùng với tiêu đề */
+        right: 0; /* Căn bên phải */
+        padding-bottom: 5px;
+    }
+
+    #scroll-left-btn, #scroll-right-Btn {
+        background-color: whitesmoke; /* Màu nền cho nút */
+        color: black; /* Màu chữ */
+        border: none; /* Không có đường viền */
+        padding: 5px; /* Khoảng cách bên trong */
+        cursor: pointer; /* Con trỏ khi di chuột qua */
+        border-radius: 5px; /* Bo tròn góc */
+        font-size: 14px; /* Kích thước chữ */
+        margin-left: 5px; /* Khoảng cách giữa các nút */
+    }
+
+    #scroll-left-btn:hover, #scroll-right-Btn:hover {
+        background-color: wheat; /* Màu nền khi di chuột qua */
+    }
+
+    .bottom-banner {
+        width: 56%; /* Kích thước của banner */
+        margin-left: 135px; /* Canh giữa và tạo khoảng cách */
+        margin-top: 50px;
+    }
+
+    .bottom-banner img {
+        width: 63%; /* Chiều rộng đầy đủ */
+        border-radius: 5px; /* Bo góc cho banner */
+        padding-right: 50px;
+    }
+
+    .property-features {
+        margin-top: 30px;
+        width: 52%; /* Kích thước của banner */
+        margin-left: 135px; /* Canh giữa và tạo khoảng cách */
+
+        padding: 15px; /* Padding cho phần đặc điểm */
+        border: 1px solid #ccc; /* Viền cho phần đặc điểm */
+        border-radius: 5px; /* Bo góc cho phần đặc điểm */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Đổ bóng cho phần đặc điểm */
+    }
+
+    .features-container {
+        display: flex; /* Sử dụng Flexbox để chia cột */
+        justify-content: space-between; /* Tạo khoảng cách đều giữa các cột */
+    }
+
+    .features-column {
+        width: 48%; /* Chiều rộng của mỗi cột */
+    }
+
+    .feature-item {
+        display: flex; /* Sử dụng Flexbox cho mỗi mục */
+        align-items: center; /* Căn giữa theo chiều dọc */
+        margin-bottom: 10px; /* Khoảng cách giữa các mục */
+        padding: 5px 0; /* Thêm padding trên và dưới để căn chỉnh */
+    }
+
+    .feature-icon {
+        font-size: 24px; /* Kích thước biểu tượng */
+        margin-right: 20px; /* Khoảng cách giữa biểu tượng và nội dung */
+
+        flex-shrink: 0; /* Đảm bảo biểu tượng không bị co lại */
+    }
+
+    /* Đảm bảo nội dung trong các mục được căn chỉnh đều */
+    .feature-item span {
+        display: flex; /* Sử dụng Flexbox cho span */
+        justify-content: space-between; /* Căn đều giữa label và giá trị */
+        width: 100%; /* Đảm bảo chiều rộng đầy đủ */
+    }
+
+    .property-features h3 {
+        margin-bottom: 10px; /* Khoảng cách dưới tiêu đề */
+    }
+
+    .property-features ul {
+        list-style-type: none; /* Xóa dấu chấm đầu dòng */
+        padding: 0; /* Xóa padding mặc định */
+    }
+
+    .property-features li {
+        margin-bottom: 8px; /* Khoảng cách giữa các mục trong danh sách */
+        display: flex; /* Hiển thị các mục dưới dạng dòng */
+    }
+
+    .property-features strong {
+        margin-right: 10px; /* Khoảng cách giữa tiêu đề và giá trị */
+        color: #333; /* Màu sắc cho tiêu đề */
+    }
+
+    .feature-icon {
+        font-size: 24px; /* Điều chỉnh kích thước biểu tượng */
+        margin-right: 10px; /* Khoảng cách giữa biểu tượng và nội dung */
+
+    }
+
+    .map-container {
+        width: 52%;
+        margin-left: 135px;
+        border: 1px solid #ccc; /* Đường viền cho phần bản đồ */
+        border-radius: 5px; /* Bo góc cho phần bản đồ */
+        overflow: hidden; /* Ẩn đi các phần viền ra ngoài */
+        margin-top: 30px;
+    }
+
+    .map-container h3 {
+        padding: 10px; /* Khoảng cách cho tiêu đề bản đồ */
+        background-color: #f8f8f8; /* Nền cho tiêu đề */
+        width: 100%;
+        margin: 0; /* Không có khoảng cách bên ngoài */
+        border-bottom: 1px solid #ccc; /* Đường viền dưới cho tiêu đề */
+    }
+
+    .additional-info {
+        margin-top: 50px;
+        width: 52%;
+        border: 1px solid #ccc; /* Đường viền cho phần thông tin bổ sung */
+        border-radius: 5px; /* Bo góc cho phần thông tin bổ sung */
+        margin-left: 135px; /* Khoảng cách trên và dưới */
+        padding: 15px; /* Khoảng cách bên trong */
+        background-color: #f9f9f9; /* Màu nền cho phần thông tin bổ sung */
+    }
+
+    .additional-info h3 {
+        margin: 0 0 10px 0; /* Khoảng cách dưới tiêu đề */
+        font-size: 1.2em; /* Kích thước chữ tiêu đề */
+    }
+
+    .info-container {
+        display: flex; /* Sử dụng flexbox để xếp hàng dọc */
+        flex-direction: row; /* Xếp hàng theo chiều dọc */
+    }
+
+    .info-item {
+        display: flex; /* Sử dụng flexbox để căn chỉnh icon và text */
+        align-items: center; /* Căn giữa theo chiều dọc */
+        margin-bottom: 10px; /* Khoảng cách giữa các mục thông tin */
+        font-size: 0.9em; /* Kích thước chữ nhỏ hơn */
+    }
+
+    .info-icon {
+        margin-right: 10px; /* Khoảng cách giữa icon và text */
+        color: #007bff; /* Màu sắc cho các icon */
+    }
+
+    .copyright {
+        width: 52%;
+        margin-left: 135px;
+        margin-top: 40px; /* Khoảng cách trên cho phần bản quyền */
+        padding: 10px; /* Padding bên trong */
+        text-align: center; /* Căn giữa nội dung */
+        font-size: 0.8em; /* Kích thước chữ nhỏ hơn */
+        color: #555; /* Màu chữ */
+        border-top: 1px solid #ccc; /* Đường viền trên */
+        background-color: #f9f9f9; /* Màu nền nhẹ cho phần bản quyền */
+    }
+
+
+</style>
+
+
+<div class="footer">
+    <div class="footer-top">
+
+        <h1><a href="homes">
+            <span class="color1">HOME</span>
+            <span class="color2">LANDER</span>
+        </a></h1>
+        <span class="footer-item"><i class="fas fa-phone"></i> Hotline: 098 664 1965</span>
+        <span class="footer-item"><i class="fas fa-envelope"></i> Hỗ trợ: khoangoquan@gmail.com</span>
+        <span class="footer-item"><i class="fas fa-headset"></i> Chăm sóc: 098 664 1965</span>
+    </div>
+
+    <div class="footer-content">
+        <!-- Thông tin công ty -->
+        <div class="company-info">
+            <h3>Công ty Bất Động Sản</h3>
+            <p>Địa chỉ: 123 Đường 12, Quận 9, TP.HCM</p>
+            <p>Điện thoại: 098 664 1965</p>
+        </div>
+
+        <!-- Liên kết nhanh -->
+        <div class="quick-links">
+            <h3>Liên kết nhanh</h3>
+            <ul>
+                <li><a href="#">Trang chủ</a></li>
+                <li><a href="#">Dự án</a></li>
+                <li><a href="#">Tin tức</a></li>
+                <li><a href="#">Liên hệ</a></li>
+            </ul>
+        </div>
+
+        <!-- Mạng xã hội -->
+        <div class="social-media">
+            <h3>Mạng xã hội</h3>
+            <a href="https://www.facebook.com/khoa.ngo.562114/" class="social-icon"><i class="fab fa-facebook"></i>
+                Facebook</a>
+            <a href="https://www.instagram.com/khoa5462/" class="social-icon"><i class="fab fa-instagram"></i>
+                Instagram</a>
+            <a href="https://mail.google.com/mail/u/0/?hl=vi#inbox" class="social-icon"><i
+                    class="fas fa-envelope"></i>
+                Mail</a>
+        </div>
+
+        <!-- Form nhập email -->
+        <div class="newsletter">
+            <h3>Đăng ký nhận tin tức mới nhất</h3>
+            <form action="#" method="POST">
+                <input type="email" name="email" placeholder="Nhập email của bạn" required>
+                <button type="submit">Đăng ký</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <p>&copy; 2024 Công ty Bất Động Sản HOMELANDER. Mọi quyền lợi thuộc về công ty.</p>
+    </div>
+
+
+</div>
+<script>
+    function changeMainImage(image) {
+        document.getElementById('mainImage').src = image;
+    }
+</script>
+</body>
+</html>

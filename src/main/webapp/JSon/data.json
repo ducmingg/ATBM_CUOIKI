@@ -1,0 +1,74 @@
+{
+  "demo": [
+    {
+      "ID": "1",
+      "Tên Người Dùng": "Tiger Nixon",
+      "Email": "tigernixon@example.com",
+      "Vai Trò": "admin",
+      "Thao Tác": "Sửa/Xóa"
+    },
+    {
+      "ID": "2",
+      "Tên Người Dùng": "Garrett Winters",
+      "Email": "garrettwinters@example.com",
+      "Vai Trò": "user",
+      "Thao Tác": "Sửa/Xóa"
+    },
+    {
+      "ID": "3",
+      "Tên Người Dùng": "Ashton Cox",
+      "Email": "ashtoncox@example.com",
+      "Vai Trò": "user",
+      "Thao Tác": "Sửa/Xóa"
+    },
+    {
+      "ID": "4",
+      "Tên Người Dùng": "Cedric Kelly",
+      "Email": "cedrickelly@example.com",
+      "Vai Trò": "admin",
+      "Thao Tác": "Sửa/Xóa"
+    },
+    {
+      "ID": "5",
+      "Tên Người Dùng": "Airi Satou",
+      "Email": "airisatou@example.com",
+      "Vai Trò": "user",
+      "Thao Tác": "Sửa/Xóa"
+    },
+    {
+      "ID": "6",
+      "Tên Người Dùng": "Brielle Williamson",
+      "Email": "briellewilliamson@example.com",
+      "Vai Trò": "user",
+      "Thao Tác": "Sửa/Xóa"
+    },
+    {
+      "ID": "7",
+      "Tên Người Dùng": "Herrod Chandler",
+      "Email": "herrodchandler@example.com",
+      "Vai Trò": "user",
+      "Thao Tác": "Sửa/Xóa"
+    },
+    {
+      "ID": "8",
+      "Tên Người Dùng": "Rhona Davidson",
+      "Email": "rhonadavidson@example.com",
+      "Vai Trò": "admin",
+      "Thao Tác": "Sửa/Xóa"
+    },
+    {
+      "ID": "9",
+      "Tên Người Dùng": "Colleen Hurst",
+      "Email": "colleenhurst@example.com",
+      "Vai Trò": "user",
+      "Thao Tác": "Sửa/Xóa"
+    },
+    {
+      "ID": "10",
+      "Tên Người Dùng": "Sonya Frost",
+      "Email": "sonyafrost@example.com",
+      "Vai Trò": "admin",
+      "Thao Tác": "Sửa/Xóa"
+    }
+  ]
+}
