@@ -92,7 +92,6 @@ public class UserDAO {
 
 
     private Connection getConnection() throws SQLException {
-
         String url = "jdbc:mysql://localhost:3306/webbds";
         String user = "root";
         String password = "123456";
