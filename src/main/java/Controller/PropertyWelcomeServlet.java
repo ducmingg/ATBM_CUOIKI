@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+
 @WebServlet("/welcome")
 public class PropertyWelcomeServlet extends HttpServlet {
     @Override
@@ -25,7 +26,7 @@ public class PropertyWelcomeServlet extends HttpServlet {
             Statement stmt = conn.createStatement();
 
             // Truy vấn dữ liệu từ bảng Properties
-            String query = "SELECT property_id,title, address, price, area, image_url FROM properties";
+            String query = "SELECT property_id,title, address, price, area, image_url,status FROM properties";
             ResultSet rs = stmt.executeQuery(query);
 
             // Lấy dữ liệu từ ResultSet và thêm vào danh sách properties
@@ -37,7 +38,8 @@ public class PropertyWelcomeServlet extends HttpServlet {
                         rs.getString("address"),
                         rs.getDouble("price"),
                         rs.getDouble("area"),
-                        rs.getString("image_url")
+                        rs.getString("image_url"),
+                        rs.getString("status")
                 );
                 properties.add(property);
             }

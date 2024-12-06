@@ -258,7 +258,7 @@
             <a href="login.jsp" class="btn"><h3>Đăng nhập</h3></a>
             <a href="register.jsp" class="btn"><h3>Đăng ký</h3></a>
             <% } %>
-            <a href="post-status.jsp" class="btn"><h3>Đăng tin</h3></a>
+            <a href="create-poster.jsp" class="btn"><h3>Đăng tin</h3></a>
         </div>
 
 
@@ -276,35 +276,35 @@
 
             <nav>
                 <ul class="u-lo">
-                    <li><a href="property-for-sale.html">Nhà Đất Bán</a>
+                    <li><a href="forsale">Nhà Đất Bán</a>
                         <ul>
                             <li><a href="#">Thông tin bán nhà đất</a></li>
                             <li><a href="#">Mua bán bất động sản</a></li>
                             <li><a href="#">Nhà đất giá rẻ</a></li>
                         </ul>
                     </li>
-                    <li><a href="property-for-rent.html">Nhà Đất Cho Thuê</a>
+                    <li><a href="forrent">Nhà Đất Cho Thuê</a>
                         <ul>
                             <li><a href="#">Thông tin cho thuê nhà đất</a></li>
                             <li><a href="#">Thuê nhà nguyên căn</a></li>
                             <li><a href="#">Thuê căn hộ giá rẻ</a></li>
                         </ul>
                     </li>
-                    <li><a href="project.html">Dự Án</a>
+                    <li><a href="Project">Dự Án</a>
                         <ul>
                             <li><a href="#">Các dự án nổi bật</a></li>
                             <li><a href="#">Dự án nhà ở</a></li>
                             <li><a href="#">Dự án chung cư</a></li>
                         </ul>
                     </li>
-                    <li><a href="news.html">Tin Tức</a>
+                    <li><a href="news.jsp">Tin Tức</a>
                         <ul>
                             <li><a href="#">Tin thị trường</a></li>
                             <li><a href="#">Xu hướng bất động sản</a></li>
                             <li><a href="#">Phân tích và đánh giá</a></li>
                         </ul>
                     </li>
-                    <li><a href="wiki.html">Wiki BĐS</a>
+                    <li><a href="wiki.jsp">Wiki BĐS</a>
                         <ul>
                             <li><a href="#">Mua bán</a></li>
                             <li><a href="#">Cho thuê</a></li>
@@ -376,6 +376,8 @@
 
     <form id="orderForm" action="createOrder" method="POST" style="display:none;">
         <input type="hidden" name="userId" value="<%= userId %>">
+        <input type="hidden" name="username" value="<%= username %>">
+
         <% for (CartItem item : cartItems) { %>
         <input type="hidden" name="propertyId" value="<%= item.getPropertyId() %>">
         <input type="hidden" name="title" value="<%= item.getTitle() %>">

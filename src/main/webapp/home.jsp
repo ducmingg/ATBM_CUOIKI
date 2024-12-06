@@ -30,13 +30,46 @@
 
 
         </div>
+        <%
+            Integer userId = (Integer) session.getAttribute("userId");
+            String username = (String) session.getAttribute("username");
+            boolean isLoggedIn = userId != null;
+        %>
+
         <div class="header-right" style="margin-top: 10px">
+            <% if (isLoggedIn) { %>
+            <a href="account.jsp" class="btn">
+                <h3 style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
+                    Hello, <%= username %>
+                </h3>
+            </a>
 
+            <a href="javascript:void(0)" id="logoutButton" class="btn"
+               onclick="document.getElementById('logoutForm').submit();">
+                <h3>Đăng xuất</h3>
+            </a>
 
-            <a href="login.jsp" class="btn"><h3>Đăng nhập</h3></a>
-            <a href="register.jsp" class="btn"><h3>Đăng ký</h3></a>
-            <a href="post-status.jsp" class="btn"><h3>Đăng tin</h3></a>
+            <!-- Hidden Form to Logout -->
+            <form id="logoutForm" action="logout" method="POST" style="display: none;">
+                <button type="submit" style="display: none;"></button> <!-- This button will not be visible -->
+            </form>
+
+            <% } else { %>
+            <!-- Display login and registration options if not logged in -->
+            <a href="login.jsp" class="btn">
+                <h3>Đăng nhập</h3>
+            </a>
+            <a href="register.jsp" class="btn">
+                <h3>Đăng ký</h3>
+            </a>
+            <% } %>
+
+            <!-- "Post Status" button, visible to both logged-in and non-logged-in users -->
+            <a href="post-status.jsp" class="btn">
+                <h3>Đăng tin</h3>
+            </a>
         </div>
+
     </div>
 
     <a href="#" class="floating-cart" id="floating-cart" onclick="toggleMiniCart()"
@@ -222,44 +255,61 @@
 
 
 <div class="product-section">
-    <h2>Bất động sản dành cho bạn</h2>
+    <h2 style="text-align: center;">
+        Bất động sản dành cho bạn </h2>
+    <div style="text-align: center; font-size: 14px; margin-bottom: 20px;margin-left: 660px">
+        <a href="forsale" style="margin-right: 20px; text-decoration: none; color: darkred;">
+            Tin nhà đất bán mới nhất
+        </a>
+        |
+        <a href="forrent" style="margin-left: 20px; text-decoration: none; color: darkred;">
+            Tin nhà đất cho thuê mới nhất
+        </a>
+    </div>
+
+
     <div class="product-list">
         <%
             List<Property> properties = (List<Property>) request.getAttribute("properties");
             if (properties != null && !properties.isEmpty()) {
-                int index = 0;
-                for (Property property : properties) {
-        %>
-        <div class=" product-item" <%= index >= 8 ? "style='display: none;'" : "" %> >
-           <span onclick="location.href='property-detail.jsp?id=<%= property.getId() %>'"
-                 style="cursor: pointer; color: blue; text-decoration: none;">
-                <img src="<%= property.getImageUrl() %>" alt="<%= property.getTitle() %>" class="product-image">
-                <h3><%= property.getTitle() %>
-                </h3>
-                <p class="address">
-                    <img src="jpg/location.png" alt="Location Icon" class="location-icon">
-                    <%= property.getAddress() %>
-                </p>
-                <div class="details">
-                    <div class="price-size">
-                        <p class="price"><%= property.getPrice() %> tỷ</p>
-                        <p class="size"><%= property.getArea() %> m²</p>
-                    </div>
-                </div>
-            </span>
-            <div class="heart-icon"
-                 onclick="<% if (session.getAttribute("username") != null) { %>
-                         addToFavorites('<%= property.getId() %>', '<%= property.getTitle() %>', <%= property.getPrice() %>, <%= property.getArea() %>, '<%= property.getImageUrl() %>','<%= property.getAddress() %>');
-                     <% } else { %>
-                         alert('Vui lòng đăng nhập để thêm vào giỏ hàng.');
-                         window.location.href = 'login.jsp';
-                         <% } %>">
-                <img src="jpg/heartred.png" alt="Heart Icon" class="heart-image">
-            </div>
-        </div>
+                int index = properties.size() - 1;  // Lấy chỉ số cuối cùng của danh sách
+                for (int i = index; i >= 0; i--) {
+                    Property property = properties.get(i);
 
+                    // Kiểm tra trạng thái bất động sản (nếu status = "0", không hiển thị)
+                    if ("0".equals(property.getStatus())) {
+                        continue; // Bỏ qua sản phẩm có status = 0
+                    }
+        %>
+        <div class="product-item" <%= i >= 8 ? "style='display: none;'" : "" %> >
+        <span onclick="location.href='property-detail.jsp?id=<%= property.getId() %>'"
+              style="cursor: pointer; color: blue; text-decoration: none;">
+            <img src="<%= property.getImageUrl() %>" alt="<%= property.getTitle() %>" class="product-image">
+            <h3><%= property.getTitle() %></h3>
+            <p class="address">
+                <img src="jpg/location.png" alt="Location Icon" class="location-icon">
+                <%= property.getAddress() %>
+            </p>
+            <div class="details">
+                <div class="price-size">
+                    <p class="price"><%= property.getPrice() %> tỷ</p>
+                    <p class="size"><%= property.getArea() %> m²</p>
+                </div>
+            </div>
+        </span>
+            <div class="heart-icon" onclick="checkLogin()">
+                <img src="jpg/heartred.png"  alt="Heart Icon" class="heart-image">
+                <span class="favorite-text">Bấm vào đây để lưu tin</span>
+            </div>
+
+            <script>
+                function checkLogin() {
+                    alert('Vui lòng đăng nhập để lưu tin.');
+                    window.location.href = 'login.jsp';
+                }
+            </script>
+        </div>
         <%
-                    index++;
                 }
             }
         %>
@@ -313,7 +363,26 @@
         });
     });
 </script>
+
 <style>
+
+    .favorite-text {
+        position: absolute;
+        bottom: -25px; /* Đưa văn bản xuống dưới trái tim */
+        left: 50%;
+        transform: translateX(-50%); /* Căn giữa văn bản với trái tim */
+        visibility: hidden; /* Ẩn văn bản mặc định */
+        background-color: rgba(0, 0, 0, 0.7);
+        color: #fff;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 12px;
+        white-space: nowrap; /* Ngừng việc gãy dòng */
+    }
+
+    .heart-icon:hover .favorite-text {
+        visibility: visible; /* Hiển thị khi hover vào icon trái tim */
+    }
     /* Basic styling */
     .featured-properties-section {
         max-width: 85%;
@@ -1035,27 +1104,8 @@
         cursor: pointer;
     }
 
-    /* Định dạng dòng chữ "Tin đăng đã lưu" */
-    .hover-text {
-        position: absolute;
-        top: 30px; /* Điều chỉnh vị trí theo ý muốn */
-        left: 50%;
-        transform: translateX(-50%);
-        background-color: rgba(0, 0, 0, 0.7); /* Màu nền của dòng chữ */
-        color: #fff;
-        padding: 5px 10px;
-        border-radius: 4px;
-        font-size: 14px;
-        white-space: nowrap;
-        opacity: 0; /* Ẩn dòng chữ */
-        transition: opacity 0.3s ease; /* Hiệu ứng hiển thị mượt */
-        pointer-events: none; /* Vô hiệu hóa sự kiện trên hover-text */
-    }
 
-    /* Khi hover vào biểu tượng trái tim, hiển thị dòng chữ */
-    .heart-container:hover .hover-text {
-        opacity: 1;
-    }
+
 </style>
 
 

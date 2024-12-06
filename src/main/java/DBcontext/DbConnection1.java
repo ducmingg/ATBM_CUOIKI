@@ -9,7 +9,7 @@ public class DbConnection1 {
         String dbURL = "jdbc:mysql://localhost:3306/";
         String dbName = "webbds";
         String dbUsername = "root";  // Tài khoản MySQL của bạn
-        String dbPassword = "123456";  // Mật khẩu MySQL của bạn
+        String dbPassword = "root";  // Mật khẩu MySQL của bạn
 
 
         Class.forName(dbDriver);
@@ -18,27 +18,4 @@ public class DbConnection1 {
         return DriverManager.getConnection(dbURL + dbName, dbUsername, dbPassword);
     }
 
-    public static void main(String[] args) {
-        try {
-
-            Connection conn = DbConnection1.initializeDatabase();
-            Statement stmt = conn.createStatement();
-
-
-            String query = "SELECT * FROM properties";
-            ResultSet rs = stmt.executeQuery(query);
-            if (rs.next()) {
-                System.out.println("Ket noi thanh cong");
-            } else {
-                System.out.println("Ket noi that bai");
-            }
-
-            rs.close();
-            stmt.close();
-            conn.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
 }

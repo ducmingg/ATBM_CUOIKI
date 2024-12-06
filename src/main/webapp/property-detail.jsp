@@ -16,6 +16,61 @@
 <title>Property Details</title>
 <head>
     <style>
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin-right: 0;
+            border-radius: 10px;
+        }
+
+        .u-lo li {
+            position: relative;
+            display: inline-block;
+            margin-right: 20px;
+            z-index: 10; /* Đảm bảo menu cha hiển thị trên cùng */
+        }
+
+        ul li a {
+            text-decoration: none;
+            display: inline-block;
+            color: #333;
+        }
+
+        /* Thiết lập cho menu con */
+        ul li ul {
+            display: none; /* Ẩn menu con mặc định */
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: #f9f9f9;
+            min-width: 200px;
+            padding: 10px 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 999; /* Đảm bảo menu con hiển thị trên các phần tử khác */
+        }
+
+        ul li ul li {
+            display: block;
+            margin: 0;
+        }
+
+        ul li ul li a {
+            padding: 10px 15px;
+            color: #333;
+            display: block;
+        }
+
+        /* Hiển thị menu con khi hover */
+        ul li:hover ul {
+            display: block;
+        }
+
+        /* Style cho menu con khi hover */
+        ul li ul li a:hover {
+            background-color: #eee;
+            text-decoration: none;
+        }
         .heart-icon {
             position: absolute;
             bottom: 5px; /* Di chuyển trái tim xuống góc dưới */
@@ -312,7 +367,8 @@
                 </h3>
             </a>
 
-            <a href="javascript:void(0)" id="logoutButton" class="btn" onclick="document.getElementById('logoutForm').submit();">
+            <a href="javascript:void(0)" id="logoutButton" class="btn"
+               onclick="document.getElementById('logoutForm').submit();">
                 <h3>Đăng xuất</h3>
             </a>
 
@@ -320,11 +376,21 @@
             <form id="logoutForm" action="logout" method="POST" style="display: none;">
                 <button type="submit" style="display: none;"></button> <!-- This button will not be visible -->
             </form>
+
             <% } else { %>
-            <a href="login.jsp" class="btn"><h3>Đăng nhập</h3></a>
-            <a href="register.jsp" class="btn"><h3>Đăng ký</h3></a>
+            <!-- Display login and registration options if not logged in -->
+            <a href="login.jsp" class="btn">
+                <h3>Đăng nhập</h3>
+            </a>
+            <a href="register.jsp" class="btn">
+                <h3>Đăng ký</h3>
+            </a>
             <% } %>
-            <a href="post-status.html" class="btn"><h3>Đăng tin</h3></a>
+
+            <!-- "Post Status" button, visible to both logged-in and non-logged-in users -->
+            <a href="create-poster.jsp" class="btn">
+                <h3>Đăng tin</h3>
+            </a>
         </div>
 
     </div>
@@ -453,7 +519,7 @@
                                 cartItemsContainer.appendChild(li);
                             });
                         } else {
-                            cartItemsContainer.innerHTML = '<li>Giỏ hàng trống</li>';
+                            cartItemsContainer.innerHTML = '<li>Tin lưu trống</li>';
                         }
                     } else {
                         cartItemsContainer.innerHTML = `<li>${data.message}</li>`;
@@ -461,7 +527,7 @@
                 })
                 .catch(error => {
                     console.error('Error loading cart items:', error);
-                    document.getElementById('cart-items').innerHTML = '<li>Đã xảy ra lỗi khi tải giỏ hàng.</li>';
+                    document.getElementById('cart-items').innerHTML = '<li>Đã xảy ra lỗi khi tải tin lưu.</li>';
                 });
         }
 
@@ -480,12 +546,43 @@
 
 
             <nav>
-                <ul>
-                    <li><a href="#nhadatban">Nhà Đất Bán</a></li>
-                    <li><a href="#nhadatchochue">Nhà Đất Cho Thuê</a></li>
-                    <li><a href="#duan">Dự Án</a></li>
-                    <li><a href="#tintuc">Tin Tức</a></li>
-                    <li><a href="#wikibds">Wiki BĐS</a></li>
+                <ul class="u-lo">
+                    <li><a href="forsale">Nhà Đất Bán</a>
+                        <ul>
+                            <li><a href="#">Thông tin bán nhà đất</a></li>
+                            <li><a href="#">Mua bán bất động sản</a></li>
+                            <li><a href="#">Nhà đất giá rẻ</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="forrent">Nhà Đất Cho Thuê</a>
+                        <ul>
+                            <li><a href="#">Thông tin cho thuê nhà đất</a></li>
+                            <li><a href="#">Thuê nhà nguyên căn</a></li>
+                            <li><a href="#">Thuê căn hộ giá rẻ</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="Project">Dự Án</a>
+                        <ul>
+                            <li><a href="#">Các dự án nổi bật</a></li>
+                            <li><a href="#">Dự án nhà ở</a></li>
+                            <li><a href="#">Dự án chung cư</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="news.jsp">Tin Tức</a>
+                        <ul>
+                            <li><a href="#">Tin thị trường</a></li>
+                            <li><a href="#">Xu hướng bất động sản</a></li>
+                            <li><a href="#">Phân tích và đánh giá</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="wiki.jsp">Wiki BĐS</a>
+                        <ul>
+                            <li><a href="#">Mua bán</a></li>
+                            <li><a href="#">Cho thuê</a></li>
+                            <li><a href="#">Tài chính</a></li>
+                            <li><a href="#">Phong thủy</a></li>
+                        </ul>
+                    </li>
                 </ul>
             </nav>
 
@@ -581,12 +678,32 @@
             <!-- Heart icon as submit button -->
             <button type="submit" class="heart-icon" style="border: none; background: transparent; padding: 0;">
                 <img src="jpg/heartred.png" alt="Heart Icon" class="heart-image">
+                <span class="favorite-text">Bấm vào đây để lưu tin</span>
             </button>
         </form>
 
     </div>
 
+
     <style>
+        .favorite-text {
+            position: absolute;
+            bottom: -25px; /* Đưa văn bản xuống dưới trái tim */
+            left: 50%;
+            transform: translateX(-50%); /* Căn giữa văn bản với trái tim */
+            visibility: hidden; /* Ẩn văn bản mặc định */
+            background-color: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            white-space: nowrap; /* Ngừng việc gãy dòng */
+            z-index: 1000; /* Đảm bảo văn bản nổi lên trên mọi phần tử khác */
+        }
+
+        .heart-icon:hover .favorite-text {
+            visibility: visible; /* Hiển thị khi hover vào icon trái tim */
+        }
         .container {
             max-width: 800px; /* Đặt chiều rộng tối đa cho container */
             margin: 0 auto; /* Center container */
@@ -594,7 +711,7 @@
 
         .property-detail {
             position: relative;
-            overflow: hidden; /* Ẩn phần vượt ra ngoài */
+
             margin-bottom: 20px; /* Khoảng cách giữa property-detail và sản phẩm liên quan */
         }
 

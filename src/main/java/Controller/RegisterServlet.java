@@ -43,7 +43,7 @@ public class RegisterServlet extends HttpServlet {
 
         // Lưu thông tin người dùng vào cơ sở dữ liệu với trạng thái 'inactive'
         try (Connection conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/webbds?useSSL=false&serverTimezone=UTC", "root", "123456")) { // Thay đổi thông tin kết nối
+                "jdbc:mysql://localhost:3306/webbds?useSSL=false&serverTimezone=UTC", "root", "root")) { // Thay đổi thông tin kết nối
 
             String checkQuery = "SELECT COUNT(*) FROM users WHERE username =?";
             PreparedStatement checkStmt = conn.prepareStatement(checkQuery);
@@ -91,10 +91,6 @@ public class RegisterServlet extends HttpServlet {
             out.println("</body></html>");
 
 
-
-            // tao ra cart khi dang ki thanh cong
-//            CartDAO cartDAO = new CartDAO();
-//            Cart cart = cartDAO.createCart(user.getId());
 
 
         } catch (SQLException e) {

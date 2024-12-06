@@ -32,10 +32,10 @@
             <li><a href="admin.jsp">Main Dashboard</a></li>
             <li><a href="users">Quản lý tài khoản</a></li>
             <li><a href="home-manager">Quản lý sản phẩm</a></li>
-            <li><a href="top-property.jsp">Quản lý sản phẩm bán chạy</a></li>
+<%--            <li><a href="top-property.jsp">Quản lý sản phẩm bán chạy</a></li>--%>
             <li><a href="home-manager">Quản lý nhà phân phối</a></li>
-            <li><a href="top-user-manager">Quản lý top 5 khách</a></li>
-            <li><a href="top-employee-manager.jsp">Quản lý top 5 nhân viên</a></li>
+<%--            <li><a href="top-user-manager">Quản lý top 5 khách</a></li>--%>
+<%--            <li><a href="top-employee-manager.jsp">Quản lý top 5 nhân viên</a></li>--%>
             <li><a href="orders">Quản lý đơn đặt hàng</a></li>
             <li><a href="comments-manager.jsp">Quản lý bình luận</a></li>
 
@@ -45,15 +45,26 @@
     <div class="main-content">
         <div class="dashboard-header">
             <div class="dashboard-item">
-                <h3><i class="fas fa-box"></i> Total Products</h3>
+                <h3><i class="fas fa-box"></i> Tổng bất động sản</h3>
                 <p><%= totalProducts %></p>
             </div>
-            <div class="dashboard-item">
-                <h3><i class="fas fa-dollar-sign"></i> Total Sales</h3>
-                <p>$21292.0</p>
+
+                <div class="dashboard-item">
+                    <h3><i class="fas fa-box"></i> Products - Available</h3>
+<%--                    <p><%= totalAvailable %></p> <!-- Số lượng sản phẩm còn hàng -->--%>
+                </div>
+<%--                <div class="dashboard-item">--%>
+<%--                    <h3><i class="fas fa-box"></i> Products - Sold</h3>--%>
+<%--                    <p><%= totalSold %></p> <!-- Số lượng sản phẩm đã bán -->--%>
+<%--                </div>--%>
+<%--                <div class="dashboard-item">--%>
+<%--                    <h3><i class="fas fa-box"></i> Products - Out of Stock</h3>--%>
+<%--                    <p><%= totalOutOfStock %></p> <!-- Số lượng sản phẩm hết hàng -->--%>
+<%--                </div>--%>
             </div>
+
             <div class="dashboard-item">
-                <h3><i class="fas fa-comments"></i> Total Comments</h3>
+                <h3><i class="fas fa-comments"></i> Tổng bình luận</h3>
                 <p><%= totalComments %></p>
             </div>
         </div>

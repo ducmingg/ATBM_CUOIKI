@@ -1,7 +1,5 @@
 package Entity;
 
-import java.util.List;
-
 public class Property1 {
     private int id;               // ID của tài sản
     private String title;         // Tiêu đề tài sản
@@ -11,9 +9,10 @@ public class Property1 {
     private String type;          // Loại tài sản
     private String status;        // Trạng thái của tài sản
     private String imageUrl;      // URL của hình ảnh
-    private String description;
-    private int posterId;
+    private String description;   // Mô tả
+    private int posterId;         // ID của người đăng
 
+    // Constructor đầy đủ
     public Property1(int id, String title, double price, double area, String address, String type, String status, String imageUrl, String description, int posterId) {
         this.id = id;
         this.title = title;
@@ -25,14 +24,68 @@ public class Property1 {
         this.imageUrl = imageUrl;
         this.description = description;
         this.posterId = posterId;
-
-
     }
 
-    public Property1(String title, double price, double area, String address, String imageUrl) {
+    // Constructor thay đổi các tham số cho trường hợp không cần imageUrl
+    public Property1(int id, String title, double price, double area, String address, String type, String status, String imageUrl) {
+        this.id = id;
+        this.title = title;
+        this.price = price;
+        this.area = area;
+        this.address = address;
+        this.type = type;
+        this.status = status;
+        this.imageUrl = imageUrl;
+    }
+
+    // Constructor chỉ có các trường cơ bản
+    public Property1(int id, String title, double price, String address, double area, String imageUrl) {
+        this.id = id;
+        this.title = title;
+        this.price = price;
+        this.address = address;
+        this.area = area;
+        this.imageUrl = imageUrl;
+    }
+
+    public Property1(String title, String description, double price, String address, String type, String status, double area, int posterId, String imageUrl) {
+        this.description = description;
+        this.title = title;
+        this.price = price;
+        this.area = area;
+        this.address = address;
+        this.type = type;
+        this.status = status;
+        this.imageUrl = imageUrl;
+        this.posterId = posterId;
+    }
+
+    public Property1(int propertyId, String title, double price, String address, double area, String description, String type, String status, String imageUrl) {
+        this.id = propertyId;
+        this.title = title;
+        this.price = price;
+        this.area = area;
+        this.address = address;
+        this.type = type;
+        this.status = status;
+        this.imageUrl = imageUrl != null ? imageUrl : "default-image-url.jpg"; // Chỉ sử dụng giá trị mặc định nếu imageUrl là null
+        this.description = description;
     }
 
 
+    public Property1(int id, String title, String description, double price, String address, String type, String status, double area, String imageUrl) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.price = price;
+        this.address = address;
+        this.type = type;
+        this.status = status;
+        this.area = area;
+        this.imageUrl = imageUrl;
+    }
+
+    // Getter và Setter cho các trường
     public int getId() {
         return id;
     }
@@ -113,19 +166,23 @@ public class Property1 {
         this.posterId = posterId;
     }
 
+    // Constructor mặc định
     public Property1() {
-
     }
 
-    public Property1(String title, double price, String address, double area, String imageUrl, String description) {
+    @Override
+    public String toString() {
+        return "Property1{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", price=" + price +
+                ", area=" + area +
+                ", address='" + address + '\'' +
+                ", type='" + type + '\'' +
+                ", status='" + status + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", description='" + description + '\'' +
+                ", posterId=" + posterId +
+                '}';
     }
-
-    public Property1(int propertyId, String title, double price, double area, String address, String type, String status, String imageUrl) {
-    }
-
-    public Property1(int propertyId, String title, double price, String address, double area, String imageUrl) {
-    }
-
-
 }
-

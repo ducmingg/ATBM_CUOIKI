@@ -13,7 +13,7 @@
     Property1 property = propertyDAO.getPropertyById(Integer.parseInt(propertyId));
 
     if (property == null) {
-        out.print("Không tìm thấy bất động sản.");
+        response.sendRedirect("error.jsp");  // Chuyển hướng nếu không tìm thấy bất động sản
         return;
     }
 %>
@@ -93,16 +93,39 @@
         .cancel-link:hover {
             text-decoration: underline;
         }
+
+        .image-preview {
+            max-width: 100%;
+            max-height: 200px;
+            margin-bottom: 15px;
+        }
+        .edit-thumbnail-link {
+            color: #007bff; /* Màu chữ xanh dương */
+            text-decoration: none; /* Xóa gạch chân */
+            font-size: 16px; /* Kích thước chữ */
+            font-weight: bold; /* Chữ đậm */
+            display: inline-block; /* Đảm bảo thẻ <a> có thể canh chỉnh */
+            margin-top: 10px; /* Khoảng cách phía trên */
+            padding: 5px 10px; /* Thêm khoảng cách bên trong */
+            border: 1px solid #007bff; /* Viền màu xanh dương */
+            border-radius: 5px; /* Bo góc */
+            transition: all 0.3s ease; /* Hiệu ứng chuyển động khi hover */
+        }
+
+        /* Hover effect khi di chuột vào */
+        .edit-thumbnail-link:hover {
+            background-color: #007bff; /* Màu nền khi hover */
+            color: white; /* Màu chữ khi hover */
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h2>Chỉnh sửa Bất Động Sản</h2>
-    <form action="EditPropertyServlet" method="POST">
-        <!-- Hidden fields to pass property ID and action type -->
-        <input type="hidden" name="property_id" value="<%= property.getId() %>">
-        <input type="hidden" name="action" value="update">
+
+    <form action="editProperty" method="POST" enctype="multipart/form-data">
+        <%--@declare id="currentimage"--%><input type="hidden" name="property_id" value="<%= property.getId() %>">
 
         <label for="title">Tên:</label>
         <input type="text" id="title" name="title" value="<%= property.getTitle() %>" required>
@@ -116,8 +139,15 @@
         <label for="area">Diện tích (m²):</label>
         <input type="number" id="area" name="area" value="<%= property.getArea() %>" required>
 
-        <label for="imageUrl">URL Hình Ảnh:</label>
-        <input type="text" id="imageUrl" name="imageUrl" value="<%= property.getImageUrl() %>" required>
+        <!-- Hiển thị ảnh hiện tại nếu có -->
+        <label for="currentImage">Ảnh hiện tại:</label>
+        <img src="<%= property.getImageUrl() %>" alt="Current Image" class="image-preview">
+
+        <label for="image">Chọn hình ảnh mới:</label>
+        <input type="file" id="image" name="image">
+
+        <!-- Liên kết chỉnh sửa ảnh nhỏ -->
+        <a href="add-thumbnail.jsp?property_id=<%= property.getId() %>" class="edit-thumbnail-link">Chỉnh sửa hình ảnh nhỏ</a>
 
         <label for="description">Mô tả:</label>
         <textarea id="description" name="description" required><%= property.getDescription() %></textarea>

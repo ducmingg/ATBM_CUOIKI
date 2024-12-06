@@ -70,7 +70,7 @@
             <% } %>
 
             <!-- "Post Status" button, visible to both logged-in and non-logged-in users -->
-            <a href="post-status.html" class="btn">
+            <a href="create-poster.jsp" class="btn">
                 <h3>Đăng tin</h3>
             </a>
         </div>
@@ -284,14 +284,14 @@
                             <li><a href="#">Dự án chung cư</a></li>
                         </ul>
                     </li>
-                    <li><a href="news.html">Tin Tức</a>
+                    <li><a href="news.jsp">Tin Tức</a>
                         <ul>
                             <li><a href="#">Tin thị trường</a></li>
                             <li><a href="#">Xu hướng bất động sản</a></li>
                             <li><a href="#">Phân tích và đánh giá</a></li>
                         </ul>
                     </li>
-                    <li><a href="wiki.html">Wiki BĐS</a>
+                    <li><a href="wiki.jsp">Wiki BĐS</a>
                         <ul>
                             <li><a href="#">Mua bán</a></li>
                             <li><a href="#">Cho thuê</a></li>
@@ -417,8 +417,17 @@
 
 
 <div class="product-section">
-    <h2>Bất động sản dành cho bạn</h2>
-
+    <h2 style="text-align: center;">
+        Bất động sản dành cho bạn </h2>
+    <div style="text-align: center; font-size: 14px; margin-bottom: 20px;margin-left: 660px">
+        <a href="forsale" style="margin-right: 20px; text-decoration: none; color: darkred;">
+            Tin nhà đất bán mới nhất
+        </a>
+        |
+        <a href="forrent" style="margin-left: 20px; text-decoration: none; color: darkred;">
+            Tin nhà đất cho thuê mới nhất
+        </a>
+    </div>
 
     <%
         String message = (String) session.getAttribute("message");
@@ -525,12 +534,16 @@
         <%
             List<Property> properties = (List<Property>) request.getAttribute("properties");
             if (properties != null && !properties.isEmpty()) {
-                int index = 0;
-                for (Property property : properties) {
+                int index = properties.size() - 1;  // Lấy chỉ số cuối cùng của danh sách
+                for (int i = index; i >= 0; i--) {
+                    Property property = properties.get(i);
+
+                    // Kiểm tra status của sản phẩm, chỉ lấy các sản phẩm có status khác "0"
+                    if (!"0".equals(property.getStatus())) {
         %>
-        <div class="product-item" <%= index >= 8 ? "style='display: none;'" : "" %> >
-           <span onclick="location.href='property-detail.jsp?id=<%= property.getId() %>'"
-                 style="cursor: pointer; color: blue; text-decoration: none;">
+        <div class="product-item" <%= i >= 8 ? "style='display: none;'" : "" %> >
+            <span onclick="location.href='property-detail.jsp?id=<%= property.getId() %>'"
+                  style="cursor: pointer; color: blue; text-decoration: none;">
                 <img src="<%= property.getImageUrl() %>" alt="<%= property.getTitle() %>" class="product-image">
                 <h3><%= property.getTitle() %></h3>
                 <p class="address">
@@ -545,7 +558,6 @@
                 </div>
             </span>
 
-            <!-- Form to add product to cart using a heart icon -->
             <form action="addToCart" method="post" style="display: inline;">
                 <input type="hidden" name="propertyId" value="<%= property.getId() %>">
                 <input type="hidden" name="title" value="<%= property.getTitle() %>">
@@ -553,15 +565,14 @@
                 <input type="hidden" name="area" value="<%= property.getArea() %>">
                 <input type="hidden" name="imageUrl" value="<%= property.getImageUrl() %>">
                 <input type="hidden" name="address" value="<%= property.getAddress() %>">
-
-                <!-- Heart icon as submit button -->
                 <button type="submit" class="heart-icon" style="border: none; background: transparent; padding: 0;">
                     <img src="jpg/heartred.png" alt="Heart Icon" class="heart-image">
+                    <span class="favorite-text">Bấm vào đây để lưu tin</span>
                 </button>
             </form>
         </div>
         <%
-                    index++;
+                    }
                 }
             }
         %>
@@ -616,6 +627,23 @@
     });
 </script>
 <style>
+    .favorite-text {
+        position: absolute;
+        bottom: -25px; /* Đưa văn bản xuống dưới trái tim */
+        left: 50%;
+        transform: translateX(-50%); /* Căn giữa văn bản với trái tim */
+        visibility: hidden; /* Ẩn văn bản mặc định */
+        background-color: rgba(0, 0, 0, 0.7);
+        color: #fff;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 12px;
+        white-space: nowrap; /* Ngừng việc gãy dòng */
+    }
+
+    .heart-icon:hover .favorite-text {
+        visibility: visible; /* Hiển thị khi hover vào icon trái tim */
+    }
     /* Basic styling */
     .featured-properties-section {
         max-width: 85%;
@@ -1071,177 +1099,7 @@
 
 </style>
 
-<%--<script>--%>
-<%--    let cartItems = JSON.parse(sessionStorage.getItem('cartItems')) || []; // Load cart from sessionStorage--%>
-<%--    let miniCartVisible = false; // Track mini cart visibility--%>
 
-<%--    // Fetch cart items from the database when the user logs in--%>
-<%--    const fetchCartItems = async () => {--%>
-<%--        const userId = sessionStorage.getItem('userId');--%>
-<%--        alert("Giá trị cuả userId là : " + userId);--%>
-<%--        if (userId) {--%>
-<%--            try {--%>
-<%--                const response = await fetch(`/getCartItems?userId=${userId}`);--%>
-<%--                const data = await response.json();--%>
-<%--                if (data.success) {--%>
-<%--                    cartItems = data.cartItems;--%>
-<%--                    updateSessionStorage();--%>
-<%--                    updateCartDisplay();--%>
-<%--                }--%>
-<%--            } catch (error) {--%>
-<%--                console.error("Failed to fetch cart items:", error);--%>
-<%--            }--%>
-<%--        }--%>
-<%--    };--%>
-
-
-<%--    const addToFavorites = async (id, title, price, area, imageUrl, address) => {--%>
-<%--        // Check if the item is already in the cart--%>
-<%--        if (cartItems.find(item => item.id === id)) {--%>
-<%--            alert("Bất động sản này đã được quan tâm!");--%>
-<%--        } else {--%>
-<%--            const product = { id, title, price: parseFloat(price), area, imageUrl, address, quantity: 1 };--%>
-<%--            cartItems.push(product);--%>
-<%--            updateSessionStorage();--%>
-<%--            updateCartDisplay();--%>
-<%--            showMiniCart();--%>
-
-<%--            try {--%>
-<%--                // Send the cart item to the server--%>
-<%--                const response = await fetch('/addToCart', {--%>
-<%--                    method: 'POST',--%>
-<%--                    headers: {--%>
-<%--                        'Content-Type': 'application/json'--%>
-<%--                    },--%>
-<%--                    body: JSON.stringify({--%>
-<%--                        userId: userId, // Ensure userId is passed correctly--%>
-<%--                        cartItem: product--%>
-<%--                    })--%>
-<%--                });--%>
-<%--                const result = await response.json();--%>
-
-<%--                if (result.success) {--%>
-<%--                    console.log("Cart item added successfully.");--%>
-<%--                } else {--%>
-<%--                    console.error("Error adding cart item:", result.message);--%>
-<%--                    alert("Error adding to cart: " + result.message);--%>
-<%--                }--%>
-<%--            } catch (error) {--%>
-<%--                console.error("Có lỗi xảy ra:", error);--%>
-<%--                alert("Có lỗi xảy ra khi thêm vào giỏ hàng.");--%>
-<%--            }--%>
-<%--        }--%>
-<%--    };--%>
-
-
-<%--    // const saveCartToDatabase = () => {--%>
-<%--    //     const userId = sessionStorage.getItem('userId');--%>
-<%--    //     if (userId) {--%>
-<%--    //         fetch('/saveCart', {--%>
-<%--    //             method: 'POST',--%>
-<%--    //             headers: { 'Content-Type': 'application/json' },--%>
-<%--    //             body: JSON.stringify({ userId, cartItems })--%>
-<%--    //         })--%>
-<%--    //             .then(response => response.json())--%>
-<%--    //             .then(data => {--%>
-<%--    //                 if (data.success) {--%>
-<%--    //                     console.log("Giỏ hàng đã được lưu vào cơ sở dữ liệu.");--%>
-<%--    //                 } else {--%>
-<%--    //                     console.error("Lỗi khi lưu giỏ hàng.");--%>
-<%--    //                 }--%>
-<%--    //             })--%>
-<%--    //             .catch(error => console.error("Có lỗi xảy ra:", error));--%>
-<%--    //     }--%>
-<%--    // };--%>
-
-<%--    // Update session storage with the latest cart data--%>
-<%--    const updateSessionStorage = () => {--%>
-<%--        sessionStorage.setItem('cartItems', JSON.stringify(cartItems));--%>
-<%--    };--%>
-
-<%--    // Redirect to the cart page--%>
-<%--    const goToCart = () => {--%>
-<%--        window.location.href = 'cart.jsp';--%>
-<%--    };--%>
-
-<%--    // Update the cart display in the mini cart--%>
-<%--    const updateCartDisplay = () => {--%>
-<%--        const itemCount = document.querySelector('.item-count');--%>
-<%--        const cartList = document.getElementById('cart-items');--%>
-<%--        cartList.innerHTML = cartItems.length === 0 ? '<li>Bạn chưa có bất động sản đã lưu.</li>' : '';--%>
-
-<%--        cartItems.forEach(item => {--%>
-<%--            const listItem = document.createElement('li');--%>
-<%--            listItem.innerHTML = `--%>
-<%--                <img src="${item.imageUrl}" alt="${item.title}" width="40" height="40">--%>
-<%--                <div class="item-info">--%>
-<%--                    <h4>${item.title}</h4>--%>
-<%--                    <p>Địa chỉ: ${item.address}</p>--%>
-<%--                    <p>Diện tích: ${item.area} m²</p>--%>
-<%--                    <span>Giá: ${item.price.toLocaleString()} tỷ</span>--%>
-<%--                </div>--%>
-<%--                <button onclick="removeFromCart('${item.id}')">Xóa</button>--%>
-<%--            `;--%>
-<%--            cartList.appendChild(listItem);--%>
-<%--        });--%>
-
-<%--        itemCount.innerText = cartItems.length; // Update item count--%>
-<%--    };--%>
-
-<%--    // Show mini cart when adding an item--%>
-<%--    const showMiniCart = () => {--%>
-<%--        document.querySelector('.mini-cart').style.display = 'block';--%>
-<%--        updateCartDisplay();--%>
-<%--    };--%>
-
-<%--    // Remove item from the cart--%>
-<%--    const removeFromCart = id => {--%>
-<%--        cartItems = cartItems.filter(item => item.id !== id);--%>
-<%--        updateSessionStorage();--%>
-<%--        updateCartDisplay();--%>
-<%--    };--%>
-
-<%--    // Logout function that clears cart and session data--%>
-<%--    const logout = () => {--%>
-<%--        sessionStorage.removeItem('cartItems');--%>
-<%--        const userId = sessionStorage.getItem('userId');--%>
-<%--        if (userId) {--%>
-<%--            fetch('/logout', {--%>
-<%--                method: 'POST',--%>
-<%--                headers: {'Content-Type': 'application/json'},--%>
-<%--                body: JSON.stringify({userId})--%>
-<%--            })--%>
-<%--                .then(response => {--%>
-<%--                    if (response.ok) {--%>
-<%--                        console.log("Giỏ hàng đã được xóa khỏi cơ sở dữ liệu.");--%>
-<%--                    } else {--%>
-<%--                        console.error("Không thể xóa giỏ hàng từ cơ sở dữ liệu.");--%>
-<%--                    }--%>
-<%--                })--%>
-<%--                .catch(error => console.error("Có lỗi xảy ra khi xóa giỏ hàng:", error));--%>
-<%--        }--%>
-<%--        window.location.href = 'homes';--%>
-<%--    };--%>
-
-<%--    // Toggle mini cart visibility--%>
-<%--    const toggleMiniCart = () => {--%>
-<%--        const miniCart = document.querySelector('.mini-cart');--%>
-<%--        miniCartVisible = !miniCartVisible;--%>
-<%--        miniCart.style.display = miniCartVisible ? 'block' : 'none';--%>
-<%--        updateCartDisplay();--%>
-<%--    };--%>
-
-<%--    // Event listeners--%>
-<%--    document.querySelector("#logoutButton").addEventListener("click", logout);--%>
-<%--    document.addEventListener("DOMContentLoaded", () => {--%>
-<%--        const userId = sessionStorage.getItem("userId");--%>
-<%--        if (userId) {--%>
-<%--            fetchCartItems(); // Load cart items if user is logged in--%>
-<%--        }--%>
-<%--        updateCartDisplay(); // Initialize cart display on page load--%>
-<%--    });--%>
-
-<%--</script>--%>
 <style>
     .footer-top {
         display: flex; /* Sử dụng flexbox để căn chỉnh */

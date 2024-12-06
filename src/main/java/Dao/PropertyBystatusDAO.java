@@ -52,4 +52,23 @@ public class PropertyBystatusDAO {
         }
         return properties;  // Trả về danh sách bất động sản
     }
+    public int countPropertiesByStatus(int status) {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM properties WHERE status = ?";  // Truy vấn SQL để đếm số lượng bất động sản
+
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            preparedStatement.setInt(1, status);  // Thiết lập giá trị cho tham số status
+            ResultSet resultSet = preparedStatement.executeQuery();  // Thực thi truy vấn
+
+            if (resultSet.next()) {
+                count = resultSet.getInt(1);  // Lấy số lượng bất động sản từ kết quả truy vấn
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();  // In ra lỗi nếu có
+        }
+        return count;  // Trả về số lượng bất động sản
+    }
+
 }

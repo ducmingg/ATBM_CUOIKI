@@ -1,5 +1,7 @@
 <%@ page import="Entity.PropertyProject" %>
 <%@ page import="java.util.List" %>
+<%@ page import="Entity.Property1" %>
+<%@ page import="Dao.PropertyBystatusDAO" %>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -520,6 +522,13 @@
         ⟲
     </button>
 </div>
+<%
+
+    PropertyBystatusDAO propertyDAO = new PropertyBystatusDAO();
+
+
+    List<Property1> properties = propertyDAO.getPropertiesByStatus(3);
+%>
 
 <div class="container">
     <!-- Phần danh sách dự án -->
@@ -527,8 +536,7 @@
         <div class="project-header">
             <H4>Dự án/ Dự án BDS toàn quốc</H4>
             <h2>Dự án toàn quốc</h2>
-            <span>Hiện đang có 5,710 dự án</span>
-        </div>
+            <p>Hiện có <strong><%= propertyDAO.countPropertiesByStatus(3) %></strong> bất động sản.</p>        </div>
 
 
         <div id="project-container">

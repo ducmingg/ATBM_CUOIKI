@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thêm Sản Phẩm Mới</title>
     <style>
-        /* Styling the form layout */
+
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -61,11 +61,8 @@
 
 <div class="container">
     <h1>Thêm Sản Phẩm Mới</h1>
-    <form action="AddPropertyServlet" method="POST">
-        <!-- Hidden input to set action type -->
-        <input type="hidden" name="action" value="create">
-
-        <label for="title">Tên:</label>
+    <form action="addProperty" method="POST" enctype="multipart/form-data">
+        <%--@declare id="additional_images"--%><label for="title">Tên:</label>
         <input type="text" id="title" name="title" required>
 
         <label for="price">Giá:</label>
@@ -77,8 +74,19 @@
         <label for="area">Diện tích (m²):</label>
         <input type="number" id="area" name="area" required>
 
-        <label for="imageUrl">URL Hình Ảnh:</label>
-        <input type="text" id="imageUrl" name="imageUrl" required>
+        <label for="file">Chọn hình ảnh chính:</label>
+        <input type="file" id="file" name="file" accept="image/*" required onchange="previewMainImage(event)">
+
+        <!-- Hiển thị ảnh chính đã chọn -->
+        <div>
+            <img id="mainImage" src="#" alt="Preview Image" style="max-width: 200px; display: none;"/>
+        </div>
+
+        <label for="additional_images">Chọn hình ảnh bổ sung:</label>
+        <input type="file" name="additional_images" accept="image/*" multiple onchange="previewAdditionalImages(event)">
+
+        <!-- Hiển thị các hình ảnh bổ sung đã chọn -->
+        <div id="additionalImagesPreview"></div>
 
         <label for="description">Mô tả:</label>
         <textarea id="description" name="description" required></textarea>
@@ -91,6 +99,49 @@
 
         <button type="submit">Thêm Sản Phẩm</button>
     </form>
+
+    <script>
+        // Hàm xem trước hình ảnh chính
+        function previewMainImage(event) {
+            var file = event.target.files[0];  // Lấy file ảnh
+            var reader = new FileReader();
+
+            reader.onload = function(e) {
+                var imgElement = document.getElementById('mainImage');
+                imgElement.style.display = 'block';  // Hiển thị ảnh
+                imgElement.src = e.target.result;   // Cập nhật nguồn ảnh
+            }
+
+            if (file) {
+                reader.readAsDataURL(file);  // Đọc file và hiển thị
+            }
+        }
+
+        // Hàm xem trước các hình ảnh phụ
+        function previewAdditionalImages(event) {
+            var files = event.target.files;
+            var previewContainer = document.getElementById('additionalImagesPreview');
+            previewContainer.innerHTML = ''; // Clear previous previews
+
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                    var imgElement = document.createElement('img');
+                    imgElement.src = e.target.result;
+                    imgElement.style.maxWidth = '100px';
+                    imgElement.style.maxHeight = '100px';
+                    imgElement.style.marginRight = '10px';
+                    previewContainer.appendChild(imgElement);  // Thêm ảnh vào preview container
+                }
+
+                if (file) {
+                    reader.readAsDataURL(file);  // Đọc file và hiển thị
+                }
+            }
+        }
+    </script>
 </div>
 
 </body>

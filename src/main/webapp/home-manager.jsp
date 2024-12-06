@@ -12,6 +12,8 @@
 <%@ page import="java.util.List" %>
 <%@ page import="Entity.Property1" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
 
 <!DOCTYPE html>
 <html lang="vi">
@@ -23,6 +25,29 @@
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
     <style>
+        .btn-enable {
+            background-color: green;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-disable {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-enable:hover, .btn-disable:hover {
+            opacity: 0.8;
+        }
+
+
         /* CSS giữ nguyên như bạn đã tạo */
         body {
             font-family: Arial, sans-serif;
@@ -128,10 +153,10 @@
             <li><a href="admin.jsp">Main Dashboard</a></li>
             <li><a href="users">Quản lý tài khoản</a></li>
             <li><a href="home-manager">Quản lý sản phẩm</a></li>
-            <li><a href="top-property.jsp">Quản lý sản phẩm bán chạy</a></li>
+<%--            <li><a href="top-property.jsp">Quản lý sản phẩm bán chạy</a></li>--%>
             <li><a href="home-manager">Quản lý nhà phân phối</a></li>
-            <li><a href="top-user-manager">Quản lý top 5 khách</a></li>
-            <li><a href="top-employee-manager.jsp">Quản lý top 5 nhân viên</a></li>
+<%--            <li><a href="top-user-manager">Quản lý top 5 khách</a></li>--%>
+<%--            <li><a href="top-employee-manager.jsp">Quản lý top 5 nhân viên</a></li>--%>
             <li><a href="orders">Quản lý đơn đặt hàng</a></li>
             <li><a href="comments-manager.jsp">Quản lý bình luận</a></li>
 
@@ -154,6 +179,7 @@
                 <th>Diện tích (m²)</th>
                 <th>Hình ảnh</th>
                 <th>Thao tác</th>
+                <th>Vô hiệu hóa</th> <!-- Cột mới cho nút Vô hiệu hóa -->
             </tr>
             </thead>
             <tbody>
@@ -163,17 +189,13 @@
                     for (Property1 property : properties) {
             %>
             <tr>
-                <td><%= property.getId() %>
-                </td>
-                <td><%= property.getTitle() %>
-                </td>
+                <td><%= property.getId() %></td>
+                <td><%= property.getTitle() %></td>
                 <td><%= property.getPrice() %> tỷ</td>
-                <td><%= property.getAddress() %>
-                </td>
+                <td><%= property.getAddress() %></td>
                 <td><%= property.getArea() %> m²</td>
                 <td>
-                    <img src="<%= property.getImageUrl() != null ? property.getImageUrl() : "default.jpg" %>"
-                         alt="Image" width="100">
+                    <img src="<%= property.getImageUrl() != null ? property.getImageUrl() : "default.jpg" %>" alt="Image" width="100">
                 </td>
                 <td>
                     <a href="view-property.jsp?property_id=<%= property.getId() %>">Xem</a> |
@@ -186,14 +208,28 @@
                     </form>
                 </td>
 
+                <!-- Thêm cột cho Vô hiệu hóa -->
+                <td>
+                    <form action="properties" method="POST" style="display: inline;">
+                        <input type="hidden" name="id" value="<%= property.getId() %>">
+                        <input type="hidden" name="action" value="<%= property.getStatus().equals("0") ? "enable" : "disable" %>"> <!-- Đặt action enable hoặc disable -->
+                        <input type="hidden" name="status" value="<%= property.getStatus() %>"> <!-- Trạng thái bất động sản -->
 
+                        <!-- Nút Vô hiệu hóa / Kích hoạt -->
+                        <button type="submit" class="<%= property.getStatus().equals("0") ? "btn-enable" : "btn-disable" %>" onclick="return confirm('Bạn có chắc chắn muốn <%= property.getStatus().equals("0") ? "kích hoạt" : "vô hiệu hóa" %> bất động sản này không?')">
+                            <i class="fa <%= property.getStatus().equals("0") ? "fa-check-circle" : "fa-ban" %>"></i>
+                            <%= property.getStatus().equals("0") ? "Kích hoạt" : "Vô hiệu hóa" %>
+                        </button>
+                    </form>
+                </td>
             </tr>
             <%
+
                 }
             } else {
             %>
             <tr>
-                <td colspan="7" style="text-align: center;">Không có bất động sản nào.</td>
+                <td colspan="8" style="text-align: center;">Không có bất động sản nào.</td>
             </tr>
             <%
                 }

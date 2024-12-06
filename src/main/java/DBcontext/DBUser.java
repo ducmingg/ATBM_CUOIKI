@@ -14,7 +14,7 @@ public class DBUser {
         String dbURL = "jdbc:mysql://localhost:3306/";
         String dbName = "webbds";
         String dbUsername = "root";  // Tài khoản MySQL của bạn
-        String dbPassword = "123456";  // Mật khẩu MySQL của bạn
+        String dbPassword = "root";  // Mật khẩu MySQL của bạn
 
         // Tải driver MySQL
         Class.forName(dbDriver);
@@ -23,34 +23,6 @@ public class DBUser {
         return DriverManager.getConnection(dbURL + dbName, dbUsername, dbPassword);
     }
 
-    public static void main(String[] args) {
-        try {
-
-            Connection conn = DbConnection1.initializeDatabase();
-            Statement stmt = conn.createStatement();
-
-
-            String query = "SELECT * FROM users WHERE username = ? AND password = ?";
-            ResultSet rs = stmt.executeQuery(query);
-            List<User> users = new ArrayList<>();
-            while (rs.next()) {
-                User u = new User();
-                System.out.println("Ket noi thanh cong");
-                System.out.println(rs.getString("username"));
-                System.out.println(rs.getString("password"));
-                users.add(u);
-                System.out.println(users);
-            }
-
-
-            rs.close();
-            stmt.close();
-            conn.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
 }
 
 

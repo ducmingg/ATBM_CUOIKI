@@ -105,9 +105,12 @@
     </div>
 
     <div class="property-field">
-        <span class="property-label">URL Hình Ảnh:</span>
-        <span class="property-value"><a href="<%= property.getImageUrl() %>" target="_blank">Xem hình ảnh</a></span>
+        <span class="property-label">Hình Ảnh:</span>
+        <span class="property-value">
+        <img src="<%= property.getImageUrl() %>" alt="Hình ảnh Bất Động Sản" style="max-width: 100%; height: auto;">
+    </span>
     </div>
+
 
     <div class="property-field">
         <span class="property-label">Mô tả:</span>
@@ -121,8 +124,32 @@
 
     <div class="property-field">
         <span class="property-label">Trạng thái:</span>
-        <span class="property-value"><%= property.getStatus() %></span>
+        <span class="property-value">
+        <%
+            String statusDescription = "";
+            String status = property.getStatus(); // Lấy giá trị trạng thái
+
+            // Kiểm tra trạng thái và mô tả
+            switch (status) {
+                case "1":
+                    statusDescription = "Nhà đất bán";
+                    break;
+                case "2":
+                    statusDescription = "Nhà đất cho thuê";
+                    break;
+                case "3":
+                    statusDescription = "Dự án";
+                    break;
+
+                default:
+                    statusDescription = "Trạng thái không xác định";
+                    break;
+            }
+        %>
+        <%= statusDescription %>
+    </span>
     </div>
+
 
     <a href="home-manager" class="back-link">Quay lại</a>
 </div>
