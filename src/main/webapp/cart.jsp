@@ -372,33 +372,34 @@
         <% } %>
     </ul>
 
-    <button id="checkout-button" class="btn btn-success w-100 mt-3" onclick="submitOrderForm()">Đặt lịch</button>
+    <button id="checkout-button" class="btn btn-success w-100 mt-3" onclick="window.location.href='checkout.jsp';">Đặt lịch</button>
 
-    <form id="orderForm" action="createOrder" method="POST" style="display:none;">
-        <input type="hidden" name="userId" value="<%= userId %>">
-        <input type="hidden" name="username" value="<%= username %>">
 
-        <% for (CartItem item : cartItems) { %>
-        <input type="hidden" name="propertyId" value="<%= item.getPropertyId() %>">
-        <input type="hidden" name="title" value="<%= item.getTitle() %>">
-        <input type="hidden" name="price" value="<%= item.getPrice() %>">
-        <input type="hidden" name="area" value="<%= item.getArea() %>">
-        <input type="hidden" name="address" value="<%= item.getAddress() %>">
-        <% } %>
-        <input type="hidden" name="orderDate" value="<%= new java.util.Date() %>">
-    </form>
+<%--    <form id="orderForm" action="createOrder" method="POST" style="display:none;">--%>
+<%--        <input type="hidden" name="userId" value="<%= userId %>">--%>
+<%--        <input type="hidden" name="username" value="<%= username %>">--%>
 
-    <script>
-        function submitOrderForm() {
-            const emptyCartMessage = document.querySelector('.list-group-item.text-muted');
+<%--        <% for (CartItem item : cartItems) { %>--%>
+<%--        <input type="hidden" name="propertyId" value="<%= item.getPropertyId() %>">--%>
+<%--        <input type="hidden" name="title" value="<%= item.getTitle() %>">--%>
+<%--        <input type="hidden" name="price" value="<%= item.getPrice() %>">--%>
+<%--        <input type="hidden" name="area" value="<%= item.getArea() %>">--%>
+<%--        <input type="hidden" name="address" value="<%= item.getAddress() %>">--%>
+<%--        <% } %>--%>
+<%--        <input type="hidden" name="orderDate" value="<%= new java.util.Date() %>">--%>
+<%--    </form>--%>
 
-            if (emptyCartMessage) {
-                alert('Giỏ hàng của bạn hiện tại không có sản phẩm. Vui lòng thêm sản phẩm vào giỏ hàng để tiếp tục.');
-            } else {
-                document.getElementById('orderForm').submit();
-            }
-        }
-    </script>
+<%--    <script>--%>
+<%--        function submitOrderForm() {--%>
+<%--            const emptyCartMessage = document.querySelector('.list-group-item.text-muted');--%>
+
+<%--            if (emptyCartMessage) {--%>
+<%--                alert('Giỏ hàng của bạn hiện tại không có sản phẩm. Vui lòng thêm sản phẩm vào giỏ hàng để tiếp tục.');--%>
+<%--            } else {--%>
+<%--                document.getElementById('orderForm').submit();--%>
+<%--            }--%>
+<%--        }--%>
+<%--    </script>--%>
 
 </div>
 

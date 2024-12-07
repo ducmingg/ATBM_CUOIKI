@@ -1,5 +1,7 @@
 package Dao;
 
+import DBcontext.Database;
+import Entity.OrderInfo;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
@@ -14,7 +16,8 @@ import java.sql.*;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Base64;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class DigitalSignatureDAO {
     public KeyPair generateKey() throws Exception {
@@ -80,11 +83,7 @@ public class DigitalSignatureDAO {
     }
 
     private Connection getConnection() throws SQLException {
-
-        String url = "jdbc:mysql://localhost:3306/webbds";
-        String user = "root";
-        String password = "root";
-        return DriverManager.getConnection(url, user, password);
+        return Database.getConnection();
     }
 
     public boolean doesUserExist(int userId) {
@@ -122,7 +121,83 @@ public class DigitalSignatureDAO {
         }
     }
 
+    public int getCartId(int user_id) {
+        String sql = "select cart_id from cart where user_id = ?";
+        int cart_id = 0; // Khởi tạo giá trị mặc định
+        try (Connection connection = getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, user_id); // Gán tham số cho câu lệnh SQL
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                cart_id = Integer.parseInt(rs.getString("cart_id")); // Lấy giá trị của cột `cart_id`
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return cart_id; // Trả về `cart_id` hoặc null nếu không có kết quả
+    }
 
+    public String getInfo(List<OrderInfo> orders) {
+        Map<String, List<List<Object>>> groups = orders.stream()
+                .collect(Collectors.groupingBy(
+                        order -> order.getUser_id() + "-" + order.getCart_id() + "-" + order.getDt_buy(), // Khóa
+                        Collectors.mapping( // Chuyển đổi giá trị
+                                order -> Arrays.asList(order.getProperty_id(), order.getPrice(), order.getQuantity()), // Lưu các trường còn lại trong danh sách
+                                Collectors.toList() // Thu thập thành danh sách
+                        )
+                ));
+
+        StringBuilder result = new StringBuilder();
+        for(Map.Entry<String,List<List<Object>>> i : groups.entrySet()){
+            String key = i.getKey();
+            List<List<Object>> val = i.getValue();
+            result.append(key);
+            for (List<Object> ee:val) {
+                for (Object e: ee) {
+                    result.append(e);
+                }
+            }
+        }
+
+        // Trả về chuỗi kết quả
+        return result.toString();
+    }
+
+    public void insertSignature(String sig,int orderId) {
+        String sql  = "update orders set signature  = ? where order_id = ?";
+        try (Connection connection = getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, sig); // Gán tham số cho câu lệnh SQL
+            stmt.setInt(2,orderId);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public String getCartItemInfo(int user_id) {
+        List<OrderInfo> orders = new ArrayList<>();
+        String sql = "SELECT u.id as user_id,c.cart_id,ci.property_id,ci.price,ci.quantity FROM users u " +
+                "join cart c on u.id = c.user_id " +
+                "join cartitems ci on c.cart_id = ci.cart_id " +
+                "where u.id = ?";
+        try (Connection connection = getConnection();
+            PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, user_id); // Gán tham số cho câu lệnh SQL
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                int userId = rs.getInt(1);
+                int cartId = rs.getInt(2);
+                int propertyId = rs.getInt(3);
+                double price = rs.getDouble(4);
+                int quantity = rs.getInt(5);
+                orders.add(new OrderInfo(user_id,cartId,propertyId,price,quantity));
+                System.out.println(new OrderInfo(user_id,cartId,propertyId,price,quantity).toString());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return getInfo(orders);
+    }
     public static void main(String[] args) throws Exception {
         DigitalSignatureDAO ds = new DigitalSignatureDAO();
 //        KeyPair keyPair = ds.generateKey();
@@ -133,5 +208,7 @@ public class DigitalSignatureDAO {
 //        System.out.println(base64PrivateKey);
 //        System.out.println(base64PublicKey);
 //        ds.addPublicKey("publikey");
+//        ds.getCartItemInfo(32);
+//        System.out.println(ds.getCartItemInfo(32));
     }
 }

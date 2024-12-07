@@ -1,3 +1,7 @@
+<%@ page import="Entity.CartItem" %>
+<%@ page import="java.util.List" %>
+<%@ page import="Dao.CartItemDAO" %>
+<%@ page import="java.sql.SQLException" %>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -79,30 +83,76 @@
 </head>
 <body>
 <div class="appointment-form">
-    <h2>Nhập thông tin đặt lịch</h2>
-    <form id="schedule-form" method="post" action="schedule-appointment">
-        <div class="form-group">
-            <label for="address">Địa chỉ:</label>
-            <input type="text" id="address" name="address" required>
-        </div>
-        <div class="form-group">
-            <label for="phone">Số điện thoại:</label>
-            <input type="text" id="phone" name="phone" required>
-        </div>
 
+    <%
+        String username = (String) session.getAttribute("username");
+        Integer userId = (Integer) session.getAttribute("userId");
+        List<CartItem> cartItems = null;
+
+        if (userId != null) {
+            CartItemDAO cartItemDAO = new CartItemDAO();
+            try {
+                cartItems = cartItemDAO.getCartItemsByUserId(userId);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    %>
+    <h2>Nhập thông tin đặt lịch</h2>
+
+        <input class="info" type="text" name="info">
+        <button type="submit" id="btn_getinfo" class="submit-btn">Tải đơn hàng xuống</button>
+    <form id="schedule-form" method="post" action="schedule-appointment">
+
+    </form>
+
+    <form id="orderForm" action="createOrder" method="POST">
+        <input type="hidden" name="userId" value="<%= userId %>">
+        <input type="hidden" name="username" value="<%= username %>">
+
+        <% for (CartItem item : cartItems) { %>
+        <input type="hidden" name="propertyId" value="<%= item.getPropertyId() %>">
+        <input type="hidden" name="title" value="<%= item.getTitle() %>">
+        <input type="hidden" name="price" value="<%= item.getPrice() %>">
+        <input type="hidden" name="area" value="<%= item.getArea() %>">
+        <input type="hidden" name="address" value="<%= item.getAddress() %>">
+        <% } %>
+        <input type="hidden" name="orderDate" value="<%= new java.util.Date() %>">
         <div class="form-group">
-            <label for="appointment-date">Ngày hẹn:</label>
-            <input type="date" id="appointment-date" name="appointmentDate" required>
+            <label for="address">Nhập chữ kí của đơn hàng:</label>
+            <input type="text" id="address" name="signature" required>
         </div>
-        <div class="form-group">
-            <label for="appointment-time">Giờ hẹn:</label>
-            <input type="time" id="appointment-time" name="appointmentTime" required>
-        </div>
-        <div id="product-list"></div>
         <button type="submit" class="submit-btn">Xác nhận đặt lịch</button>
     </form>
+
+
 </div>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    document.getElementById("btn_getinfo").addEventListener('click',(e)=>{
+        $.ajax({
+            url:"/get_order_info",
+            type:"GET",
+            success:(resp)=>{
+                $(".info").val(resp)
+                // const infoVal = $(".info").val();  // Lấy giá trị của input .info
+                const blob = new Blob([resp],{type:'text/plain'});
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'products.txt';
+                link.click();
+
+                URL.revokeObjectURL(url);
+            }
+        })
+
+
+
+    })
+
+</script>
 <script>
     const cartItems = JSON.parse(sessionStorage.getItem('cartItems')) || [];
     const productListDiv = document.getElementById('product-list');

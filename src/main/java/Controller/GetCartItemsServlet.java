@@ -30,7 +30,7 @@ public class GetCartItemsServlet extends HttpServlet {
         // Kết nối đến cơ sở dữ liệu
         String url = "jdbc:mysql://localhost:3306/webbds";
         String dbUser = "root";
-        String dbPassword = "123456";
+        String dbPassword = "root";
         Connection conn = null;
 
         try {

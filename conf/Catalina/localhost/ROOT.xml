@@ -45,5 +45,6 @@
     <PostResources base="C:/Users/voduc/.m2/repository/com/google/oauth-client/google-oauth-client-java6/1.32.1/google-oauth-client-java6-1.32.1.jar" className="org.apache.catalina.webresources.FileResourceSet" webAppMount="/WEB-INF/lib/google-oauth-client-java6-1.32.1.jar"/>
     <PostResources base="C:/Users/voduc/.m2/repository/com/google/api-client/google-api-client-gson/1.32.1/google-api-client-gson-1.32.1.jar" className="org.apache.catalina.webresources.FileResourceSet" webAppMount="/WEB-INF/lib/google-api-client-gson-1.32.1.jar"/>
     <PostResources base="C:/Users/voduc/.m2/repository/com/google/code/gson/gson/2.8.8/gson-2.8.8.jar" className="org.apache.catalina.webresources.FileResourceSet" webAppMount="/WEB-INF/lib/gson-2.8.8.jar"/>
+    <PostResources base="C:/Users/voduc/.m2/repository/org/webjars/jquery/3.7.1/jquery-3.7.1.jar" className="org.apache.catalina.webresources.FileResourceSet" webAppMount="/WEB-INF/lib/jquery-3.7.1.jar"/>
   </Resources>
 </Context>

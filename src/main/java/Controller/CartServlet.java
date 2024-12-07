@@ -20,7 +20,7 @@ public class CartServlet extends HttpServlet {
     private Connection getConnection() throws SQLException {
         String url = "jdbc:mysql://localhost:3306/webbds";
         String dbUser = "root";
-        String dbPassword = "123456";
+        String dbPassword = "root";
         return DriverManager.getConnection(url, dbUser, dbPassword);
     }
 

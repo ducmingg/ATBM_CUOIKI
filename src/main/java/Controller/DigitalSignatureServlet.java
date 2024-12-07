@@ -60,7 +60,7 @@ public class DigitalSignatureServlet extends HttpServlet {
             req.setAttribute("message", "Khóa đã được gửi thành công.");
 //            RequestDispatcher dispatcher = req.getRequestDispatcher("welcome.jsp");
 //            dispatcher.forward(req, resp);
-            resp.sendRedirect("welcome.jsp");
+            resp.sendRedirect("welcome");
 
         }
     }
