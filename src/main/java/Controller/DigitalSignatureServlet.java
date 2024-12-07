@@ -58,8 +58,9 @@ public class DigitalSignatureServlet extends HttpServlet {
             dao.addPublicKey(userId,publicKey);
             // Thông báo sau khi gửi
             req.setAttribute("message", "Khóa đã được gửi thành công.");
-            RequestDispatcher dispatcher = req.getRequestDispatcher("create-key.jsp");
-            dispatcher.forward(req, resp);
+//            RequestDispatcher dispatcher = req.getRequestDispatcher("welcome.jsp");
+//            dispatcher.forward(req, resp);
+            resp.sendRedirect("welcome.jsp");
 
         }
     }

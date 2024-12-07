@@ -10,10 +10,7 @@ import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -89,17 +86,42 @@ public class DigitalSignatureDAO {
         String password = "root";
         return DriverManager.getConnection(url, user, password);
     }
-    public void addPublicKey(int userId,String publickey) {
-        String sql = "insert into digital_signature (user_id, public_key, dt_create, dt_expired) values (?, ?, CURRENT_TIMESTAMP, DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 7 DAY))";
+
+    public boolean doesUserExist(int userId) {
+        String sql = "SELECT 1 FROM digital_signature WHERE user_id = ?";
         try (Connection connection = getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, userId);
-            stmt.setString(2, publickey);  // public_key
+            ResultSet rs = stmt.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public void addPublicKey(int userId, String publickey) {
+        String sqlInsert = "INSERT INTO digital_signature (user_id, public_key, dt_create, dt_expired) VALUES (?, ?, CURRENT_TIMESTAMP, DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 7 DAY))";
+        String sqlUpdate = "UPDATE digital_signature SET public_key = ?, dt_create = CURRENT_TIMESTAMP, dt_expired = DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 7 DAY) WHERE user_id = ?";
+
+        boolean userExists = doesUserExist(userId);
+        String sql = userExists ? sqlUpdate : sqlInsert;
+
+        try (Connection connection = getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+            if (userExists) {
+                stmt.setString(1, publickey);
+                stmt.setInt(2, userId);
+            } else {
+                stmt.setInt(1, userId);
+                stmt.setString(2, publickey);
+            }
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
 
     public static void main(String[] args) throws Exception {
         DigitalSignatureDAO ds = new DigitalSignatureDAO();
