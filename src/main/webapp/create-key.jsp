@@ -26,14 +26,9 @@
                 <button type="button" id="download-private-key-btn">Tải Khóa Riêng Xuống</button>
             </div>
         </div>
-<%--        <div class="file-upload-section">--%>
-<%--            <label for="upload-key">Tải khóa từ tệp (txt):</label>--%>
-<%--            <input type="file" id="upload-key" accept=".txt">--%>
-<%--        </div>--%>
         <div class="file-upload-section">
             <label for="upload-public-key">Tải khóa công khai (Public Key) từ tệp:</label>
             <input type="file" id="upload-public-key" name="uploadPublicKey" accept=".txt">
-<%--            <button type="submit" name="action" value="uploadPublicKey">Tải Lên</button>--%>
         </div>
         <div class="public-key-upload">
             <button type="submit" name="action" value="uploadPublicKey">Tải Lên</button>
