@@ -1,5 +1,6 @@
 <%@ page import="Entity.Order" %>
 <%@ page import="java.util.List" %>
+<%@ page import="Entity.Notification" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
 <!DOCTYPE html>
@@ -14,29 +15,37 @@
     <style>
         .bell-icon {
             font-size: 24px;
-            color: #4b5563; /* Màu mặc định của chuông */
+            color: #4b5563;
             cursor: pointer;
             transition: color 0.3s, transform 0.2s, box-shadow 0.3s;
-            margin-left: 50px; /* Khoảng cách bên ngoài chuông */
+            margin-left: 50px;
         }
 
         .bell-icon:hover {
-            color: #4CAF50; /* Màu khi hover */
-            transform: scale(1.2); /* Phóng to biểu tượng khi hover */
-            box-shadow: 0 0 8px rgba(0, 0, 0, 0.3); /* Thêm bóng đổ khi hover */
+            color: #4CAF50;
+            transform: scale(1.2);
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
         }
 
         .bell-icon:active {
-            color: #FF5722; /* Màu khi click */
-            transform: scale(0.95); /* Thu nhỏ khi click */
+            color: #FF5722;
+            transform: scale(0.95);
         }
 
         .bell-icon:focus {
-            outline: none; /* Tắt viền khi nhấn chuột vào chuông */
+            outline: none;
         }
 
         .bell-icon.new-notification {
-            color: #FF5722;  /* Màu chuông khi có thông báo mới */
+            color: #FF5722;
+        }
+
+        .notification-list {
+            display: none;
+        }
+
+        .notification-list.show {
+            display: block;
         }
     </style>
 </head>
@@ -46,27 +55,22 @@
 
     <%-- Kiểm tra quyền admin --%>
     <%
-        String role = (String) session.getAttribute("role");  // Lấy thông tin phân quyền từ session (ví dụ: "admin" hoặc "user")
-
-        if (role == null || !role.equals("admin")) {  // Nếu không phải admin
-            response.sendRedirect("access-denied.jsp");  // Chuyển hướng đến trang access-denied.jsp
+        String role = (String) session.getAttribute("role");
+        if (role == null || !role.equals("admin")) {
+            response.sendRedirect("access-denied.jsp");
             return;
         }
     %>
 
+
     <%-- Nút quay lại trang admin --%>
     <div class="mb-5">
-        <a href="admin.jsp" class="text-blue-600">Quay lại trang quản trị</a>  <!-- Nút quay lại trang admin -->
+        <a href="admin.jsp" class="text-blue-600">Quay lại trang quản trị</a>
     </div>
 
-    <%-- Lấy danh sách đơn hàng từ thuộc tính yêu cầu --%>
+    <%-- Lấy danh sách đơn hàng --%>
     <%
         List<Order> orders = (List<Order>) request.getAttribute("orders");
-
-        // Kiểm tra xem có thông báo mới từ bảng notifications
-        boolean hasNewNotification = false;
-        // Giả sử bạn đã kiểm tra trong cơ sở dữ liệu xem admin có thông báo mới không
-        // Ví dụ: hasNewNotification = true nếu có thông báo mới
     %>
 
     <%-- Nếu có đơn hàng --%>
@@ -78,28 +82,23 @@
         <tr class="bg-gray-200 text-left">
             <th class="px-4 py-2">Mã đơn hàng</th>
             <th class="px-4 py-2">Tên khách hàng</th>
-
             <th class="px-4 py-2">Mã khách hàng</th>
-
             <th class="px-4 py-2">Hành động</th>
         </tr>
         </thead>
         <tbody>
-
         <%
             for (Order order : orders) {
         %>
         <tr class="border-t">
             <td class="px-4 py-2"><%= order.getOrderId() %></td>
-            <th class="px-4 py-2"> <%= order.getUserName() %></th>
-
+            <td class="px-4 py-2"><%= order.getUserName() %></td>
             <td class="px-4 py-2"><%= order.getUserId() %></td>
-
             <td class="px-4 py-2 action-cell">
                 <a href="order-detail?orderId=<%= order.getOrderId() %>" class="text-blue-600">Xem</a> |
                 <a href="editOrder.jsp?orderId=<%= order.getOrderId() %>" class="text-green-600">Sửa</a>
-                <!-- Thêm icon chuông -->
-                <i class="fa-solid fa-bell bell-icon <%= hasNewNotification ? "new-notification" : "" %>"></i>
+                <i class="fa-solid fa-bell bell-icon" onclick="toggleNotifications(<%= order.getOrderId() %>)"></i>
+                <div id="notification-list-<%= order.getOrderId() %>" class="notification-list"></div>
             </td>
         </tr>
         <%
@@ -115,8 +114,28 @@
     <%
         }
     %>
-
 </div>
 
+<script>
+    function toggleNotifications(orderId) {
+        let notificationList = document.getElementById("notification-list-" + orderId);
+        if (notificationList.style.display === "block") {
+            notificationList.style.display = "none";
+        } else {
+            // Fetch thông báo mà không cần adminId, chỉ cần kiểm tra role là admin
+            fetch('/NotificationServlet') // Không cần tham số adminId nữa
+                .then(response => response.json())
+                .then(data => {
+                    notificationList.innerHTML = data.map(notification => `
+                        <p>${notification.message} - ${notification.createdAt}</p>
+                    `).join("");
+                    notificationList.style.display = "block";
+                })
+                .catch(error => {
+                    console.error('Error fetching notifications:', error);
+                });
+        }
+    }
+</script>
 </body>
 </html>
