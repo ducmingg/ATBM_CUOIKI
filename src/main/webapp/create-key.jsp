@@ -11,7 +11,7 @@
 <div class="container">
     <h1><%= request.getAttribute("message") != null ? request.getAttribute("message") : "" %></h1>
     <h1>Tạo khóa</h1>
-    <form id="key-form" method="post" action="/digital-signature">
+    <form id="key-form" method="post" action="/Batdongsan/digital-signature">
         <div class="key-generation-section">
             <button type="submit" name="action" value="generateKey" id="generate-keys-btn">Tạo Khóa Mới</button>
             <div>
@@ -26,9 +26,17 @@
                 <button type="button" id="download-private-key-btn">Tải Khóa Riêng Xuống</button>
             </div>
         </div>
+<%--        <div class="file-upload-section">--%>
+<%--            <label for="upload-key">Tải khóa từ tệp (txt):</label>--%>
+<%--            <input type="file" id="upload-key" accept=".txt">--%>
+<%--        </div>--%>
         <div class="file-upload-section">
-            <label for="upload-key">Tải khóa từ tệp (txt):</label>
-            <input type="file" id="upload-key" accept=".txt">
+            <label for="upload-public-key">Tải khóa công khai (Public Key) từ tệp:</label>
+            <input type="file" id="upload-public-key" name="uploadPublicKey" accept=".txt">
+<%--            <button type="submit" name="action" value="uploadPublicKey">Tải Lên</button>--%>
+        </div>
+        <div class="public-key-upload">
+            <button type="submit" name="action" value="uploadPublicKey">Tải Lên</button>
         </div>
         <div class="submit-section">
             <button type="submit" name="action" value="submitForm" id="submit-btn">Gửi Khóa</button>
@@ -59,6 +67,29 @@
 
         URL.revokeObjectURL(url);
     });
+    // Tạo chức năng upload public key
+    document.querySelector('button[name="action"][value="uploadPublicKey"]').addEventListener('click', function(event) {
+        event.preventDefault(); // Ngăn gửi form tự động
+
+        const fileInput = document.getElementById('upload-public-key');
+        const file = fileInput.files[0]; // Lấy tệp đã chọn
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                // Nội dung tệp Public Key
+                const publicKeyContent = e.target.result;
+
+                // Hiển thị nội dung trong textarea của public key
+                document.getElementById('public-key').value = publicKeyContent;
+            };
+
+            reader.readAsText(file); // Đọc tệp dưới dạng text
+        } else {
+            alert('Vui lòng chọn tệp trước khi tải lên!');
+        }
+    });
+
 </script>
 </body>
 </html>
