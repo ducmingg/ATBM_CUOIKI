@@ -1,14 +1,14 @@
 package Dao;
 
+import org.cloudinary.json.JSONArray;
+import org.cloudinary.json.JSONObject;
+
 import java.sql.*;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 public class CartService {
 
-    // Method to save cart to the database
     public boolean saveCartToDatabase(int userId, int cartId, JSONArray cartItems) {
-        String url = "jdbc:mysql://localhost:3306/webbds";
+        String url = "jdbc:mysql://localhost:3306/bds1";
         String dbUser = "root";
         String dbPassword = "123456";
 

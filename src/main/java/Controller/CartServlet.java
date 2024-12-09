@@ -1,15 +1,14 @@
 package Controller;
 
-import Dao.CartService;
+import DBcontext.Database;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.*;
 
 
@@ -18,10 +17,8 @@ public class CartServlet extends HttpServlet {
 
     // Helper method to get database connection
     private Connection getConnection() throws SQLException {
-        String url = "jdbc:mysql://localhost:3306/webbds";
-        String dbUser = "root";
-        String dbPassword = "root";
-        return DriverManager.getConnection(url, dbUser, dbPassword);
+
+        return Database.getConnection();
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

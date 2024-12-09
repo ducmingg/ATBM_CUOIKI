@@ -35,7 +35,9 @@
             outline: none; /* Tắt viền khi nhấn chuột vào chuông */
         }
 
-
+        .bell-icon.new-notification {
+            color: #FF5722;  /* Màu chuông khi có thông báo mới */
+        }
     </style>
 </head>
 <body class="bg-gray-100 p-5">
@@ -60,6 +62,11 @@
     <%-- Lấy danh sách đơn hàng từ thuộc tính yêu cầu --%>
     <%
         List<Order> orders = (List<Order>) request.getAttribute("orders");
+
+        // Kiểm tra xem có thông báo mới từ bảng notifications
+        boolean hasNewNotification = false;
+        // Giả sử bạn đã kiểm tra trong cơ sở dữ liệu xem admin có thông báo mới không
+        // Ví dụ: hasNewNotification = true nếu có thông báo mới
     %>
 
     <%-- Nếu có đơn hàng --%>
@@ -92,7 +99,7 @@
                 <a href="order-detail?orderId=<%= order.getOrderId() %>" class="text-blue-600">Xem</a> |
                 <a href="editOrder.jsp?orderId=<%= order.getOrderId() %>" class="text-green-600">Sửa</a>
                 <!-- Thêm icon chuông -->
-                <i class="fa-solid fa-bell bell-icon"></i>
+                <i class="fa-solid fa-bell bell-icon <%= hasNewNotification ? "new-notification" : "" %>"></i>
             </td>
         </tr>
         <%
@@ -110,8 +117,6 @@
     %>
 
 </div>
-
-<!-- Add FontAwesome -->
 
 </body>
 </html>

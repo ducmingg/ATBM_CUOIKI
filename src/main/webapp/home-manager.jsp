@@ -153,10 +153,10 @@
             <li><a href="admin.jsp">Main Dashboard</a></li>
             <li><a href="users">Quản lý tài khoản</a></li>
             <li><a href="home-manager">Quản lý sản phẩm</a></li>
-<%--            <li><a href="top-property.jsp">Quản lý sản phẩm bán chạy</a></li>--%>
+            <%--            <li><a href="top-property.jsp">Quản lý sản phẩm bán chạy</a></li>--%>
             <li><a href="home-manager">Quản lý nhà phân phối</a></li>
-<%--            <li><a href="top-user-manager">Quản lý top 5 khách</a></li>--%>
-<%--            <li><a href="top-employee-manager.jsp">Quản lý top 5 nhân viên</a></li>--%>
+            <%--            <li><a href="top-user-manager">Quản lý top 5 khách</a></li>--%>
+            <%--            <li><a href="top-employee-manager.jsp">Quản lý top 5 nhân viên</a></li>--%>
             <li><a href="orders">Quản lý đơn đặt hàng</a></li>
             <li><a href="comments-manager.jsp">Quản lý bình luận</a></li>
 
@@ -212,8 +212,8 @@
                 <td>
                     <form action="properties" method="POST" style="display: inline;">
                         <input type="hidden" name="id" value="<%= property.getId() %>">
-                        <input type="hidden" name="action" value="<%= property.getStatus().equals("0") ? "enable" : "disable" %>"> <!-- Đặt action enable hoặc disable -->
-                        <input type="hidden" name="status" value="<%= property.getStatus() %>"> <!-- Trạng thái bất động sản -->
+                        <input type="hidden" name="action" value="<%= property.getStatus().equals("0") ? "enable" : "disable" %>">
+                        <input type="hidden" name="status" value="<%= property.getStatus() %>">
 
                         <!-- Nút Vô hiệu hóa / Kích hoạt -->
                         <button type="submit" class="<%= property.getStatus().equals("0") ? "btn-enable" : "btn-disable" %>" onclick="return confirm('Bạn có chắc chắn muốn <%= property.getStatus().equals("0") ? "kích hoạt" : "vô hiệu hóa" %> bất động sản này không?')">

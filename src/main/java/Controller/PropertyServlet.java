@@ -1,6 +1,6 @@
 package Controller;
 
-import DBcontext.DbConnection1;
+import DBcontext.Database;
 import Entity.Property;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -20,7 +20,7 @@ public class PropertyServlet extends HttpServlet {
 
         try {
             // Kết nối tới cơ sở dữ liệu
-            Connection conn = DbConnection1.initializeDatabase();  // Kết nối đến database
+            Connection conn = Database.getConnection();  // Kết nối đến database
             Statement stmt = conn.createStatement();
 
             // Truy vấn dữ liệu từ bảng Properties
@@ -56,8 +56,6 @@ public class PropertyServlet extends HttpServlet {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
         }
 
     }
