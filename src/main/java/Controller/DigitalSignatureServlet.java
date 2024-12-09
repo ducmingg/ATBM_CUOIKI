@@ -61,6 +61,11 @@ public class DigitalSignatureServlet extends HttpServlet {
 //            RequestDispatcher dispatcher = req.getRequestDispatcher("welcome.jsp");
 //            dispatcher.forward(req, resp);
             resp.sendRedirect("welcome");
+        } else if ("uploadPublicKey".equals(action)) {
+            // Xử lí gửi khi bấm vào "Tải lên"
+            req.setAttribute("publickey", req.getParameter("publickey"));
+            RequestDispatcher dispatcher = req.getRequestDispatcher("create-key.jsp");
+            dispatcher.forward(req, resp);
 
         }
     }
