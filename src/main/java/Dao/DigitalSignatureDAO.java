@@ -137,6 +137,7 @@ public class DigitalSignatureDAO {
         return cart_id; // Trả về `cart_id` hoặc null nếu không có kết quả
     }
 
+    //chuyen danh sach don hang thanh chuoi string
     public String getInfo(List<OrderInfo> orders) {
         Map<String, List<List<Object>>> groups = orders.stream()
                 .collect(Collectors.groupingBy(
@@ -174,6 +175,8 @@ public class DigitalSignatureDAO {
             e.printStackTrace();
         }
     }
+
+//    thong tin danh sach don hang cua user theo id
     public String getCartItemInfo(int user_id) {
         List<OrderInfo> orders = new ArrayList<>();
         String sql = "SELECT u.id as user_id,c.cart_id,ci.property_id,ci.price,ci.quantity FROM users u " +
