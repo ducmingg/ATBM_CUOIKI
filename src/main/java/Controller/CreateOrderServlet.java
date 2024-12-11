@@ -21,8 +21,20 @@ import java.util.Date;
 public class CreateOrderServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Get user ID and order date from request
         int userId = Integer.parseInt(request.getParameter("userId"));
+
+
+        DigitalSignatureDAO dao = new DigitalSignatureDAO();
+        boolean check = dao.check_is_use_key(userId);
+
+        if(check==false){
+            HttpSession session = request.getSession();
+
+            session.setAttribute("message", "Vui lòng tạo key mới để thực hiện giao dịch");
+            response.sendRedirect("create-key.jsp");
+        } else {
+        // Get user ID and order date from request
+
         String orderDateStr = request.getParameter("orderDate");
         String username = request.getParameter("username");
 //        String username = "username";
@@ -99,7 +111,7 @@ public class CreateOrderServlet extends HttpServlet {
         String signature  = request.getParameter("signature");
         DigitalSignatureDAO d = new DigitalSignatureDAO();
         d.insertSignature(signature,orderId);
-    }
+    }}
 
     private String formatOrderDate(String orderDateStr) {
         try {

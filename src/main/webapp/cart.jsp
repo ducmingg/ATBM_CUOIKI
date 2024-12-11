@@ -4,6 +4,7 @@
     <%@ page import="Dao.CartItemDAO" %>
     <%@ page import="Entity.CartItem" %>
     <%@ page import="java.sql.SQLException" %>
+    <%@ page import="Dao.DigitalSignatureDAO" %>
     <%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
     <!DOCTYPE html>
     <meta charset="UTF-8">
@@ -371,8 +372,11 @@
         <li class="list-group-item text-center text-muted">Giỏ hàng của bạn đang trống.</li>
         <% } %>
     </ul>
+<%
 
-    <button id="checkout-button" class="btn btn-success w-100 mt-3" onclick="window.location.href='checkout.jsp';">Đặt lịch</button>
+
+%>
+    <button id="checkout-button" class="btn btn-success w-100 mt-3" onclick="window.location.href='checkout.jsp';">Đặt Hàng</button>
 
 
 <%--    <form id="orderForm" action="createOrder" method="POST" style="display:none;">--%>
