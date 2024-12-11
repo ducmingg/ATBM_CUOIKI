@@ -217,6 +217,35 @@ public class DigitalSignatureDAO {
         }
         return re==1;
     }
+
+    public boolean check_is_expired(int userId) {
+        String sql = "select is_expired from digital_signature where user_id = ?";
+        int re = 0;
+        try (Connection connection = getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, userId); // Gán tham số cho câu lệnh SQL
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){
+                re = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return re==0;
+    }
+
+    public void update_is_expired(int userId,int val) {
+        String sql = "{CALL update_is_expired(?,?)}";
+        try (Connection connection = getConnection();
+             CallableStatement stmt = connection.prepareCall(sql)) {
+            stmt.setInt(1, userId);
+            stmt.setInt(2,val);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void reportKey(int userId, LocalDateTime dtReport) {
         String sql = "{CALL update_dt_report(?, ?)}";  // Stored procedure gọi 2 tham số
         try (Connection connection = getConnection();

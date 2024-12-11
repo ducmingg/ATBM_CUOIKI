@@ -3,6 +3,7 @@ package Controller;
 import DBcontext.Database;
 import Dao.CartDAO;
 import Dao.CartItemDAO;
+import Dao.DigitalSignatureDAO;
 import Entity.CartItem;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -32,6 +33,7 @@ public class LoginServlet extends HttpServlet {
 
         if ("admin".equals(loginStatus) || "active".equals(loginStatus)) {
             handleSuccessfulLogin(request, response, session, username, loginStatus);
+
         } else {
             handleFailedLogin(response, loginStatus);
         }
@@ -50,7 +52,13 @@ public class LoginServlet extends HttpServlet {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-
+//        kiem tra is_pired
+            DigitalSignatureDAO dao = new DigitalSignatureDAO();
+            boolean check_is_expired = dao.check_is_expired(userId);
+            if(check_is_expired==false) {
+                dao.update_is_expired(userId, 1);
+            }
+//
             response.sendRedirect("welcome");
         } else {
             response.getWriter().println("Error: User ID not found.");
