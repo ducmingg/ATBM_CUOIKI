@@ -7,12 +7,13 @@ import javax.mail.MessagingException;
 import java.sql.*;
 
 public class OrderItemPollingService {
+
     public static void main(String[] args) {
-        // Giám sát sự thay đổi trong cơ sở dữ liệu (polling)
+        // Kiểm tra thay đổi trong bảng orderitems mỗi giây (hoặc bạn có thể điều chỉnh tần suất)
         while (true) {
             checkForChangesAndSendEmail();
             try {
-                Thread.sleep(60000); // Kiểm tra mỗi phút
+                Thread.sleep(1000); // Chờ 1 giây trước khi kiểm tra lại
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -20,55 +21,78 @@ public class OrderItemPollingService {
     }
 
     public static void checkForChangesAndSendEmail() {
+        // Kết nối đến cơ sở dữ liệu
         try (Connection conn = Database.getConnection()) {
-            // Truy vấn bảng orderitems để kiểm tra sự thay đổi
-            String query = "SELECT * FROM orderitems WHERE status = 'changed'"; // Giả sử có cột status để đánh dấu sự thay đổi
+            if (conn != null) {
+                System.out.println("Kết nối cơ sở dữ liệu thành công!");
+            } else {
+                System.out.println("Kết nối cơ sở dữ liệu thất bại!");
+                return;
+            }
+            // Kiểm tra thay đổi trong bảng orderitems (có thể dựa trên cột status hoặc timestamp)
+            String query = "SELECT * FROM orderitems WHERE status = 'pending'";  // Kiểm tra trạng thái 'pending'
+            System.out.println("Đang thực thi truy vấn: " + query);
+
             try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
-                while (rs.next()) {
-                    // Lấy thông tin cần thiết từ orderitems
-                    int orderItemId = rs.getInt("order_item_id");
-                    String orderId = rs.getString("order_id"); // Order ID từ bảng orderitems
-                    double oldPrice = rs.getDouble("price");
-                    int oldQuantity = rs.getInt("quantity");
+                if (!rs.next()) {
+                    System.out.println("Không có đơn hàng có trạng thái 'pending'.");
+                } else {
+                    do {
+                        // Lấy thông tin thay đổi
+                        int orderItemId = rs.getInt("order_item_id");
+                        double newPrice = rs.getDouble("price");
+                        int newQuantity = rs.getInt("quantity");
+                        String orderId = rs.getString("order_id");
 
-                    // Lấy email của người sở hữu đơn hàng từ bảng orders và users
-                    String emailQuery = "SELECT u.email FROM users u " +
-                            "JOIN orders o ON u.id = o.user_id " +
-                            "WHERE o.order_id = ?";
-                    try (PreparedStatement ps = conn.prepareStatement(emailQuery)) {
-                        ps.setString(1, orderId);
-                        try (ResultSet emailRs = ps.executeQuery()) {
-                            if (emailRs.next()) {
-                                String email = emailRs.getString("email");
+                        // Lấy email của người sở hữu đơn hàng
+                        String emailQuery = "SELECT email FROM users WHERE id IN (SELECT user_id FROM orders WHERE order_id = ?)";
+                        try (PreparedStatement ps = conn.prepareStatement(emailQuery)) {
+                            ps.setString(1, orderId);
+                            ResultSet userResult = ps.executeQuery();
+                            if (userResult.next()) {
+                                String userEmail = userResult.getString("email");
 
-                                // Lấy thông tin mới từ bảng orderitems (giả sử có sự thay đổi)
-                                double newPrice = rs.getDouble("new_price");
-                                int newQuantity = rs.getInt("new_quantity");
-
-                                // Gửi email thông báo sự thay đổi
-                                String message = "Order Item đã thay đổi:\n" +
-                                        "Order ID: " + orderId + "\n" +
-                                        "Order Item ID: " + orderItemId + "\n" +
-                                        "Số lượng cũ: " + oldQuantity + "\n" +
-                                        "Số lượng mới: " + newQuantity + "\n" +
-                                        "Giá cũ: " + oldPrice + "\n" +
-                                        "Giá mới: " + newPrice;
+                                // Gửi email thông báo thay đổi
+                                // Tạo thông điệp email với thông tin chi tiết về Order Item đã thay đổi
+                                String message = "Thông báo thay đổi Order Item:\n\n" +
+                                        "Chào bạn,\n\n" +
+                                        "Đơn hàng của bạn đã có thay đổi. Chi tiết thay đổi như sau:\n" +
+                                        "--------------------------------------------\n" +
+                                        "ID Order Item: " + orderItemId + "\n" +
+                                        "Số lượng thay đổi: " + newQuantity + "\n" +
+                                        "Giá tiền thay đổi: " + newPrice + " VNĐ\n" +
+                                        "--------------------------------------------\n\n" +
+                                        "Nếu bạn không phải là người thực hiện thay đổi này, vui lòng liên hệ ngay với người quản trị hệ thống.\n\n" +
+                                        "Trân trọng,\n" +
+                                        "Đội ngũ hỗ trợ hệ thống";
 
                                 EmailService emailService = new EmailService();
-                                emailService.sendEmail(email, "Thông báo thay đổi Order Item", message);
-
-                                // Cập nhật trạng thái là đã xử lý (tùy chọn)
-                                String updateQuery = "UPDATE orderitems SET status = 'processed' WHERE order_item_id = ?";
-                                try (PreparedStatement updatePs = conn.prepareStatement(updateQuery)) {
-                                    updatePs.setInt(1, orderItemId);
-                                    updatePs.executeUpdate();
+                                try {
+                                    emailService.sendEmail(userEmail, "Thông báo thay đổi Order Item", message);
+                                    System.out.println("Email đã gửi thành công đến: " + userEmail);
+                                } catch (MessagingException e) {
+                                    e.printStackTrace();
+                                    System.out.println("Gửi email thất bại đến: " + userEmail);
                                 }
+
                             }
                         }
-                    }
+
+                        // Cập nhật lại trạng thái để tránh gửi lại thông báo nhiều lần
+                        String updateQuery = "UPDATE orderitems SET status = 'processed' WHERE order_item_id = ?";
+                        try (PreparedStatement ps = conn.prepareStatement(updateQuery)) {
+                            ps.setInt(1, orderItemId);
+                            int rowsAffected = ps.executeUpdate();
+                            if (rowsAffected > 0) {
+                                System.out.println("Cập nhật trạng thái thành công cho Order Item ID " + orderItemId);
+                            } else {
+                                System.out.println("Không có đơn hàng nào cần cập nhật trạng thái.");
+                            }
+                        }
+                    } while (rs.next());
                 }
             }
-        } catch (SQLException | MessagingException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }

@@ -1,8 +1,9 @@
 package Mail;
 
 public class MailConfig {
-    public static final String APP_EMAIL = "your-email@example.com"; // Địa chỉ email gửi
-    public static final String APP_PASSWORD = "your-email-password"; // Mật khẩu ứng dụng
-    public static final String HOST_NAME = "smtp.example.com"; // SMTP server
-    public static final int TSL_PORT = 587; // Cổng TLS
+    // Thông tin cấu hình SMTP
+    public static final String SMTP_HOST = "smtp.gmail.com"; // Máy chủ SMTP Gmail
+    public static final String SMTP_PORT = "587"; // Cổng SMTP
+    public static final String SMTP_USER = "khoangoquan@gmail.com"; // Địa chỉ email gửi
+    public static final String SMTP_PASSWORD = "mzrs xvca qstr zegw"; // Mật khẩu ứng dụng (nếu bật 2FA)
 }

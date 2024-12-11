@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet("/orders")
-public class    OrderListServlet extends HttpServlet {
+public class OrderListServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -23,19 +23,23 @@ public class    OrderListServlet extends HttpServlet {
 
         // Get database connection
         try (Connection conn = Database.getConnection()) {
-            // Only select order_id and user_id
-            String query = "SELECT order_id, user_id,username,order_date FROM orders";
+            // Query lấy thông tin đơn hàng và trạng thái từ bảng orderitems
+            String query = "SELECT o.order_id, o.user_id, o.username, o.order_date, oi.status " +
+                    "FROM orders o " +
+                    "JOIN orderitems oi ON o.order_id = oi.order_id";
             try (PreparedStatement stmt = conn.prepareStatement(query);
                  ResultSet rs = stmt.executeQuery()) {
 
-                // Fetch orders from result set
+                // Fetch orders and their statuses from result set
                 while (rs.next()) {
                     int orderId = rs.getInt("order_id");
                     int userId = rs.getInt("user_id");
                     String username = rs.getString("username");
                     Date date = rs.getDate("order_date");
-                    // Add order with only orderId and userId
-                    orders.add(new Order(orderId, userId,username, date));
+                    String status = rs.getString("status");  // Lấy trạng thái từ orderitems
+
+                    // Tạo đối tượng Order với trạng thái
+                    orders.add(new Order(orderId, userId, username, date, status));
                 }
             }
         } catch (SQLException e) {
@@ -49,3 +53,4 @@ public class    OrderListServlet extends HttpServlet {
         request.getRequestDispatcher("orders.jsp").forward(request, response);
     }
 }
+

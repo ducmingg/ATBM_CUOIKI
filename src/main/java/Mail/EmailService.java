@@ -6,45 +6,39 @@ import java.util.Properties;
 
 public class EmailService {
 
-    // Gửi email thông báo
-    public void sendEmail(String recipientEmail, String subject, String messageBody) throws MessagingException {
-        // Cấu hình SMTP
-        String senderEmail = MailConfig.APP_EMAIL;
-        String senderPassword = MailConfig.APP_PASSWORD;
-        String host = MailConfig.HOST_NAME;
+    private final String SMTP_HOST = "smtp.gmail.com";
+    private final String SMTP_PORT = "587";
+    private final String SMTP_USER = "khoangoquan@gmail.com";  // Thay đổi
+    private final String SMTP_PASSWORD = "mzrs xvca qstr zegw";  // Thay đổi (Sử dụng App Password nếu bật 2FA)
 
-        // Cấu hình các thuộc tính cho phiên làm việc gửi email
+    // Thiết lập cấu hình gửi email
+    private Properties getMailProperties() {
         Properties properties = new Properties();
-        properties.put("mail.smtp.host", host);
-        properties.put("mail.smtp.port", String.valueOf(MailConfig.TSL_PORT)); // Chọn cổng TLS (587)
+        properties.put("mail.smtp.host", SMTP_HOST);
+        properties.put("mail.smtp.port", SMTP_PORT);
         properties.put("mail.smtp.auth", "true");
-        properties.put("mail.smtp.starttls.enable", "true"); // Sử dụng TLS
+        properties.put("mail.smtp.starttls.enable", "true");
+        return properties;
+    }
 
-        // Tạo một session mới và xác thực tài khoản gửi email
+    // Gửi email
+    public void sendEmail(String toEmail, String subject, String messageBody) throws MessagingException {
+        // Cấu hình mail
+        Properties properties = getMailProperties();
         Session session = Session.getInstance(properties, new Authenticator() {
-            @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(senderEmail, senderPassword);
+                return new PasswordAuthentication(SMTP_USER, SMTP_PASSWORD);
             }
         });
 
-        try {
-            // Tạo đối tượng Message với thông tin người nhận và chủ đề
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(senderEmail));
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
-            message.setSubject(subject); // Chủ đề email
+        // Tạo message
+        Message message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(SMTP_USER));
+        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
+        message.setSubject(subject);
+        message.setText(messageBody);
 
-            // Nội dung email
-            message.setText(messageBody); // Nội dung email
-
-            // Gửi email
-            Transport.send(message);
-            System.out.println("Email đã được gửi thành công!");
-
-        } catch (MessagingException e) {
-            e.printStackTrace(); // In ra lỗi nếu có vấn đề trong quá trình gửi email
-            throw new MessagingException("Không thể gửi email. Vui lòng thử lại sau.");
-        }
+        // Gửi email
+        Transport.send(message);
     }
 }
