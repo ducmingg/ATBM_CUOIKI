@@ -13,14 +13,16 @@
     <h1>Thông Báo Lộ Key</h1>
     <p>Khóa của bạn đã bị lộ, vui lòng kiểm tra lại các thông tin bảo mật!</p>
 
+    <form method="get" action="report-key">
     <!-- Chọn ngày và giờ -->
-    <div class="datetime-section">
-        <label for="date-time">Chọn ngày và giờ:</label>
-        <input type="datetime-local" id="date-time">
-    </div>
-    <div class="notification-section">
-        <button id="reveal-key-btn">Báo cáo</button>
-    </div>
+        <div class="datetime-section">
+            <label for="date-time">Chọn ngày và giờ:</label>
+            <input type="datetime-local" id="date-time" name="time">
+        </div>
+        <div class="notification-section">
+            <button id="reveal-key-btn">Báo cáo</button>
+        </div>
+    </form>
     <a href="create-key.jsp">
         <div>
             <button onclick="goBack()">Quay lại trang trước</button>

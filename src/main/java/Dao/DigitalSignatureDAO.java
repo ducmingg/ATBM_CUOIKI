@@ -141,7 +141,7 @@ public class DigitalSignatureDAO {
     public String getInfo(List<OrderInfo> orders) {
         Map<String, List<List<Object>>> groups = orders.stream()
                 .collect(Collectors.groupingBy(
-                        order -> order.getUser_id() + "-" + order.getCart_id() + "-" + order.getDt_buy(), // Khóa
+                        order -> order.getUser_id() +"-" + order.getDt_buy(), // Khóa
                         Collectors.mapping( // Chuyển đổi giá trị
                                 order -> Arrays.asList(order.getProperty_id(), order.getPrice(), order.getQuantity()), // Lưu các trường còn lại trong danh sách
                                 Collectors.toList() // Thu thập thành danh sách
@@ -177,7 +177,7 @@ public class DigitalSignatureDAO {
     }
 
 //    thong tin danh sach don hang cua user theo id
-    public String getCartItemInfo(int user_id) {
+     public String getCartItemInfo(int user_id) {
         List<OrderInfo> orders = new ArrayList<>();
         String sql = "SELECT u.id as user_id,c.cart_id,ci.property_id,ci.price,ci.quantity FROM users u " +
                 "join cart c on u.id = c.user_id " +
@@ -201,17 +201,51 @@ public class DigitalSignatureDAO {
         }
         return getInfo(orders);
     }
+
+    public boolean check_is_use_key(int userId) {
+        String sql = "select is_use from digital_signature where user_id = ?";
+        int re = 0;
+        try (Connection connection = getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, userId); // Gán tham số cho câu lệnh SQL
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){
+            re = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return re==1;
+    }
+    public void reportKey(int userId, LocalDateTime dtReport) {
+        String sql = "{CALL update_dt_report(?, ?)}";  // Stored procedure gọi 2 tham số
+        try (Connection connection = getConnection();
+             CallableStatement stmt = connection.prepareCall(sql)) {
+            stmt.setInt(1, userId);
+            stmt.setTimestamp(2, Timestamp.valueOf(dtReport));
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void changeDtReportToNull(int userId){
+        String sql = "{CALL change_dt_report_to_null(?)}";  // Stored procedure gọi 2 tham số
+        try (Connection connection = getConnection();
+             CallableStatement stmt = connection.prepareCall(sql)) {
+            stmt.setInt(1, userId);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     public static void main(String[] args) throws Exception {
         DigitalSignatureDAO ds = new DigitalSignatureDAO();
-//        KeyPair keyPair = ds.generateKey();
-//        PublicKey publicKey = keyPair.getPublic();
-//        PrivateKey privateKey = keyPair.getPrivate();
-//        String base64PublicKey = Base64.getEncoder().encodeToString(publicKey.getEncoded());
-//        String base64PrivateKey = Base64.getEncoder().encodeToString(privateKey.getEncoded());
-//        System.out.println(base64PrivateKey);
-//        System.out.println(base64PublicKey);
-//        ds.addPublicKey("publikey");
-//        ds.getCartItemInfo(32);
-//        System.out.println(ds.getCartItemInfo(32));
+        LocalDateTime dtReport = LocalDateTime.parse("2024-12-02T15:20:07");
+
+        System.out.println(ds.check_is_use_key(2));;
     }
 }

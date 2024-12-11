@@ -56,6 +56,7 @@ public class DigitalSignatureServlet extends HttpServlet {
             // Xử lý logic gửi khóa (lưu vào database, gửi email, etc.)
             int userId = (int) session.getAttribute("userId");
             dao.addPublicKey(userId,publicKey);
+            dao.changeDtReportToNull(userId);
             // Thông báo sau khi gửi
             req.setAttribute("message", "Khóa đã được gửi thành công.");
 //            RequestDispatcher dispatcher = req.getRequestDispatcher("welcome.jsp");
