@@ -1,169 +1,121 @@
-<%
-
-    // Sử dụng biến session có sẵn trong JSP
-    String role = (String) session.getAttribute("role");
-
-    if (!"admin".equals(role)) {
-        // Nếu không phải admin, chuyển hướng đến trang không có quyền truy cập
-        response.sendRedirect("access-denied.jsp");
-        return;
-    }
-%>
 <%@ page import="java.util.List" %>
 <%@ page import="Entity.Property1" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
-
-<!DOCTYPE html>
-<html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý Bất Động Sản</title>
 
-    <!-- DataTables CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
-    <style>
-        .btn-enable {
-            background-color: green;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            font-size: 14px;
-        }
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/4.0.1/css/fixedHeader.dataTables.css">
 
-        .btn-disable {
-            background-color: red;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            font-size: 14px;
-        }
+<style>
 
-        .btn-enable:hover, .btn-disable:hover {
-            opacity: 0.8;
-        }
+    .btn-disable {
+        background-color: red;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .btn-enable:hover, .btn-disable:hover {
+        opacity: 0.8;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        display: flex;
+        max-width: 1200px;
+        margin: auto;
+    }
+
+    .sidebar {
+        width: 200px;
+        background-color: #333;
+        color: white;
+        padding: 20px;
+        border-radius: 5px 0 0 5px;
+    }
+
+    .sidebar ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .sidebar ul li {
+        margin-bottom: 15px;
+    }
+
+    .sidebar ul li a {
+        color: white;
+        text-decoration: none;
+        font-size: 16px;
+    }
+
+    .sidebar ul li a:hover {
+        text-decoration: underline;
+    }
+
+    .main-content {
+        flex: 1;
+        background: white;
+        padding: 20px;
+        border-radius: 0 5px 5px 0;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+        text-align: left;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    .add-button {
+        padding: 10px 20px;
+        background-color: #4CAF50;
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        border-radius: 4px;
+        margin-left: 700px;
+    }
+
+    a {
+        text-align: right;
+        margin-bottom: 20px;
+    }
+
+    .property-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    .property-table th, .property-table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
 
 
-        /* CSS giữ nguyên như bạn đã tạo */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
 
-        .container {
-            display: flex;
-            max-width: 1200px;
-            margin: auto;
-        }
-
-        .sidebar {
-            width: 200px;
-            background-color: #333;
-            color: white;
-            padding: 20px;
-            border-radius: 5px 0 0 5px;
-        }
-
-        .sidebar ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .sidebar ul li {
-            margin-bottom: 15px;
-        }
-
-        .sidebar ul li a {
-            color: white;
-            text-decoration: none;
-            font-size: 16px;
-        }
-
-        .sidebar ul li a:hover {
-            text-decoration: underline;
-        }
-
-        .main-content {
-            flex: 1;
-            background: white;
-            padding: 20px;
-            border-radius: 0 5px 5px 0;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        h2 {
-            text-align: left;
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        .add-button {
-            padding: 10px 20px;
-
-            background-color: #4CAF50;
-            color: white;
-            text-align: center;
-            text-decoration: none;
-            border-radius: 4px;
-
-            margin-left: 700px;
-
-        }
-
-        a {
-            text-align: right;
-            margin-bottom: 20px;
-        }
-
-        .property-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        .property-table th, .property-table td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .property-table th {
-            background-color: #4CAF50;
-            color: white;
-        }
-
-        .property-table img {
-            max-width: 100px;
-            height: auto;
-            border-radius: 5px;
-        }
-    </style>
+    .property-table img {
+        max-width: 100px;
+        height: auto;
+        border-radius: 5px;
+    }
+</style>
+    <title>nhà đẹp</title>
 </head>
 <body>
 <div class="container">
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <ul>
-            <li><a href="admin.jsp">Main Dashboard</a></li>
-            <li><a href="users">Quản lý tài khoản</a></li>
-            <li><a href="home-manager">Quản lý sản phẩm</a></li>
-            <%--            <li><a href="top-property.jsp">Quản lý sản phẩm bán chạy</a></li>--%>
-            <li><a href="home-manager">Quản lý nhà phân phối</a></li>
-            <%--            <li><a href="top-user-manager">Quản lý top 5 khách</a></li>--%>
-            <%--            <li><a href="top-employee-manager.jsp">Quản lý top 5 nhân viên</a></li>--%>
-            <li><a href="orders">Quản lý đơn đặt hàng</a></li>
-            <li><a href="comments-manager.jsp">Quản lý bình luận</a></li>
 
-        </ul>
-    </div>
 
-    <!-- Main content -->
     <div class="main-content">
         <h2>Danh sách bất động sản</h2>
         <a href="add-property.jsp" class="add-button">Thêm bất động sản mới</a>
@@ -224,7 +176,6 @@
                 </td>
             </tr>
             <%
-
                 }
             } else {
             %>
@@ -239,8 +190,9 @@
     </div>
 </div>
 
-<!-- jQuery and DataTables JavaScript -->
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/4.0.1/css/fixedHeader.dataTables.css">
+
 <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
 <script>
     $(document).ready(function () {
@@ -264,4 +216,4 @@
     });
 </script>
 </body>
-</html>
+

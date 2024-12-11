@@ -6,7 +6,8 @@ import java.util.Properties;
 
 public class EmailService {
 
-    public void sendEmail(String recipientEmail, String username, String newPassword) throws MessagingException {
+    // Gửi email thông báo
+    public void sendEmail(String recipientEmail, String subject, String messageBody) throws MessagingException {
         // Cấu hình SMTP
         String senderEmail = MailConfig.APP_EMAIL;
         String senderPassword = MailConfig.APP_PASSWORD;
@@ -32,14 +33,10 @@ public class EmailService {
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(senderEmail));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
-            message.setSubject("Khôi phục mật khẩu");
+            message.setSubject(subject); // Chủ đề email
 
             // Nội dung email
-            String emailContent = "Hello " + username + ",\n\n" +
-                    "Đây là mật khẩu mới của bạn: " + newPassword + "\n\n" +
-                    "Vui lòng đổi mật khẩu ngay sau khi đăng nhập.";
-
-            message.setText(emailContent);
+            message.setText(messageBody); // Nội dung email
 
             // Gửi email
             Transport.send(message);

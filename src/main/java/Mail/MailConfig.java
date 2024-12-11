@@ -1,10 +1,8 @@
 package Mail;
 
 public class MailConfig {
-
-    public static final String HOST_NAME = "smtp.gmail.com";
-    public static final int SSL_PORT = 465; // Port for SSL
-    public static final int TSL_PORT = 587; // Port for TLS/STARTTLS
-    public static final String APP_EMAIL = "khoangoquan@gmail.com"; // Email của bạn
-    public static final String APP_PASSWORD = "mzrs xvca qstr zegw"; // Mật khẩu email của bạn
+    public static final String APP_EMAIL = "your-email@example.com"; // Địa chỉ email gửi
+    public static final String APP_PASSWORD = "your-email-password"; // Mật khẩu ứng dụng
+    public static final String HOST_NAME = "smtp.example.com"; // SMTP server
+    public static final int TSL_PORT = 587; // Cổng TLS
 }
