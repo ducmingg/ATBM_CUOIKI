@@ -11,7 +11,7 @@
  Target Server Version : 80036 (8.0.36)
  File Encoding         : 65001
 
- Date: 11/12/2024 17:20:23
+ Date: 12/12/2024 20:46:14
 */
 
 SET NAMES utf8mb4;
@@ -66,14 +66,13 @@ CREATE TABLE `cartitems`  (
   INDEX `property_id`(`property_id` ASC) USING BTREE,
   CONSTRAINT `cartitems_ibfk_1` FOREIGN KEY (`cart_id`) REFERENCES `cart` (`cart_id`) ON DELETE CASCADE ON UPDATE RESTRICT,
   CONSTRAINT `cartitems_ibfk_2` FOREIGN KEY (`property_id`) REFERENCES `properties` (`property_id`) ON DELETE CASCADE ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of cartitems
 -- ----------------------------
-INSERT INTO `cartitems` VALUES (1, 23, 80, 'Nhà 1', 100.00, 50.00, 'https://bds.com.vn/images/products/2023/08/small/291540197_2951683408454929_1222724089350958978_n.jpg', 1, 'Địa chỉ Nhà 1');
-INSERT INTO `cartitems` VALUES (3, 25, 151, 'nhà mặt phố bố làm to lắm ', 50.00, 50.00, 'http://res.cloudinary.com/dg0f7bdho/image/upload/v1733235779/jmfgwn8bxefiznuoxwri.jpg', 1, 'Quận 1 Thành Phố Hồ Chí Minh');
-INSERT INTO `cartitems` VALUES (6, 26, 94, 'Sunny Valley', 76.00, 50.00, 'https://th.bing.com/th/id/OIP.k8nATvu-4HGpIPLvIt4M2gHaE8?pid=ImgDet&w=178&h=118&c=7&dpr=1.5', 1, '45 Đường Hoàng Sa, Quận Tân Bình, TP. HCM');
+INSERT INTO `cartitems` VALUES (8, 23, 106, 'Sản phẩm 12', 300.00, 100.00, 'https://th.bing.com/th/id/OIP.T96zPyMtBXzNW2IKRKY6mQHaLG?pid=ImgDet&w=178&h=267&c=7&dpr=1.5', 1, '36 Hồ Văn Huê, Phường 9, Quận Phú Nhuận, TP.HCM');
+INSERT INTO `cartitems` VALUES (9, 23, 89, 'Barr Land', 120.00, 120.00, 'https://th.bing.com/th/id/OIP.vlQojNVM49rZGVJPlD9TaAHaDn?rs=1&pid=ImgDetMain', 1, '102 Đường Bạch Đằng, Quận Bình Thạnh, TP. HCM');
 
 -- ----------------------------
 -- Table structure for comments
@@ -124,10 +123,7 @@ CREATE TABLE `digital_signature`  (
 -- ----------------------------
 -- Records of digital_signature
 -- ----------------------------
-INSERT INTO `digital_signature` VALUES (2, 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAs+qGL+E092p2wk8EoA0g1z8STIYThWvdW8g39KUWIxoqxhIbO8LM4F9NtdCkGJVBvn+YUf2DEZdeukSeX+s7NnGaVCI32SfiWG3fwltISOXbXsFcbylXrcjERu3xmyY7JsFXVU3kif8681Lm1TEE0a+TVMTzfVJefQjU3qqMqbO/rq8BxOcfgCqGjBtYfButyZrh93uxBDMpXBTVOnNarF+WnoLBrdygp2L3WRu8WnZ41oRhpB+j3Flvnb1GhKE3hR6DCWKRSSfr2XfHTUycKyia9aUlC3ZrQzuWS4mbxNpsmHa+lvm1U6jzJfBDt65IoHcuq5civh7oQRkMruIIewIDAQAB', '2024-12-11 16:11:33', '2024-12-14 13:07:37', 0, 1, NULL);
-INSERT INTO `digital_signature` VALUES (32, 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwAUwhPey9SuRJyWVFGP5DydqKn5LDmB/MpTy3eVWp10CtqZ4d3Y3zwjHDs7baYm977bWsic4snCS2diC28Q4pXMSwHAUxdaWGdOSW0bV+gPpucpCbBOxnz8NF18wY1bvVGtmgkTH07S9/YVfPH2IwOpNn0/EuNFj20XwduY5soPNFrtF4j2nMFMg0UtPsdAk2lAP36DEG4WdJuiPVC0Sr0FQtP2uNuQ5bImWD+uerla6rSF79ayrWyMsbIRXUa0oUFqinkuORGzq2qR8066Tp2wUDvpipsFdAWTIBYQmWjB1JB9t8asM/K5JRjMaFiMV4U3rx81ZYKfhQcSSp2UbDwIDAQAB', '2024-12-11 17:19:28', '2024-12-18 16:42:25', 0, 0, '2024-11-06 17:19:00');
-INSERT INTO `digital_signature` VALUES (34, 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAx5VJIJ0EDqtB6OYSD71qBfoU7OzbzEnXfJ3Jl1EISVl4QRG8WAbio08TpTmGHWMeWqeJ+N2pxouiYLq/x1l3cfAnpDdAy6F7VRqsh+m09b50aGkMkSqsJRTXzxmcY3SdlIqginhVjz2ZShjjTpbaCWxTh+jFZL2TX7aoXy/ywCF0zEz3aW8xBJiaYGRvjL2TWJeQHTk2Dm9R5CyPNUObIBKXHvRW4l5RjvGu1YZL7MYN7DQDUnFpEv9FJjEQRKOVs40Eze+KSrJHp3TDnM5e0NeGyR84SS0iUuv1truRQDWTCfXWleIGM7G37NCdp7MXqQr11DtDJ7YUmsxGblZQTQIDAQAB', '2024-12-11 15:15:46', '2024-12-18 12:05:19', 0, 1, NULL);
-INSERT INTO `digital_signature` VALUES (35, 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjHtM5NzaOJTeUj8zpkzuJhRPmfEFbpWaOuVErYUVzUthLqw+vGDIvgbVxhVzs8JXaiPTsfrFFGJFiGZ4bHH7c7RyNvvcMPkqoY+2chqdFlk0E/EwsuZ4mKqdw0CPBDJfaQMQeXiPoDCIGoSo3wAGEMeKszHPenTT2GleskE5pY7H0hNP57gSm74VYls0gfAhMUgMOmxph04JuEUVJKSjeDfN5Znf+HRMQtDCPjAqcklrpHVGCoKRtGs5+MMC4GFQhug3SC30h5hEC9rnqMwD5lssm/1KJpCoDNRcPZ1oiQSTOLwwIh3D7cYgISoE7aqqTDXiFLTGMias3HqxA1FAXwIDAQAB', '2024-12-11 17:07:55', '2024-12-18 17:07:55', 0, 1, NULL);
+INSERT INTO `digital_signature` VALUES (32, 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAw6WveminElIpjPiEH1ul8zvxQYhuUFi5RsfcFK8wJjxO9dAiPfNloXmkGq67QTZTjpc+qvUFVyUrFXsymaYUOLqN9xITy6roF0VuygJ2K5h9PPQBGk+Zsg7FLwR7JoScimlwD294TL+hkc6K9kmaRWgctAfrJmTkQDRpBEZ1fkrYkXHEozshNXkJMgKXj0A0BNA06qNRDivprwC8yBqWBpJnGefEbFfSAruKJhgZGoUsDxJc74sb3uh26la83+YZVoMKbAut8WjrgcMz1+ZO00OqCXPEWvWdsrSdEGoZXOrJnLdMoUFQyFoQ4UsdCq0XD8AF2k6cQjyCo9SRGXqy9wIDAQAB', '2024-12-12 13:15:23', '2024-12-19 13:15:23', 0, 1, NULL);
 
 -- ----------------------------
 -- Table structure for orderitems
@@ -145,19 +141,21 @@ CREATE TABLE `orderitems`  (
   INDEX `property_id`(`property_id` ASC) USING BTREE,
   CONSTRAINT `orderitems_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `orderitems_ibfk_2` FOREIGN KEY (`property_id`) REFERENCES `properties` (`property_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 32 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of orderitems
 -- ----------------------------
-INSERT INTO `orderitems` VALUES (1, 1, 80, 1, 100, 'Nhà 1');
-INSERT INTO `orderitems` VALUES (1, 2, 81, 1, 200, 'Nhà 2');
-INSERT INTO `orderitems` VALUES (2, 3, 151, 1, 50, 'nhà mặt phố bố làm to lắm ');
-INSERT INTO `orderitems` VALUES (3, 4, 80, 1, 100, 'Nhà 1');
-INSERT INTO `orderitems` VALUES (4, 5, 153, 1, 50, 'nhà mặt phố bố làm to lắm ');
-INSERT INTO `orderitems` VALUES (5, 6, 153, 1, 50, 'nhà mặt phố bố làm to lắm ');
-INSERT INTO `orderitems` VALUES (5, 7, 98, 1, 210, 'Sản phẩm 4');
-INSERT INTO `orderitems` VALUES (6, 8, 94, 1, 76, 'Sunny Valley');
+INSERT INTO `orderitems` VALUES (10, 22, 104, 2, 280, 'Sản phẩm 10');
+INSERT INTO `orderitems` VALUES (10, 23, 152, 1, 50, 'nhà mặt phố bố làm to lắm ');
+INSERT INTO `orderitems` VALUES (10, 24, 149, 1, 50, 'nhà mặt phố bố làm to lắm ');
+INSERT INTO `orderitems` VALUES (10, 25, 144, 1, 50, 'nhà mặt phố bố làm to lắm ');
+INSERT INTO `orderitems` VALUES (10, 26, 153, 1, 50, 'nhà mặt phố bố làm to lắm ');
+INSERT INTO `orderitems` VALUES (11, 27, 144, 1, 50, 'nhà mặt phố bố làm to lắm ');
+INSERT INTO `orderitems` VALUES (11, 28, 153, 1, 50, 'nhà mặt phố bố làm to lắm ');
+INSERT INTO `orderitems` VALUES (12, 29, 106, 1, 300, 'Sản phẩm 12');
+INSERT INTO `orderitems` VALUES (13, 30, 106, 1, 300, 'Sản phẩm 12');
+INSERT INTO `orderitems` VALUES (13, 31, 89, 1, 120, 'Barr Land');
 
 -- ----------------------------
 -- Table structure for orders
@@ -172,17 +170,15 @@ CREATE TABLE `orders`  (
   `verify` tinyint NULL DEFAULT 0,
   `is_report` tinyint NULL DEFAULT 0,
   PRIMARY KEY (`order_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of orders
 -- ----------------------------
-INSERT INTO `orders` VALUES (32, 1, '2024-12-11 12:04:35', 'a', 'AEYDJDbGMORxjDXL0Fukf1y3NLsCC8MZEfDd9M2y7wgdWRyhxEKyCDCyc5nQpvjOryDVPpXJt17oe0f8cRz+AY7TEt5Nm2VGZqm4oXkEdHqakAa1kUsTxmBzBBLaqMhbhdEXxtjTcA/2VcrjUKs+gkk8uqzPHSc98yEWmf4OxZ5HEN3b/bs3/tSV4lQ7A3q5AJmApeM8W/3/O/WnIpq3VVklbSzgn3um0ClNW/HYal7xwSkPgvjjRHWBnbDZOKFo2Hk1ffKHc/ePz5l/sLCQR28Jh4BC6v/GA1mnKs7RI1JkTFWwUBdcEt8TLksgZf+cy7muhAsUFEqtao9ZIKlVkw==', 0, 1);
-INSERT INTO `orders` VALUES (34, 2, '2024-12-11 12:05:26', 'c', 'aCLPfs2mB9Fd8zSsPpnHJK1qWVrwHHhQL+zDldKvadOAEpACK+Ig5tES6hLHP3Io7KHc06EbVk0LV/pCeQt9GkEwAiuM/jRt8ETEHTXEAaXGWm237A7FdmeGhbCBYeFuqxm2t/ZIOBWjBFvHQGrJbS757FTL40fhhen+U5xI4aRQSPXdzwZ+LneKUKRjisfQd/jVeL5YUa/kQYZa9DsqnyucNLnMzdeVMouKwIEmoWRrzUSu1xtroZC8netkmq9/c0uiRw4xmhqhwpBa8vSxQvis+PPs4oLGcLYrV9RQUuGWuTwIFx2mmzWTxoDenziHPh1u7QSfwt9i343BBz/kYg==', 1, 0);
-INSERT INTO `orders` VALUES (32, 3, '2024-12-11 16:42:35', 'a', 'AEYDJDbGMORxjDXL0Fukf1y3NLsCC8MZEfDd9M2y7wgdWRyhxEKyCDCyc5nQpvjOryDVPpXJt17oe0f8cRz+AY7TEt5Nm2VGZqm4oXkEdHqakAa1kUsTxmBzBBLaqMhbhdEXxtjTcA/2VcrjUKs+gkk8uqzPHSc98yEWmf4OxZ5HEN3b/bs3/tSV4lQ7A3q5AJmApeM8W/3/O/WnIpq3VVklbSzgn3um0ClNW/HYal7xwSkPgvjjRHWBnbDZOKFo2Hk1ffKHc/ePz5l/sLCQR28Jh4BC6v/GA1mnKs7RI1JkTFWwUBdcEt8TLksgZf+cy7muhAsUFEqtao9ZIKlVkw==', 0, 1);
-INSERT INTO `orders` VALUES (35, 4, '2024-12-11 16:49:34', 'd', 'euG80CkhyXthhQr/J1nuZxs/fiyuzq4B0oLsDfzCbekntLZmG2AXIyHw/jxCiEMugIw6GI2Aok63QWanMGSkz8Cd1FCv7FkFP4kU25x2TLn21gaZ0uDOOxBewzEnKZTTnCu0+9/HaG/fjSIlrCqNHfBONBdLAq2f4sbO2ftYMHKk6wZbT1Tb4NGSMfG9i6yuEgP5pfuCBX9cXZeg/KEpCA6FRafEI4irJqVJvncpXB1jIPxuaqcb/QELS/lgUsQA9ktVpjTG9Rgj45byir+lhG51scYB/x1IMM02go3L5UoYg2LCYiyqSs2e7i9/UTl9x45j9EVoEBo9ZiWZXnmqQA==', 1, 0);
-INSERT INTO `orders` VALUES (35, 5, '2024-12-11 16:51:02', 'd', 'QjXeictk/GlQK9IZLzgV1lPE9YdTKWqlB8n83yeeSRtCPAQE0U2Bw1WWv+1nmKAuZOlgNWwsG6gTQEQVLWs+MR1npwJQKc1CRpGqK5d/NT2JzjxsYCQGaGKwV0HAGHPdYeZW5SP6pMuWYsD9rR93D7AasfM2BJNitVsV9yHe1hEH+H7nVlvttmwS3c/2nJjrjZJzNYT/xHpzaHRskf55/0SlrYmgweZuFONXX6mnFP0z1oKZBVj7UyziVglLvvKfw2dGX14TF4Z6iryjNE/ZHXQ20fQ9dC3IvTCb2JhA4dQ0/+fP23JsrwSaB3K7BlEmMXN9M8E5GHKnjHMf83ZzmQ==', 0, 1);
-INSERT INTO `orders` VALUES (35, 6, '2024-12-11 17:08:28', 'd', 'OxbKdokJrPcyCWAmCfy/YbdvSs+SKE+AxLuDude5wJzazZlhKgU/GRlT/ez/wPpLCIf6aQbMPs9670oAi7il6tgAqveoSExJX80Xb2EGzcXfL8/kl8DpyPF2XLHzznxc8UbmnrwlnJkaxzpA2I1WWaBVK1MJZbcPBG/HheQCKATkptJAt3kNoGCNJfFwBh895op+6IpO8SaF8LWKy7U0cc+MDk/5zIDaY36G2RIwG3IZtbSpGMr9BCrCubyAUU+wKYlEhL9HP03lzyhk23pNvCHA6vW3sqyVt9Edei5okx+nhT04kWDDbpVI0bfKt6kQ5XAL2Om96GzVtbTVl0yTvQ==', 1, 0);
+INSERT INTO `orders` VALUES (32, 10, '2024-12-12 13:11:22', 'a', 'hnZaEDM5sH/GKjyN2EU6YfuCsqUzvZBHUMJ+3GzzXDWu9m3PvTdWt9itOVesegdjYbdRnxZvELYniL793aHFEwMhxv0oDQEKVsV2uwxsHOonMP9ReavSZIucejlDq1kziOvVXyhjiff1XCcfWnTCknLXQLKYkjn4WGTvAxusqOdrpUiPCj9U7Y7IXWpdX9y5yh3W0mXpK+plK3tNtNq23YaY/xS35DYSUZ6Gb1u+HUf4UR/SYDdLhdmL3PPgcoshhtQOOK8EQaT908fLEjgyx84EQFFpR/JIeALkND5eQwvU9Ar4sFFQJq+4nKUJw2drvXuZccm/2Iuo0wha1F7Hfg==', 0, 0);
+INSERT INTO `orders` VALUES (32, 11, '2024-12-12 13:11:49', 'a', 'Dc4yBSGy8ZY3ykHRCVxKyS24shDpZ7WDIURMyehCGRoOv9YoBlr2UOiKGkpwJ5CNio7IQAbEIpzrmE5wn7iaA7az9r2je5GyrvN16ne72SPIpnufUQy3yphkW20nmjL4//ReaJ7VEpuZJyt9hI3EQrx6ZfCP96/Q7NUJlguBR/Dqctf9MIcX3rs2VsOgKUtj+xNuYPV9N8HVfz19kgJ3rKRcCR8ltoITWcd3m6UEKAuN57ofI7ZBhzk2I5sEIHF2t6FS8RS2rLNn6W1gMBE1p79ad+Rx+x36HPwbUPXYG9HxM55zfmQkac5a0v3jP5m5AphNK6oF+PZgpk1XoXhpRg==', 1, 0);
+INSERT INTO `orders` VALUES (32, 12, '2024-12-12 13:13:54', 'a', 'kYaMdJ/g6Rd4nqWV5FbLGQY+in4LqQwlvTxOc2WKwLydMcyL6Xo/my4jKHJ6HPHhN/zL2Ve56se3oFUip9P8B1CjolIR/MJuL3tBw2iNVBH9oeyS9KFu5wa4YT/BwK1YVNzoIeukXmPV3Nebvn1wvDtJhwQEtaISNIUcwFmxBu//t1W+6XJGE1E0ST1+Ldd+Y6vlKxL0L4XiV3w5p+AsfkC5c4bmtuGKiimUY8956ZJEyKCtzALMVnNd0cCABk4gjfqFCRPW53ETZW0Lh9TyxcyVFiCNDQiECffD38yehwvkgZAWOIqrD4oL6tiBHR1b+dsuwCzPEhVYKjhUcb2+Qg==', 0, 1);
+INSERT INTO `orders` VALUES (32, 13, '2024-12-12 13:15:37', 'a', 'A2RtZlBIcFh0oliqsM3ucICvR3jmsm5Fk3prcheP1EUXEnZDvRNdp5E7bFM7FxKZRY/XO9AKUuybCE1BvSYr+KkuyGSOJNgSzxQpu1JJb4sUb4Rd18+2znHk1/JRVnkN/IEIoqKXaNBkt2/3FwM5CNuQy9Ck67j0tMeCmUGl3QgxcfgNYGyHVIUsmhYWZjs9qz7QmvlU3m4vTUOHYRKx+mh/PrY46o0/a7Q/H743H4jWkjJz3oPKpkkIX91ENb4a/FioVuPiwNPHbdFdTypT0Xgl8bT9ZEBb9T9WE9fg3EoYTN5S91n6UEdPPnd7YtS6JVPS0gvqpBKAiKBiagvYvw==', 1, 0);
 
 -- ----------------------------
 -- Table structure for posters
@@ -529,7 +525,7 @@ delimiter ;;
 CREATE PROCEDURE `change_dt_report_to_null`(in userId int)
 BEGIN
 update digital_signature
-set dt_report = NULL,is_use=1
+set dt_report = NULL,is_use=1,is_expired=0
 where user_id = userId;
 
 END
@@ -558,11 +554,26 @@ delimiter ;
 -- ----------------------------
 DROP PROCEDURE IF EXISTS `update_is_expired`;
 delimiter ;;
-CREATE PROCEDURE `update_is_expired`()
+CREATE PROCEDURE `update_is_expired`(in userId int,in val int)
 BEGIN
 UPDATE digital_signature
-    SET is_expired = 1
-    WHERE dt_expired <= dt_create; -- Điều kiện kiểm tra
+    SET is_expired = val
+    WHERE dt_expired <= NOW() and user_id = userId; -- Điều kiện kiểm tra
+END
+;;
+delimiter ;
+
+-- ----------------------------
+-- Procedure structure for update_is_expired_to_0
+-- ----------------------------
+DROP PROCEDURE IF EXISTS `update_is_expired_to_0`;
+delimiter ;;
+CREATE PROCEDURE `update_is_expired_to_0`(in userId int)
+BEGIN
+	update digital_signature
+	set is_expired = 0
+	where user_id = userId;
+
 END
 ;;
 delimiter ;
