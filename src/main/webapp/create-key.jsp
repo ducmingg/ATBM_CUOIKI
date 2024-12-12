@@ -30,7 +30,7 @@
 
     <h1><%= request.getAttribute("message") != null ? request.getAttribute("message") : "" %></h1>
     <h1>Tạo khóa</h1>
-    <form id="key-form" method="post" action="/digital-signature">
+    <form id="key-form" method="post" action="/Batdongsan/digital-signature">
         <div class="key-generation-section">
             <button type="submit" name="action" value="generateKey" id="generate-keys-btn">Tạo Khóa Mới</button>
             <div>

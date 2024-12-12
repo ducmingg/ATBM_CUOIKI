@@ -131,7 +131,7 @@
 <script>
     document.getElementById("btn_getinfo").addEventListener('click',(e)=>{
         $.ajax({
-            url:"/get_order_info",
+            url:"/Batdongsan/get_order_info",
             type:"GET",
             success:(resp)=>{
                 $(".info").val(resp)
