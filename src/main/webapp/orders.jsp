@@ -70,7 +70,10 @@
                 <%
                     if ("processed".equalsIgnoreCase(status)) {
                 %>
+
                 <a href="order-detail?orderId=<%= order.getOrderId() %>" class="text-blue-500">Xem chi tiết</a>
+               | <a href="editOrder.jsp?orderId=<%= order.getOrderId() %>" class="text-blue-500">Sửa</a>
+
                 <%
                     }
                 %>
