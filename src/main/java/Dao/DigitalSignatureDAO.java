@@ -246,6 +246,17 @@ public class DigitalSignatureDAO {
         }
     }
 
+    public void update_is_expired_to_0(int userId) {
+        String sql = "{CALL update_is_expired_to_0(?)}";
+        try (Connection connection = getConnection();
+             CallableStatement stmt = connection.prepareCall(sql)) {
+            stmt.setInt(1, userId);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void reportKey(int userId, LocalDateTime dtReport) {
         String sql = "{CALL update_dt_report(?, ?)}";  // Stored procedure gọi 2 tham số
         try (Connection connection = getConnection();
@@ -275,6 +286,6 @@ public class DigitalSignatureDAO {
         DigitalSignatureDAO ds = new DigitalSignatureDAO();
         LocalDateTime dtReport = LocalDateTime.parse("2024-12-02T15:20:07");
 
-        System.out.println(ds.check_is_use_key(2));;
+        System.out.println(ds.check_is_expired(32));;
     }
 }

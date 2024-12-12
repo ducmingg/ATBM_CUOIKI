@@ -55,9 +55,8 @@ public class LoginServlet extends HttpServlet {
 //        kiem tra is_pired
             DigitalSignatureDAO dao = new DigitalSignatureDAO();
             boolean check_is_expired = dao.check_is_expired(userId);
-            if(check_is_expired==false) {
                 dao.update_is_expired(userId, 1);
-            }
+
 //
             response.sendRedirect("welcome");
         } else {

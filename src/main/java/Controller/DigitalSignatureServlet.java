@@ -59,7 +59,7 @@ public class DigitalSignatureServlet extends HttpServlet {
             int userId = (int) session.getAttribute("userId");
             dao.addPublicKey(userId,publicKey);
             dao.changeDtReportToNull(userId);
-            dao.update_is_expired(userId,0);
+            dao.update_is_expired_to_0(userId);
             // Thông báo sau khi gửi
             req.setAttribute("message", "Khóa đã được gửi thành công.");
 //            RequestDispatcher dispatcher = req.getRequestDispatcher("welcome.jsp");
