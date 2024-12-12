@@ -14,7 +14,7 @@ public class PropertyDAO {
     public PropertyDAO() {
         try {
             // Thay đổi các tham số kết nối cho phù hợp với môi trường của bạn
-            this.connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/webbds", "root", "root");
+            this.connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/webbds", "root", "123456");
         } catch (SQLException e) {
             e.printStackTrace();
         }
