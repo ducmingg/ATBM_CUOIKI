@@ -17,8 +17,14 @@
     <!-- Liên kết quay lại trang admin -->
     <a href="admin.jsp" class="text-blue-500 mb-5 inline-block">Quay lại trang quản lý admin</a>
     <div>
-    <a href="processed-order" class="text-red-500">Xem chi tiết đơn hàng đã xác nhận</a>
+        <a href="processed-order" class="text-red-500">Xem chi tiết đơn hàng đã xác nhận</a>
     </div>
+
+    <!-- Thông báo đơn hàng thay đổi -->
+    <div id="notificationContainer" class="mb-4">
+        <!-- Thông báo sẽ được thêm vào ở đây -->
+    </div>
+
     <%-- Lấy danh sách đơn hàng từ request --%>
     <%
         List<Order> orders = (List<Order>) request.getAttribute("orders");
@@ -35,8 +41,7 @@
             <th class="px-4 py-2">Tên khách hàng</th>
             <th class="px-4 py-2">Mã khách hàng</th>
             <th class="px-4 py-2">Ngày đơn hàng</th>
-            <th class="px-4 py-2">Trạng thái</th>
-            <th class="px-4 py-2">Chức năng</th>
+
         </tr>
         </thead>
         <tbody>
@@ -63,20 +68,12 @@
             <td class="px-4 py-2"><%= order.getOrderDate() %>
             </td>
             <td class="px-4 py-2"><%= displayStatus %>
-            </td> <!-- Hiển thị trạng thái -->
-
-            <%-- Liên kết xem chi tiết đơn hàng nếu trạng thái là processed --%>
+            </td>
             <td class="px-4 py-2">
-                <%
-                    if ("processed".equalsIgnoreCase(status)) {
-                %>
-
+                <% if ("processed".equalsIgnoreCase(status)) { %>
                 <a href="order-detail?orderId=<%= order.getOrderId() %>" class="text-blue-500">Xem chi tiết</a>
-               | <a href="editOrder.jsp?orderId=<%= order.getOrderId() %>" class="text-blue-500">Sửa</a>
-
-                <%
-                    }
-                %>
+                | <a href="editOrder.jsp?orderId=<%= order.getOrderId() %>" class="text-blue-500">Sửa</a>
+                <% } %>
             </td>
         </tr>
         <%
@@ -84,14 +81,33 @@
         %>
         </tbody>
     </table>
-    <%-- Nếu không có đơn hàng --%>
-    <%
-    } else {
-    %>
+    <% } else { %>
     <p class="text-center text-red-500">Không có đơn hàng nào.</p>
-    <%
-        }
-    %>
+    <% } %>
 </div>
+
+<script>
+    function checkForUpdates() {
+        fetch('longPolling') // Gọi servlet longPolling
+            .then(response => response.text())
+            .then(data => {
+                if (data) {
+                    // Hiển thị thông báo khi có thay đổi
+                    document.getElementById('notificationContainer').innerHTML = data;
+                }
+                // Lặp lại long polling sau khi có phản hồi
+                setTimeout(checkForUpdates, 5000); // Kiểm tra lại sau 5 giây
+            })
+            .catch(error => {
+                console.error('Error during long polling: ', error);
+                // Thử lại sau 10 giây nếu có lỗi
+                setTimeout(checkForUpdates, 10000);
+            });
+    }
+
+    // Bắt đầu long polling khi trang được tải
+    window.onload = checkForUpdates;
+</script>
+
 </body>
 </html>

@@ -18,10 +18,7 @@ public class OrderDAO {
 
         try {
             conn = Database.getConnection();
-            String sql = "SELECT o.order_id, o.user_id, o.order_date, o.username, o.signature " +
-                    "FROM orders o " +
-                    "INNER JOIN orderitems oi ON o.order_id = oi.order_id " +
-                    "WHERE oi.status = 'processed'";
+            String sql = "SELECT * FROM orders ";
 
             stmt = conn.prepareStatement(sql);
             rs = stmt.executeQuery();
