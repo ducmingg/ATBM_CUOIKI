@@ -1,5 +1,7 @@
 <%@ page import="Entity.Order" %>
+<%@ page import="Entity.OrderItemChangeCount" %>
 <%@ page import="java.util.List" %>
+<%@ page import="Service.OrderItemLogService" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
 <!DOCTYPE html>
@@ -9,57 +11,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quản lý Đơn hàng</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@latest/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
-    <style>
-        .bell-icon {
-            font-size: 24px;
-            color: #4b5563; /* Màu mặc định của chuông */
-            cursor: pointer;
-            transition: color 0.3s, transform 0.2s, box-shadow 0.3s;
-            margin-left: 50px; /* Khoảng cách bên ngoài chuông */
-        }
-
-        .bell-icon:hover {
-            color: #4CAF50; /* Màu khi hover */
-            transform: scale(1.2); /* Phóng to biểu tượng khi hover */
-            box-shadow: 0 0 8px rgba(0, 0, 0, 0.3); /* Thêm bóng đổ khi hover */
-        }
-
-        .bell-icon:active {
-            color: #FF5722; /* Màu khi click */
-            transform: scale(0.95); /* Thu nhỏ khi click */
-        }
-
-        .bell-icon:focus {
-            outline: none; /* Tắt viền khi nhấn chuột vào chuông */
-        }
-
-
-    </style>
+    <!-- Thêm Font Awesome để sử dụng biểu tượng chuông -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-100 p-5">
 <div class="container mx-auto">
     <h1 class="text-2xl font-bold mb-5">Quản lý Đơn hàng</h1>
 
-    <%-- Kiểm tra quyền admin --%>
-    <%
-        String role = (String) session.getAttribute("role");  // Lấy thông tin phân quyền từ session (ví dụ: "admin" hoặc "user")
-
-        if (role == null || !role.equals("admin")) {  // Nếu không phải admin
-            response.sendRedirect("access-denied.jsp");  // Chuyển hướng đến trang access-denied.jsp
-            return;
-        }
-    %>
-
-    <%-- Nút quay lại trang admin --%>
-    <div class="mb-5">
-        <a href="admin.jsp" class="text-blue-600">Quay lại trang quản trị</a>  <!-- Nút quay lại trang admin -->
+    <!-- Liên kết quay lại trang admin -->
+    <a href="admin.jsp" class="text-blue-500 mb-5 inline-block">Quay lại trang quản lý admin</a>
+    <div>
+        <a href="processed-order" class="text-red-500">Xem chi tiết đơn hàng đã xác nhận</a>
     </div>
 
-    <%-- Lấy danh sách đơn hàng từ thuộc tính yêu cầu --%>
+    <%-- Lấy danh sách đơn hàng từ request --%>
     <%
         List<Order> orders = (List<Order>) request.getAttribute("orders");
+        OrderItemLogService orderItemLogService = new OrderItemLogService();
+
+        // Lấy số lần thay đổi của từng đơn hàng
+        List<OrderItemChangeCount> changeCounts = orderItemLogService.getOrderItemChangeCounts();
     %>
 
     <%-- Nếu có đơn hàng --%>
@@ -71,47 +42,100 @@
         <tr class="bg-gray-200 text-left">
             <th class="px-4 py-2">Mã đơn hàng</th>
             <th class="px-4 py-2">Tên khách hàng</th>
-
-            <th class="px-4 py-2">Mã khách hàng</th>
-
-            <th class="px-4 py-2">Hành động</th>
+            <th class="px-4 py-2">Mã khách hàng</th>
+            <th class="px-4 py-2">Ngày đơn hàng</th>
+            <th class="px-4 py-2">Hành động</th>
         </tr>
         </thead>
         <tbody>
-
         <%
+            // Lặp qua từng đơn hàng và hiển thị thông tin
             for (Order order : orders) {
+                // Lấy số lần thay đổi cho đơn hàng hiện tại
+
+                int changeCount = 0;
+                for (OrderItemChangeCount change : changeCounts) {
+                    if (String.valueOf(change.getOrderId()).equals(String.valueOf(order.getOrderId()))) {
+                        changeCount = change.getChangeCount();
+                        break;
+                    }
+                }
         %>
+
+
         <tr class="border-t">
-            <td class="px-4 py-2"><%= order.getOrderId() %></td>
-            <th class="px-4 py-2"> <%= order.getUserName() %></th>
-
-            <td class="px-4 py-2"><%= order.getUserId() %></td>
-
-            <td class="px-4 py-2 action-cell">
-                <a href="order-detail?orderId=<%= order.getOrderId() %>" class="text-blue-600">Xem</a> |
-                <a href="editOrder.jsp?orderId=<%= order.getOrderId() %>" class="text-green-600">Sửa</a>
-                <!-- Thêm icon chuông -->
-                <i class="fa-solid fa-bell bell-icon"></i>
+            <td class="px-4 py-2"><%= order.getOrderId() %>
             </td>
+            <td class="px-4 py-2"><%= order.getUsername() %>
+            </td>
+            <td class="px-4 py-2"><%= order.getUserId() %>
+            </td>
+            <td class="px-4 py-2"><%= order.getOrderDate() %>
+
+
+            <td class="px-4 py-2 relative">
+                <!-- Biểu tượng chỉnh sửa -->
+                <a href="order-change.jsp?orderId=<%= order.getOrderId() %>" class="text-blue-500 hover:text-blue-700">
+                    <i class="fas fa-pencil-alt"></i>
+                </a>
+
+                <!-- Thông báo số lần thay đổi -->
+                <span id="notification-count-<%= order.getOrderId() %>"
+                      class="absolute top-0 right-0 rounded-full bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center -top-2 -right-2">
+        <%= changeCount %> <!-- Hiển thị số lần thay đổi -->
+    </span>
+            </td>
+
         </tr>
         <%
             }
         %>
         </tbody>
     </table>
-    <%-- Nếu không có đơn hàng --%>
-    <%
-    } else {
-    %>
+    <% } else { %>
     <p class="text-center text-red-500">Không có đơn hàng nào.</p>
-    <%
+    <% } %>
+
+    <!-- Nút khởi tạo long-polling -->
+    <button id="start-polling-btn" class="bg-blue-500 text-white px-4 py-2 rounded mt-5 hover:bg-blue-700">
+        Kiểm tra thông báo thay đổi
+    </button>
+
+    <script>
+        // Script chính - Gọi servlet long-polling
+        const targetUrl = "http://localhost:8080/Batdongsan/longPolling"; // URL đến Servlet
+
+        // Hàm long-polling
+        function longPolling() {
+            fetch(targetUrl)
+                .then(response => response.json())  // Phản hồi JSON từ server
+                .then(data => {
+                    const notifications = data.notifications;
+
+                    // Kiểm tra và xử lý thông báo nếu có
+                    if (notifications && notifications.length > 0) {
+                        notifications.forEach(notification => {
+                            console.log(`Order ID: ${notification.orderId}, Message: ${notification.message}`);
+                        });
+                    } else {
+                        console.log("Không có thay đổi nào.");
+                    }
+                })
+                .catch(error => {
+                    console.error('Lỗi khi gọi long-polling:', error);
+                });
         }
-    %>
+
+        // Gọi long-polling khi trang load
+        longPolling();
+
+        // Lặp lại long-polling sau mỗi 5 giây (có thể tùy chỉnh thời gian)
+        setInterval(longPolling, 5000);
+    </script>
+
 
 </div>
 
-<!-- Add FontAwesome -->
 
 </body>
 </html>
