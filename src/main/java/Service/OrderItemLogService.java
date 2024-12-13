@@ -1,6 +1,7 @@
 package Service;
 
 import DBcontext.Database;
+import Entity.OrderItemChangeCount;
 import Entity.OrderItemLog;
 
 import java.sql.Connection;
@@ -82,5 +83,74 @@ public class OrderItemLogService {
             e.printStackTrace();
         }
         return orderId;
+    }
+
+    public List<OrderItemChangeCount> getOrderItemChangeCounts() {
+        List<OrderItemChangeCount> changeCounts = new ArrayList<>();
+        String sql = "SELECT order_item_id, COUNT(*) AS change_count " +
+                "FROM orderitem_logs " +
+                "GROUP BY order_item_id";
+
+        try (Connection conn = Database.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                int orderItemId = rs.getInt("order_item_id");
+                int changeCount = rs.getInt("change_count");
+
+                // Lấy thông tin về order và order_item
+                String orderId = getOrderDetails(orderItemId);  // Lấy order_id từ order_item_id
+                OrderItemChangeCount change = new OrderItemChangeCount(orderItemId, changeCount, orderId);
+                changeCounts.add(change);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return changeCounts;
+    }
+
+    // Phương thức lấy thông tin order_id từ order_item_id
+    public List<OrderItemLog> getOrderItemLogsByOrderId(int orderId) {
+        List<OrderItemLog> logs = new ArrayList<>();
+
+        // Truy vấn SQL để lấy các trường cần thiết trong 24 giờ qua cho một đơn hàng cụ thể
+        String sql = "SELECT log_id, order_item_id, action, old_quantity, new_quantity, " +
+                "old_price, new_price, change_time, changed_by, checked " +
+                "FROM orderitem_logs " +
+                "WHERE change_time > NOW() - INTERVAL 24 HOUR " +
+                "AND order_item_id IN (SELECT order_item_id FROM orderitems WHERE order_id = ?)";
+
+        try (Connection conn = Database.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            // Set giá trị cho tham số orderId
+            ps.setInt(1, orderId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                // Duyệt qua kết quả trả về từ truy vấn SQL
+                while (rs.next()) {
+                    OrderItemLog log = new OrderItemLog();
+                    log.setLogId(rs.getInt("log_id"));
+                    log.setOrderItemId(rs.getInt("order_item_id"));
+                    log.setAction(rs.getString("action"));
+                    log.setOldQuantity(rs.getInt("old_quantity"));
+                    log.setNewQuantity(rs.getInt("new_quantity"));
+                    log.setOldPrice(rs.getDouble("old_price"));
+                    log.setNewPrice(rs.getDouble("new_price"));
+                    log.setChangeTime(rs.getTimestamp("change_time"));
+                    log.setChangedBy(rs.getString("changed_by"));
+                    log.setChecked(rs.getBoolean("checked"));
+
+                    // Thêm log vào danh sách
+                    logs.add(log);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();  // Nên thay thế bằng logging để dễ theo dõi
+        }
+
+        return logs;
     }
 }

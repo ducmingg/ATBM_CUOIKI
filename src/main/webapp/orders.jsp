@@ -1,5 +1,7 @@
 <%@ page import="Entity.Order" %>
 <%@ page import="java.util.List" %>
+<%@ page import="Service.OrderItemLogService" %>
+<%@ page import="Entity.OrderItemChangeCount" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
 <!DOCTYPE html>
@@ -25,6 +27,10 @@
     <%-- Lấy danh sách đơn hàng từ request --%>
     <%
         List<Order> orders = (List<Order>) request.getAttribute("orders");
+        OrderItemLogService orderItemLogService = new OrderItemLogService();
+
+        // Lấy số lần thay đổi của từng đơn hàng
+        List<OrderItemChangeCount> changeCounts = orderItemLogService.getOrderItemChangeCounts();
     %>
 
     <%-- Nếu có đơn hàng --%>
@@ -38,13 +44,25 @@
             <th class="px-4 py-2">Tên khách hàng</th>
             <th class="px-4 py-2">Mã khách hàng</th>
             <th class="px-4 py-2">Ngày đơn hàng</th>
+            <th class="px-4 py-2">Hành động</th>
         </tr>
         </thead>
         <tbody>
         <%
             // Lặp qua từng đơn hàng và hiển thị thông tin
             for (Order order : orders) {
+                // Lấy số lần thay đổi cho đơn hàng hiện tại
+
+                int changeCount = 0;
+                for (OrderItemChangeCount change : changeCounts) {
+                    if (String.valueOf(change.getOrderId()).equals(String.valueOf(order.getOrderId()))) {
+                        changeCount = change.getChangeCount();
+                        break;
+                    }
+                }
         %>
+
+
         <tr class="border-t">
             <td class="px-4 py-2"><%= order.getOrderId() %>
             </td>
@@ -53,12 +71,21 @@
             <td class="px-4 py-2"><%= order.getUserId() %>
             </td>
             <td class="px-4 py-2"><%= order.getOrderDate() %>
+            <td class="px-4 py-2 relative">
+                <!-- Biểu tượng chỉnh sửa, người dùng có thể click vào để xem chi tiết -->
+                <a href="order-change.jsp?orderId=<%= order.getOrderId() %>" class="text-blue-500 hover:text-blue-700">
+                    <!-- Biểu tượng bút chì -->
+                    <i class="fas fa-pencil-alt"></i>
+                </a>
+
+                <!-- Hiển thị thông báo số lần thay đổi gần biểu tượng bút chì -->
+                <span id="notification-count-<%= order.getOrderId() %>"
+                      class="absolute top-0 right-0 rounded-full bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center -top-2 -right-2">
+        <%= changeCount %> <!-- Hiển thị số lần thay đổi -->
+    </span>
             </td>
-            <td class="px-4 py-2">
-                <!-- Biểu tượng chuông thông báo -->
-                <i class="fas fa-bell ml-3 text-yellow-500 cursor-pointer relative"
-                   id="bell-icon-<%= order.getOrderId() %>"></i>
-            </td>
+
+
         </tr>
         <%
             }
@@ -70,50 +97,7 @@
     <% } %>
 
 </div>
-<script>
-    function fetchNotifications() {
-        fetch('/longPolling') // Gọi đến Servlet longPolling
-            .then(response => response.json())
-            .then(data => {
-                if (data.notifications && data.notifications.length > 0) {
-                    data.notifications.forEach(notification => {
-                        const orderId = notification.orderId;
-                        const bellIcon = document.getElementById('bell-icon-' + orderId); // Lấy chuông theo orderId
 
-                        if (bellIcon) {
-                            // Thêm badge số thông báo vào chuông
-                            let badge = bellIcon.querySelector('.notification-badge');
-                            if (!badge) {
-                                badge = document.createElement('span');
-                                badge.classList.add(
-                                    'absolute',
-                                    'top-0',
-                                    'right-0',
-                                    'rounded-full',
-                                    'bg-red-500',
-                                    'text-white',
-                                    'text-xs',
-                                    'w-5',
-                                    'h-5',
-                                    'flex',
-                                    'items-center',
-                                    'justify-center',
-                                    'notification-badge'
-                                );
-                                bellIcon.appendChild(badge);
-                            }
-                            badge.textContent = '1'; // Hiển thị số thông báo
-                        }
-                    });
-                }
-            })
-            .catch(error => console.error('Error fetching notifications:', error));
-    }
-
-    // Gọi lại fetchNotifications mỗi 5 giây
-    setInterval(fetchNotifications, 5000);
-
-</script>
 
 </body>
 </html>

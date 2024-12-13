@@ -1,5 +1,6 @@
 package Service;
 
+import Entity.OrderItemChangeCount;
 import Entity.OrderItemLog;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -9,19 +10,23 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @WebServlet("/longPolling")
 public class LongPollingServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private static final int POLL_INTERVAL = 5000; // Thời gian chờ giữa các lần quét (5 giây)
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
         PrintWriter out = response.getWriter();
-        long startTime = System.currentTimeMillis();
+
+        // Lấy danh sách số lần thay đổi từ phương thức getOrderItemChangeCounts
+        OrderItemLogService logService = new OrderItemLogService();
+        List<OrderItemChangeCount> changeCounts = logService.getOrderItemChangeCounts();
 
         // Tạo JSON phản hồi
         StringBuilder jsonBuilder = new StringBuilder();
@@ -29,43 +34,27 @@ public class LongPollingServlet extends HttpServlet {
 
         boolean hasNotification = false;
 
-        while (System.currentTimeMillis() - startTime < POLL_INTERVAL) {
-            // Truy vấn logs
-            OrderItemLogService service = new OrderItemLogService();
-            List<OrderItemLog> logs = service.getChangedLogsInLast24Hours();
-
-            if (!logs.isEmpty()) {
-                for (OrderItemLog log : logs) {
-                    int orderItemId = log.getOrderItemId();
-                    String orderId = service.getOrderDetails(orderItemId);
-
-                    // Thêm thông báo vào JSON
-                    if (hasNotification) {
-                        jsonBuilder.append(",");
-                    }
-                    jsonBuilder.append("{\"orderId\":\"").append(orderId).append("\",")
-                            .append("\"message\":\"Đơn hàng ").append(orderId).append(" đã thay đổi!\"}");
-                    hasNotification = true;
-                }
-
-                // Đánh dấu logs là đã kiểm tra
-                service.markLogsAsChecked(logs);
-                break;
+        // Duyệt qua các thay đổi và tạo thông báo cho mỗi orderId
+        for (OrderItemChangeCount change : changeCounts) {
+            if (hasNotification) {
+                jsonBuilder.append(",");
             }
-
-            try {
-                Thread.sleep(1000);  // Tạm ngừng 1 giây
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            jsonBuilder.append("{\"orderId\":\"").append(change.getOrderId()).append("\",")
+                    .append("\"message\":\"Đơn hàng ").append(change.getOrderId())
+                    .append(" đã thay đổi ").append(change.getChangeCount()).append(" lần!\"}");
+            hasNotification = true;
         }
 
         jsonBuilder.append("]}");
+
+        // Trả về JSON
         out.write(jsonBuilder.toString());
         out.flush();
         out.close();
     }
 }
+
+
 
 
 
