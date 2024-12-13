@@ -194,7 +194,7 @@ public class OrderItemLogService {
         }
 
         // Cấu hình gửi email
-        String fromEmail = "Web Bat Dong San HomeLander"; // Địa chỉ email người gửi
+        String fromEmail = "WebbdsHomeLander"; // Địa chỉ email người gửi
         Properties properties = new Properties();
         properties.put("mail.smtp.auth", "true");
         properties.put("mail.smtp.starttls.enable", "true"); // Enable STARTTLS

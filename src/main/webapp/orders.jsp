@@ -96,69 +96,46 @@
     <p class="text-center text-red-500">Không có đơn hàng nào.</p>
     <% } %>
 
-    <!-- Nút bấm để bắt đầu long-polling -->
+    <!-- Nút khởi tạo long-polling -->
     <button id="start-polling-btn" class="bg-blue-500 text-white px-4 py-2 rounded mt-5 hover:bg-blue-700">
         Kiểm tra thông báo thay đổi
     </button>
 
+    <script>
+        // Script chính - Gọi servlet long-polling
+        const targetUrl = "http://localhost:8080/Batdongsan/longPolling"; // URL đến Servlet
+
+        // Hàm long-polling
+        function longPolling() {
+            fetch(targetUrl)
+                .then(response => response.json())  // Phản hồi JSON từ server
+                .then(data => {
+                    const notifications = data.notifications;
+
+                    // Kiểm tra và xử lý thông báo nếu có
+                    if (notifications && notifications.length > 0) {
+                        notifications.forEach(notification => {
+                            console.log(`Order ID: ${notification.orderId}, Message: ${notification.message}`);
+                        });
+                    } else {
+                        console.log("Không có thay đổi nào.");
+                    }
+                })
+                .catch(error => {
+                    console.error('Lỗi khi gọi long-polling:', error);
+                });
+        }
+
+        // Gọi long-polling khi trang load
+        longPolling();
+
+        // Lặp lại long-polling sau mỗi 5 giây (có thể tùy chỉnh thời gian)
+        setInterval(longPolling, 5000);
+    </script>
+
+
 </div>
 
-<!-- Chèn mã JavaScript để thực hiện long-polling -->
-<script>
-
-
-    // Hàm long-polling
-    function longPolling() {
-        fetch("http://localhost:8080/Batdongsan/orders")
-            .then(response => response.json())
-            .then(data => {
-                const notifications = data.notifications; // Giả sử bạn nhận được các thông báo từ server
-                if (notifications && notifications.length > 0) {
-                    notifications.forEach(notification => {
-                        const orderId = notification.orderId;
-                        const changeMessage = notification.message;
-
-                        // Tìm phần tử thông báo thay đổi theo orderId
-                        const notificationElement = document.getElementById(`notification-count-${orderId}`);
-                        if (notificationElement) {
-                            // Cập nhật số lượng thay đổi
-                            notificationElement.textContent = changeMessage;
-
-                            // Thêm hiệu ứng bounce
-                            notificationElement.classList.add('bounce');
-
-                            // Sau khi hiệu ứng chạy xong, bỏ lớp bounce để tái sử dụng
-                            setTimeout(() => {
-                                notificationElement.classList.remove('bounce');
-                            }, 300); // Thời gian hiệu ứng là 300ms
-                        } else {
-                            // Nếu không có phần tử thông báo, tạo mới
-                            const newNotification = document.createElement('span');
-                            newNotification.id = `notification-count-${orderId}`;
-                            newNotification.textContent = changeMessage;
-                            newNotification.classList.add('notification-count', 'bounce');
-                            document.querySelector(`#order-${orderId}`).appendChild(newNotification);
-                        }
-                    });
-                }
-            })
-            .catch(error => console.error('Lỗi trong long-polling:', error));
-
-        // Tiếp tục long-polling mỗi 5 giây nếu không có sự thay đổi
-        setTimeout(longPolling, 5000); // 5000ms = 5 giây
-    }
-
-    // Bắt đầu long-polling khi trang tải xong
-    document.addEventListener('DOMContentLoaded', () => {
-        longPolling();
-    });
-
-
-    // Thêm sự kiện nhấn nút để bắt đầu long-polling
-    document.getElementById('start-polling-btn').addEventListener('click', function () {
-        longPolling(); // Kích hoạt long-polling khi người dùng nhấn nút
-    });
-</script>
 
 </body>
 </html>

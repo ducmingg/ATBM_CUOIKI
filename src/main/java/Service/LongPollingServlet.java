@@ -18,7 +18,6 @@ import java.util.Map;
 public class LongPollingServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    // Khởi tạo đối tượng OrderItemLogService
     private OrderItemLogService logService = new OrderItemLogService();
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -46,7 +45,7 @@ public class LongPollingServlet extends HttpServlet {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            // Sau khi chờ, gọi lại phương thức này để tiếp tục long-polling
+            // Tiếp tục gọi lại phương thức này để kiểm tra lại
             doGet(request, response);
             return; // Tránh tiếp tục xử lý nếu chưa có thay đổi
         }
@@ -82,16 +81,14 @@ public class LongPollingServlet extends HttpServlet {
         logService.markLogsAsChecked(logsToCheck);
 
         // **Gửi email cho tất cả admin khi có thay đổi**
-        // Cải thiện gọi phương thức gửi email
         String subject = "Thông báo thay đổi trong đơn hàng";
 
         // Gửi email thông báo đến tất cả admin
         for (Map.Entry<String, Integer> entry : groupedChanges.entrySet()) {
             String orderId = entry.getKey();
             int totalChangeCount = entry.getValue();
-
-            // Gửi email cho các admin về đơn hàng và thay đổi
             logService.sendEmailToAdmins(Integer.parseInt(orderId), subject);
         }
     }
 }
+
