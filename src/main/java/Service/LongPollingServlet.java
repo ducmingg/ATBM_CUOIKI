@@ -18,15 +18,38 @@ import java.util.Map;
 public class LongPollingServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
+    // Khởi tạo đối tượng OrderItemLogService
+    private OrderItemLogService logService = new OrderItemLogService();
+
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
         PrintWriter out = response.getWriter();
 
-        // Lấy danh sách số lần thay đổi từ phương thức getOrderItemChangeCounts
-        OrderItemLogService logService = new OrderItemLogService();
+        // Lấy danh sách các bản ghi thay đổi từ bảng orderitem_logs
         List<OrderItemChangeCount> changeCounts = logService.getOrderItemChangeCounts();
+
+        // Nhóm các bản ghi theo orderId và cộng dồn số lần thay đổi
+        Map<String, Integer> groupedChanges = new HashMap<>();
+
+        for (OrderItemChangeCount change : changeCounts) {
+            groupedChanges.put(change.getOrderId(),
+                    groupedChanges.getOrDefault(change.getOrderId(), 0) + change.getChangeCount());
+        }
+
+        // Nếu không có thay đổi nào, chờ (giữ kết nối mở)
+        if (groupedChanges.isEmpty()) {
+            try {
+                // Chờ thêm một chút (ví dụ 5 giây) trước khi kiểm tra lại
+                Thread.sleep(5000); // Chờ 5 giây trước khi kiểm tra lại
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            // Sau khi chờ, gọi lại phương thức này để tiếp tục long-polling
+            doGet(request, response);
+            return; // Tránh tiếp tục xử lý nếu chưa có thay đổi
+        }
 
         // Tạo JSON phản hồi
         StringBuilder jsonBuilder = new StringBuilder();
@@ -34,14 +57,16 @@ public class LongPollingServlet extends HttpServlet {
 
         boolean hasNotification = false;
 
-        // Duyệt qua các thay đổi và tạo thông báo cho mỗi orderId
-        for (OrderItemChangeCount change : changeCounts) {
+        // Duyệt qua các thay đổi nhóm và tạo thông báo cho mỗi orderId
+        for (Map.Entry<String, Integer> entry : groupedChanges.entrySet()) {
             if (hasNotification) {
                 jsonBuilder.append(",");
             }
-            jsonBuilder.append("{\"orderId\":\"").append(change.getOrderId()).append("\",")
-                    .append("\"message\":\"Đơn hàng ").append(change.getOrderId())
-                    .append(" đã thay đổi ").append(change.getChangeCount()).append(" lần!\"}");
+            String orderId = entry.getKey();
+            int totalChangeCount = entry.getValue();
+            jsonBuilder.append("{\"orderId\":\"").append(orderId).append("\",")
+                    .append("\"message\":\"Đơn hàng ").append(orderId)
+                    .append(" đã thay đổi ").append(totalChangeCount).append(" lần!\"}");
             hasNotification = true;
         }
 
@@ -51,12 +76,22 @@ public class LongPollingServlet extends HttpServlet {
         out.write(jsonBuilder.toString());
         out.flush();
         out.close();
+
+        // **Gọi phương thức markLogsAsChecked() để đánh dấu các bản ghi là đã kiểm tra**
+        List<OrderItemLog> logsToCheck = logService.getChangedLogsInLast24Hours();
+        logService.markLogsAsChecked(logsToCheck);
+
+        // **Gửi email cho tất cả admin khi có thay đổi**
+        // Cải thiện gọi phương thức gửi email
+        String subject = "Thông báo thay đổi trong đơn hàng";
+
+        // Gửi email thông báo đến tất cả admin
+        for (Map.Entry<String, Integer> entry : groupedChanges.entrySet()) {
+            String orderId = entry.getKey();
+            int totalChangeCount = entry.getValue();
+
+            // Gửi email cho các admin về đơn hàng và thay đổi
+            logService.sendEmailToAdmins(Integer.parseInt(orderId), subject);
+        }
     }
 }
-
-
-
-
-
-
-
