@@ -13,6 +13,9 @@ public class Order {
     private String signature;
     private String status;
 
+    private int verify;
+    private int is_report;
+
     public Order(int orderId, int userId, String username, Date orderDate) {
         this.orderId = orderId;
         this.userId = userId;
@@ -32,8 +35,14 @@ public class Order {
         this.status = status;
     }
 
+    public Order(int orderId, Date orderDate, int verify, int is_report) {
+        this.orderId = orderId;
+        this.orderDate = orderDate;
+        this.verify = verify;
+        this.is_report = is_report;
+    }
 
-    // Getters and Setters
+// Getters and Setters
 
     public int getOrderId() {
         return orderId;
@@ -86,4 +95,17 @@ public class Order {
 
     }
 
+    @Override
+    public String toString() {
+        return "Order{" +
+                "orderId=" + orderId +
+                ", userId=" + userId +
+                ", orderDate=" + orderDate +
+                ", username='" + username + '\'' +
+                ", signature='" + signature + '\'' +
+                ", status='" + status + '\'' +
+                ", verify=" + verify +
+                ", is_report=" + is_report +
+                '}';
+    }
 }
