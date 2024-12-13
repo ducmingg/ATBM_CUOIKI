@@ -163,86 +163,86 @@ public class OrderItemLogService {
         return logs;
     }
 
-    public void sendEmailToAdmins(int orderId, String subject) {
-        // Lấy danh sách các admin email
-        List<String> adminEmails = getAdminEmails();
-
-        // Lấy các log thay đổi của đơn hàng
-        List<OrderItemLog> logs = getOrderItemLogsByOrderId(orderId);
-
-        // Tạo nội dung email
-        StringBuilder emailBody = new StringBuilder();
-        emailBody.append("Thông tin thay đổi trong đơn hàng với Order ID: ").append(orderId).append("\n\n");
-
-        if (logs.isEmpty()) {
-            emailBody.append("Không có thay đổi nào trong 24 giờ qua.\n");
-        } else {
-            emailBody.append("Các thay đổi trong 24 giờ qua:\n");
-            for (OrderItemLog log : logs) {
-                emailBody.append("Log ID: ").append(log.getLogId())
-                        .append(", Order Item ID: ").append(log.getOrderItemId())
-                        .append(", Hành động: ").append(log.getAction())
-                        .append(", Số lượng cũ: ").append(log.getOldQuantity())
-                        .append(", Số lượng mới: ").append(log.getNewQuantity())
-                        .append(", Giá cũ: ").append(log.getOldPrice())
-                        .append(", Giá mới: ").append(log.getNewPrice())
-                        .append(", Thời gian thay đổi: ").append(log.getChangeTime())
-                        .append(", Người thay đổi: ").append(log.getChangedBy())
-                        .append(", Đã kiểm tra: ").append(log.isChecked() ? "Có" : "Không")
-                        .append("\n");
-            }
-        }
-
-        // Cấu hình gửi email
-        String fromEmail = "WebbdsHomeLander"; // Địa chỉ email người gửi
-        Properties properties = new Properties();
-        properties.put("mail.smtp.auth", "true");
-        properties.put("mail.smtp.starttls.enable", "true"); // Enable STARTTLS
-        properties.put("mail.smtp.host", SMTP_HOST);
-        properties.put("mail.smtp.port", SMTP_PORT);
-        // Tạo đối tượng Session
-        Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication("khoangoquan@gmail.com", "mzrs xvca qstr zegw");  // Thông tin tài khoản email của bạn
-            }
-        });
-
-        try {
-            // Duyệt qua danh sách các admin và gửi email cho từng người
-            for (String adminEmail : adminEmails) {
-                // Tạo đối tượng MimeMessage
-                MimeMessage message = new MimeMessage(session);
-                message.setFrom(new InternetAddress(fromEmail));
-                message.addRecipient(Message.RecipientType.TO, new InternetAddress(adminEmail));  // Email của admin
-                message.setSubject(subject);  // Tiêu đề email
-                message.setText(emailBody.toString());  // Nội dung email
-
-                // Gửi email
-                Transport.send(message);
-                System.out.println("Email đã được gửi đến: " + adminEmail);
-            }
-        } catch (MessagingException e) {
-            e.printStackTrace();  // Xử lý lỗi nếu có
-        }
-    }
-
-    public List<String> getAdminEmails() {
-        List<String> adminEmails = new ArrayList<>();
-        String sql = "SELECT email FROM users WHERE role = 'admin'"; // Câu truy vấn lấy email của các admin
-
-        try (Connection conn = Database.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-
-            while (rs.next()) {
-                String email = rs.getString("email");
-                adminEmails.add(email);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return adminEmails;
-    }
+//    public void sendEmailToAdmins(int orderId, String subject) {
+//        // Lấy danh sách các admin email
+//        List<String> adminEmails = getAdminEmails();
+//
+//        // Lấy các log thay đổi của đơn hàng
+//        List<OrderItemLog> logs = getOrderItemLogsByOrderId(orderId);
+//
+//        // Tạo nội dung email
+//        StringBuilder emailBody = new StringBuilder();
+//        emailBody.append("Thông tin thay đổi trong đơn hàng với Order ID: ").append(orderId).append("\n\n");
+//
+//        if (logs.isEmpty()) {
+//            emailBody.append("Không có thay đổi nào trong 24 giờ qua.\n");
+//        } else {
+//            emailBody.append("Các thay đổi trong 24 giờ qua:\n");
+//            for (OrderItemLog log : logs) {
+//                emailBody.append("Log ID: ").append(log.getLogId())
+//                        .append(", Order Item ID: ").append(log.getOrderItemId())
+//                        .append(", Hành động: ").append(log.getAction())
+//                        .append(", Số lượng cũ: ").append(log.getOldQuantity())
+//                        .append(", Số lượng mới: ").append(log.getNewQuantity())
+//                        .append(", Giá cũ: ").append(log.getOldPrice())
+//                        .append(", Giá mới: ").append(log.getNewPrice())
+//                        .append(", Thời gian thay đổi: ").append(log.getChangeTime())
+//                        .append(", Người thay đổi: ").append(log.getChangedBy())
+//                        .append(", Đã kiểm tra: ").append(log.isChecked() ? "Có" : "Không")
+//                        .append("\n");
+//            }
+//        }
+//
+//        // Cấu hình gửi email
+//        String fromEmail = "WebbdsHomeLander"; // Địa chỉ email người gửi
+//        Properties properties = new Properties();
+//        properties.put("mail.smtp.auth", "true");
+//        properties.put("mail.smtp.starttls.enable", "true"); // Enable STARTTLS
+//        properties.put("mail.smtp.host", SMTP_HOST);
+//        properties.put("mail.smtp.port", SMTP_PORT);
+//        // Tạo đối tượng Session
+//        Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
+//            protected PasswordAuthentication getPasswordAuthentication() {
+//                return new PasswordAuthentication("khoangoquan@gmail.com", "mzrs xvca qstr zegw");  // Thông tin tài khoản email của bạn
+//            }
+//        });
+//
+//        try {
+//            // Duyệt qua danh sách các admin và gửi email cho từng người
+//            for (String adminEmail : adminEmails) {
+//                // Tạo đối tượng MimeMessage
+//                MimeMessage message = new MimeMessage(session);
+//                message.setFrom(new InternetAddress(fromEmail));
+//                message.addRecipient(Message.RecipientType.TO, new InternetAddress(adminEmail));  // Email của admin
+//                message.setSubject(subject);  // Tiêu đề email
+//                message.setText(emailBody.toString());  // Nội dung email
+//
+//                // Gửi email
+//                Transport.send(message);
+//                System.out.println("Email đã được gửi đến: " + adminEmail);
+//            }
+//        } catch (MessagingException e) {
+//            e.printStackTrace();  // Xử lý lỗi nếu có
+//        }
+//    }
+//
+//    public List<String> getAdminEmails() {
+//        List<String> adminEmails = new ArrayList<>();
+//        String sql = "SELECT email FROM users WHERE role = 'admin'"; // Câu truy vấn lấy email của các admin
+//
+//        try (Connection conn = Database.getConnection();
+//             PreparedStatement ps = conn.prepareStatement(sql);
+//             ResultSet rs = ps.executeQuery()) {
+//
+//            while (rs.next()) {
+//                String email = rs.getString("email");
+//                adminEmails.add(email);
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return adminEmails;
+//    }
 }
 
 

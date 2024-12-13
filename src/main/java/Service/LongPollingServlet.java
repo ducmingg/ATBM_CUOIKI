@@ -87,7 +87,7 @@ public class LongPollingServlet extends HttpServlet {
         for (Map.Entry<String, Integer> entry : groupedChanges.entrySet()) {
             String orderId = entry.getKey();
             int totalChangeCount = entry.getValue();
-            logService.sendEmailToAdmins(Integer.parseInt(orderId), subject);
+//            logService.sendEmailToAdmins(Integer.parseInt(orderId), subject);
         }
     }
 }
