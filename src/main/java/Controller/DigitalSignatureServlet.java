@@ -31,6 +31,7 @@ public class DigitalSignatureServlet extends HttpServlet {
 
         if ("generateKey".equals(action)) {
             // Xử lý khi người dùng nhấn "Tạo Khóa Mới"
+
             KeyPair keyPair = null;
             String base64PublicKey, base64PrivateKey;
             try {
@@ -50,6 +51,7 @@ public class DigitalSignatureServlet extends HttpServlet {
             dispatcher.forward(req, resp);
         } else if ("submitForm".equals(action)) {
             // Xử lý khi người dùng nhấn "Gửi Khóa"
+
             String publicKey = req.getParameter("publickey");
             HttpSession session = req.getSession();
 
@@ -57,6 +59,7 @@ public class DigitalSignatureServlet extends HttpServlet {
             int userId = (int) session.getAttribute("userId");
             dao.addPublicKey(userId,publicKey);
             dao.changeDtReportToNull(userId);
+            dao.update_is_expired_to_0(userId);
             // Thông báo sau khi gửi
             req.setAttribute("message", "Khóa đã được gửi thành công.");
 //            RequestDispatcher dispatcher = req.getRequestDispatcher("welcome.jsp");

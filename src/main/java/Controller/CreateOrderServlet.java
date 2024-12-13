@@ -26,12 +26,13 @@ public class CreateOrderServlet extends HttpServlet {
 
         DigitalSignatureDAO dao = new DigitalSignatureDAO();
         boolean check = dao.check_is_use_key(userId);
-
-        if(check==false){
+        boolean check_is_expired = dao.check_is_expired(userId);
+        if(check==false || check_is_expired==false){
             HttpSession session = request.getSession();
 
             session.setAttribute("message", "Vui lòng tạo key mới để thực hiện giao dịch");
             response.sendRedirect("create-key.jsp");
+            return;
         } else {
         // Get user ID and order date from request
 
@@ -91,8 +92,7 @@ public class CreateOrderServlet extends HttpServlet {
             }
 
             // Redirect to checkout page after successful order insertion
-            response.sendRedirect("checkout.jsp");
-
+            response.sendRedirect("welcome");
         } catch (SQLException e) {
             e.printStackTrace();
             response.sendRedirect("error.jsp"); // Redirect to error page if something goes wrong
@@ -111,6 +111,7 @@ public class CreateOrderServlet extends HttpServlet {
         String signature  = request.getParameter("signature");
         DigitalSignatureDAO d = new DigitalSignatureDAO();
         d.insertSignature(signature,orderId);
+
     }}
 
     private String formatOrderDate(String orderDateStr) {

@@ -100,7 +100,6 @@
     %>
     <h2>Nhập thông tin đặt lịch</h2>
 
-        <input class="info" type="text" name="info">
         <button type="submit" id="btn_getinfo" class="submit-btn">Tải đơn hàng xuống</button>
     <form id="schedule-form" method="post" action="schedule-appointment">
 
@@ -132,7 +131,7 @@
 <script>
     document.getElementById("btn_getinfo").addEventListener('click',(e)=>{
         $.ajax({
-            url:"/get_order_info",
+            url:"/Batdongsan/get_order_info",
             type:"GET",
             success:(resp)=>{
                 $(".info").val(resp)
