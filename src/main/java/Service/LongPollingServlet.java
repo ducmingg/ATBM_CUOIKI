@@ -17,54 +17,57 @@ public class LongPollingServlet extends HttpServlet {
     private static final int POLL_INTERVAL = 5000; // Thời gian chờ giữa các lần quét (5 giây)
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("text/html");
+        response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
-        // Đặt thời gian timeout của response lâu (chờ đợi lâu)
-        response.setBufferSize(1024 * 1024);  // 1MB buffer
-        response.setHeader("Cache-Control", "no-cache");
-
         PrintWriter out = response.getWriter();
-
-        // Lấy thời gian hiện tại và ước tính thời gian chờ
         long startTime = System.currentTimeMillis();
 
-        // Thực hiện long polling, kiểm tra nếu có thay đổi trong `orderitem_logs`
+        // Tạo JSON phản hồi
+        StringBuilder jsonBuilder = new StringBuilder();
+        jsonBuilder.append("{\"notifications\":[");
+
+        boolean hasNotification = false;
+
         while (System.currentTimeMillis() - startTime < POLL_INTERVAL) {
-            // Truy vấn bảng `orderitem_logs` để kiểm tra có thay đổi không
+            // Truy vấn logs
             OrderItemLogService service = new OrderItemLogService();
             List<OrderItemLog> logs = service.getChangedLogsInLast24Hours();
 
             if (!logs.isEmpty()) {
-                // Nếu có thay đổi, gửi thông báo cho từng đơn hàng thay đổi
                 for (OrderItemLog log : logs) {
-                    int orderItemId = log.getOrderItemId(); // Mã item của đơn hàng
-                    String orderId = service.getOrderDetails(orderItemId); // Lấy order_id từ orderitems và orders
-                    out.write("<div class='notification text-green-500'>Đơn hàng " + orderId + " đã thay đổi!</div>");
+                    int orderItemId = log.getOrderItemId();
+                    String orderId = service.getOrderDetails(orderItemId);
+
+                    // Thêm thông báo vào JSON
+                    if (hasNotification) {
+                        jsonBuilder.append(",");
+                    }
+                    jsonBuilder.append("{\"orderId\":\"").append(orderId).append("\",")
+                            .append("\"message\":\"Đơn hàng ").append(orderId).append(" đã thay đổi!\"}");
+                    hasNotification = true;
                 }
-                out.flush();
 
                 // Đánh dấu logs là đã kiểm tra
                 service.markLogsAsChecked(logs);
                 break;
             }
 
-            // Nếu không có thay đổi, tạm dừng một chút trước khi kiểm tra lại
             try {
-                Thread.sleep(1000);  // Ngừng 1 giây trước khi tiếp tục quét
+                Thread.sleep(1000);  // Tạm ngừng 1 giây
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
 
-        // Nếu hết thời gian mà không có thay đổi, gửi phản hồi mặc định
-        if (System.currentTimeMillis() - startTime >= POLL_INTERVAL) {
-            out.write("<div class='notification text-yellow-500'>Không có thay đổi mới.</div>");
-            out.flush();
-        }
-
-        // Kết thúc response
+        jsonBuilder.append("]}");
+        out.write(jsonBuilder.toString());
+        out.flush();
         out.close();
     }
 }
+
+
+
+
 
