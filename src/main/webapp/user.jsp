@@ -85,7 +85,7 @@
 
         .add-button {
             padding: 10px 20px;
-            background-color: #4CAF50;
+            background-color: dodgerblue;
             color: white;
             text-align: center;
             text-decoration: none;
@@ -93,8 +93,8 @@
         }
 
         .user-table th {
-            background-color: #4CAF50;
-            color: white;
+
+            color: black;
             text-transform: uppercase;
         }
 
