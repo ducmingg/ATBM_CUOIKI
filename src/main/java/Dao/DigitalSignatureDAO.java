@@ -3,6 +3,9 @@ package Dao;
 import DBcontext.Database;
 import Entity.OrderInfo;
 
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -186,6 +189,55 @@ public class DigitalSignatureDAO {
         return getInfo(orders);
     }
 
+
+    public void sendTokenEmail(String userEmail, String token) throws MessagingException {
+        // Thông tin cấu hình SMTP
+        String host = "smtp.gmail.com";
+        String from = "khoangoquan@gmail.com";  // Địa chỉ email gửi
+        String password = "mzrs xvca qstr zegw";  // Mật khẩu (nên thay bằng biến môi trường)
+
+        String subject = "Xác nhận khóa kỹ thuật số";
+
+        // Tạo URL xác nhận với token
+        String confirmUrl = "http://localhost:8080/Batdongsan/confirm-token?token=" + token + "&action=addPublicKey";
+
+        // Nội dung email
+        String body = "Xin chào,\n\n" +
+                "Chúng tôi đã nhận được yêu cầu xác nhận khóa kỹ thuật số của bạn. " +
+                "Vui lòng bấm vào liên kết dưới đây để xác nhận:\n" +
+                confirmUrl + "\n\n" +
+
+                "Nếu bạn không thực hiện yêu cầu này, vui lòng bỏ qua email này.\n\n" +
+                "Trân trọng,\n" +
+                "Hệ thống hỗ trợ";
+
+        // Cấu hình thông tin máy chủ gửi email
+        Properties properties = new Properties();
+        properties.put("mail.smtp.host", host);
+        properties.put("mail.smtp.port", "587");
+        properties.put("mail.smtp.auth", "true");
+        properties.put("mail.smtp.starttls.enable", "true");
+
+        // Tạo session và xác thực thông tin đăng nhập
+        Session mailSession = Session.getInstance(properties, new javax.mail.Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(from, password);
+            }
+        });
+
+        // Soạn thảo email
+        MimeMessage message = new MimeMessage(mailSession);
+        message.setFrom(new InternetAddress(from));
+        message.addRecipient(Message.RecipientType.TO, new InternetAddress(userEmail));  // Địa chỉ nhận email
+        message.setSubject(subject);  // Tiêu đề email
+        message.setText(body);  // Nội dung email
+
+        // Gửi email
+        Transport.send(message);
+        System.out.println("Token xác nhận đã được gửi đến email: " + userEmail);
+    }
+
+
     public static void main(String[] args) throws Exception {
         DigitalSignatureDAO ds = new DigitalSignatureDAO();
 //        KeyPair keyPair = ds.generateKey();
@@ -199,7 +251,6 @@ public class DigitalSignatureDAO {
 //        ds.getCartItemInfo(32);
 //        System.out.println(ds.getCartItemInfo(32));
     }
-
 
 
 }

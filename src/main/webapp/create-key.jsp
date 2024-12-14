@@ -10,13 +10,10 @@
 <body>
 
 <%
-
-    Integer userId = (Integer) session.getAttribute("userId");
-    System.out.println(userId);
+    Integer userId = (Integer) session.getAttribute("userId");  // Lấy userId từ session
     if (userId != null) {
 %>
-<p>User ID: <%= userId %>
-</p>
+<p>User ID: <%= userId %></p>
 <%
 } else {
 %>
@@ -41,9 +38,7 @@
         }
     %>
 
-
-    <h1><%= request.getAttribute("message") != null ? request.getAttribute("message") : "" %>
-    </h1>
+    <h1><%= request.getAttribute("message") != null ? request.getAttribute("message") : "" %></h1>
     <h1>Tạo khóa</h1>
     <form id="key-form" method="post" action="digital-signature">
         <div class="key-generation-section">
@@ -51,12 +46,12 @@
             <div>
                 <label for="public-key">Khóa Công Khai (Public Key):</label>
                 <textarea id="public-key" name="publickey" rows="4" readonly
-                          placeholder="Khóa công khai sẽ hiển thị ở đây..."><%= request.getAttribute("publickey") != null ? request.getAttribute("publickey") : "" %></textarea>
+                          placeholder="Khóa công khai sẽ hiển thị ở đây..."><%= session.getAttribute("publicKey") != null ? session.getAttribute("publicKey") : "" %></textarea>
             </div>
             <div>
                 <label for="private-key">Khóa Riêng (Private Key):</label>
                 <textarea id="private-key" rows="4" readonly
-                          placeholder="Khóa riêng sẽ hiển thị ở đây..."><%= request.getAttribute("privatekey") != null ? request.getAttribute("privatekey") : "" %></textarea>
+                          placeholder="Khóa riêng sẽ hiển thị ở đây..."><%= session.getAttribute("privateKey") != null ? session.getAttribute("privateKey") : "" %></textarea>
             </div>
             <div>
                 <button type="button" id="download-private-key-btn">Tải Khóa Riêng Xuống</button>
@@ -79,6 +74,7 @@
         </div>
     </form>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/jsrsasign@10.0.6/lib/jsrsasign-all-min.js"></script>
 <script src="script.js"></script>
 <script>

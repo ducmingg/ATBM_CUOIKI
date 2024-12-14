@@ -144,11 +144,22 @@ public class UserDAO {
         return email;
     }
 
+    public void savePublicKey(int userId, String publicKey) throws SQLException {
+        String sql = "UPDATE users SET public_key = ? WHERE user_id = ?";
+        Connection conn = Database.getConnection();
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, publicKey);
+            stmt.setInt(2, userId);
+            stmt.executeUpdate();
+        }
+    }
+
 
 //    public static void main(String[] args) throws SQLException {
 //        UserDAO dao = new UserDAO();
 //        System.out.println(dao.getEmailByUserId(1));
 //    }
-}
 
+}
 
