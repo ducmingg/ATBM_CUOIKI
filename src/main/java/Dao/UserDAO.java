@@ -89,10 +89,8 @@ public class UserDAO {
     }
 
 
-
-
     private Connection getConnection() throws SQLException {
-        String url = "jdbc:mysql://localhost:3306/webbds";
+        String url = "jdbc:mysql://localhost:3306/bds";
         String user = "root";
         String password = "123456";
         return DriverManager.getConnection(url, user, password);
@@ -129,7 +127,28 @@ public class UserDAO {
         }
     }
 
+    public String getEmailByUserId(int userId) throws SQLException {
+        String email = null;
+        String query = "SELECT email FROM users WHERE id = ?";
 
+        Connection conn = Database.getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                email = rs.getString("email");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return email;
+    }
+
+
+//    public static void main(String[] args) throws SQLException {
+//        UserDAO dao = new UserDAO();
+//        System.out.println(dao.getEmailByUserId(1));
+//    }
 }
 
 

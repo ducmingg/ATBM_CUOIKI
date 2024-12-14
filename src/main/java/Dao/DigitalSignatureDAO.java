@@ -85,8 +85,7 @@ public class DigitalSignatureDAO {
 
     public boolean doesUserExist(int userId) {
         String sql = "SELECT 1 FROM digital_signature WHERE user_id = ?";
-        try (Connection connection = getConnection();
-             PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (Connection connection = getConnection(); PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, userId);
             ResultSet rs = stmt.executeQuery();
             return rs.next();
@@ -103,8 +102,7 @@ public class DigitalSignatureDAO {
         boolean userExists = doesUserExist(userId);
         String sql = userExists ? sqlUpdate : sqlInsert;
 
-        try (Connection connection = getConnection();
-             PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (Connection connection = getConnection(); PreparedStatement stmt = connection.prepareStatement(sql)) {
             if (userExists) {
                 stmt.setString(1, publickey);
                 stmt.setInt(2, userId);
@@ -121,8 +119,7 @@ public class DigitalSignatureDAO {
     public int getCartId(int user_id) {
         String sql = "select cart_id from cart where user_id = ?";
         int cart_id = 0; // Khởi tạo giá trị mặc định
-        try (Connection connection = getConnection();
-             PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (Connection connection = getConnection(); PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, user_id); // Gán tham số cho câu lệnh SQL
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
@@ -135,22 +132,19 @@ public class DigitalSignatureDAO {
     }
 
     public String getInfo(List<OrderInfo> orders) {
-        Map<String, List<List<Object>>> groups = orders.stream()
-                .collect(Collectors.groupingBy(
-                        order -> order.getUser_id() + "-" + order.getCart_id() + "-" + order.getDt_buy(), // Khóa
-                        Collectors.mapping( // Chuyển đổi giá trị
-                                order -> Arrays.asList(order.getProperty_id(), order.getPrice(), order.getQuantity()), // Lưu các trường còn lại trong danh sách
-                                Collectors.toList() // Thu thập thành danh sách
-                        )
-                ));
+        Map<String, List<List<Object>>> groups = orders.stream().collect(Collectors.groupingBy(order -> order.getUser_id() + "-" + order.getCart_id() + "-" + order.getDt_buy(), // Khóa
+                Collectors.mapping( // Chuyển đổi giá trị
+                        order -> Arrays.asList(order.getProperty_id(), order.getPrice(), order.getQuantity()), // Lưu các trường còn lại trong danh sách
+                        Collectors.toList() // Thu thập thành danh sách
+                )));
 
         StringBuilder result = new StringBuilder();
-        for(Map.Entry<String,List<List<Object>>> i : groups.entrySet()){
+        for (Map.Entry<String, List<List<Object>>> i : groups.entrySet()) {
             String key = i.getKey();
             List<List<Object>> val = i.getValue();
             result.append(key);
-            for (List<Object> ee:val) {
-                for (Object e: ee) {
+            for (List<Object> ee : val) {
+                for (Object e : ee) {
                     result.append(e);
                 }
             }
@@ -160,25 +154,21 @@ public class DigitalSignatureDAO {
         return result.toString();
     }
 
-    public void insertSignature(String sig,int orderId) {
-        String sql  = "update orders set signature  = ? where order_id = ?";
-        try (Connection connection = getConnection();
-             PreparedStatement stmt = connection.prepareStatement(sql)) {
+    public void insertSignature(String sig, int orderId) {
+        String sql = "update orders set signature  = ? where order_id = ?";
+        try (Connection connection = getConnection(); PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, sig); // Gán tham số cho câu lệnh SQL
-            stmt.setInt(2,orderId);
+            stmt.setInt(2, orderId);
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
     public String getCartItemInfo(int user_id) {
         List<OrderInfo> orders = new ArrayList<>();
-        String sql = "SELECT u.id as user_id,c.cart_id,ci.property_id,ci.price,ci.quantity FROM users u " +
-                "join cart c on u.id = c.user_id " +
-                "join cartitems ci on c.cart_id = ci.cart_id " +
-                "where u.id = ?";
-        try (Connection connection = getConnection();
-            PreparedStatement stmt = connection.prepareStatement(sql)) {
+        String sql = "SELECT u.id as user_id,c.cart_id,ci.property_id,ci.price,ci.quantity FROM users u " + "join cart c on u.id = c.user_id " + "join cartitems ci on c.cart_id = ci.cart_id " + "where u.id = ?";
+        try (Connection connection = getConnection(); PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, user_id); // Gán tham số cho câu lệnh SQL
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
@@ -187,14 +177,15 @@ public class DigitalSignatureDAO {
                 int propertyId = rs.getInt(3);
                 double price = rs.getDouble(4);
                 int quantity = rs.getInt(5);
-                orders.add(new OrderInfo(user_id,cartId,propertyId,price,quantity));
-                System.out.println(new OrderInfo(user_id,cartId,propertyId,price,quantity).toString());
+                orders.add(new OrderInfo(user_id, cartId, propertyId, price, quantity));
+                System.out.println(new OrderInfo(user_id, cartId, propertyId, price, quantity).toString());
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return getInfo(orders);
     }
+
     public static void main(String[] args) throws Exception {
         DigitalSignatureDAO ds = new DigitalSignatureDAO();
 //        KeyPair keyPair = ds.generateKey();
@@ -208,4 +199,7 @@ public class DigitalSignatureDAO {
 //        ds.getCartItemInfo(32);
 //        System.out.println(ds.getCartItemInfo(32));
     }
+
+
+
 }
