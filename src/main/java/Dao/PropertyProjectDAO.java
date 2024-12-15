@@ -4,7 +4,7 @@ import java.sql.*;
 
 
 public class PropertyProjectDAO {
-    private String jdbcURL = "jdbc:mysql://localhost:3306/webbds";
+    private String jdbcURL = "jdbc:mysql://localhost:3306/bds1";
     private String jdbcUsername = "root";
     private String jdbcPassword = "123456";
 

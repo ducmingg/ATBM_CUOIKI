@@ -41,12 +41,13 @@ public class KafkaConsumerMain {
                     JSONObject after = payload.optJSONObject("after");
                     System.out.println(before);
                     System.out.println(after);
-                    int order_id = before.optInt("order_item_id");
+                    int order_id = after.optInt("order_item_id");
                     String change_by = after.optString("changed_by");
-                    double price = before.optDouble("old_price") != after.optDouble("new_price") ? after.optDouble("new_price"): null;
-                    int quantity = before.optInt("old_quantity") != after.optInt("new_quantity") ? after.optInt("new_quantity"): null;
+                    double price = after.optDouble("new_price");
+                    int quantity =after.optInt("new_quantity");
+                    String action = after.optString("action");
                     System.out.println(order_id+" "+change_by+" "+quantity+" "+price);
-                    String msg = "Mã đơn hàng: "+order_id + " ** Người thay đổi: "+ change_by+" ** Giá: "+price +" ** Số lượng: "+quantity;
+                    String msg = "Hành động thực hiện: "+action +"** Mã đơn hàng: "+order_id + " ** Người thay đổi: "+ change_by+" ** Giá: "+price +" ** Số lượng: "+quantity;
                     try {
                         emailService.sendEmail("21130447@st.hcmuaf.edu.vn","Cảnh báo có người thay đổi đơn hàng",msg);
                     } catch (MessagingException e) {

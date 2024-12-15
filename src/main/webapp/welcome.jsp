@@ -43,13 +43,13 @@
 
         <div class="header-right" style="margin-top: 10px">
             <% if (isLoggedIn) { %>
-            <a href="account.jsp" class="btn">
+            <a href="account.jsp" class="btn user-name-link">
                 <h3 style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
                     Hello, <%= username %>
                 </h3>
             </a>
 
-            <a href="javascript:void(0)" id="logoutButton" class="btn"
+            <a href="javascript:void(0)" id="logoutButton" class="btn logout-btn"
                onclick="document.getElementById('logoutForm').submit();">
                 <h3>Đăng xuất</h3>
             </a>
@@ -58,9 +58,7 @@
             <form id="logoutForm" action="logout" method="POST" style="display: none;">
                 <button type="submit" style="display: none;"></button> <!-- This button will not be visible -->
             </form>
-
             <% } else { %>
-            <!-- Display login and registration options if not logged in -->
             <a href="login.jsp" class="btn">
                 <h3>Đăng nhập</h3>
             </a>
@@ -68,13 +66,27 @@
                 <h3>Đăng ký</h3>
             </a>
             <% } %>
-
-            <!-- "Post Status" button, visible to both logged-in and non-logged-in users -->
             <a href="create-poster.jsp" class="btn">
                 <h3>Đăng tin</h3>
             </a>
         </div>
+        <style>
+            /* CSS cho hiệu ứng hover và làm nổi bật liên kết */
+            .user-name-link h3 {
+                display: inline-block;
+                cursor: pointer; /* Thêm con trỏ tay để người dùng biết đây là liên kết có thể click */
+                transition: color 0.3s ease, background-color 0.3s ease;
+            }
 
+            /* Thêm hiệu ứng hover */
+            .user-name-link:hover h3 {
+                color: #fff;
+                background-color: wheat; /* Màu nền khi hover */
+                padding: 5px 10px; /* Thêm khoảng cách để làm nổi bật */
+                border-radius: 5px; /* Bo góc */
+            }
+
+        </style>
         <a href="javascript:void(0)" id="floating-cart" class="floating-cart" onclick="toggleMiniCart()"
            style="border: 1px solid #ccc; border-radius: 50%; position: fixed; bottom: 20px; right: 20px; z-index: 999; padding: 10px; background-color: white;">
             <img src="jpg/heart%20(1).png" style="width: 30px; height: 30px;" alt="Giỏ hàng" class="cart-icon">

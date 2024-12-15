@@ -14,7 +14,7 @@ public class PropertyCityDAO {
     private Connection getConnection() throws SQLException {
         try {
             // Thay đổi thông tin kết nối cơ sở dữ liệu của bạn tại đây
-            String url = "jdbc:mysql://localhost:3306/webbds";
+            String url = "jdbc:mysql://localhost:3306/bds1";
             String user = "root";
             String password = "123456";
             return DriverManager.getConnection(url, user, password);

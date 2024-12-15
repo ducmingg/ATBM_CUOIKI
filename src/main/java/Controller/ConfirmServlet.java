@@ -38,7 +38,7 @@ public class ConfirmServlet extends HttpServlet {
         }
 
         try (Connection conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/webbds?useSSL=false&serverTimezone=UTC", "root", "123456")) {
+                "jdbc:mysql://localhost:3306/bds1?useSSL=false&serverTimezone=UTC", "root", "123456")) {
 
             // Check if the token is valid
             String checkQuery = "SELECT * FROM users WHERE token = ?";

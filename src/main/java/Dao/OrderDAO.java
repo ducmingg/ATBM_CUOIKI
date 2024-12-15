@@ -22,6 +22,7 @@ public class OrderDAO {
 
         try {
             conn = getConnection();
+
             String sql = "SELECT * FROM orders ";
 
             stmt = conn.prepareStatement(sql);

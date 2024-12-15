@@ -1,5 +1,6 @@
 package Controller;
 
+import DBcontext.Database;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -16,10 +17,8 @@ public class ChangePasswordServlet extends HttpServlet {
 
     // Kết nối đến CSDL
     private Connection connect() throws SQLException {
-        String jdbcURL = "jdbc:mysql://localhost:3306/webbds"; // Thay thế bằng tên database của bạn
-        String dbUser = "root"; // Thay thế bằng username CSDL của bạn
-        String dbPassword = "123456"; // Thay thế bằng mật khẩu CSDL của bạn
-        return DriverManager.getConnection(jdbcURL, dbUser, dbPassword);
+
+        return Database.getConnection();
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

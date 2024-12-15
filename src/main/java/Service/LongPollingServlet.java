@@ -1,3 +1,4 @@
+
 package Service;
 
 import Entity.OrderItemChangeCount;
@@ -81,7 +82,7 @@ public class LongPollingServlet extends HttpServlet {
         logService.markLogsAsChecked(logsToCheck);
 
         // **Gửi email cho tất cả admin khi có thay đổi**
-        String subject = "Thông báo thay đổi trong đơn hàng";
+//        String subject = "Thông báo thay đổi trong đơn hàng";
 
         // Gửi email thông báo đến tất cả admin
         for (Map.Entry<String, Integer> entry : groupedChanges.entrySet()) {

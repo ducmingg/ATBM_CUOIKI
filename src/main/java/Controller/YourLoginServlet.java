@@ -20,7 +20,7 @@ public class YourLoginServlet extends HttpServlet {
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/webbds", "root", "123456")) {
+            try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/bds1", "root", "123456")) {
                 PreparedStatement checkUserStmt = conn.prepareStatement("SELECT id, username FROM users WHERE facebook_id = ?");
                 checkUserStmt.setString(1, facebookId);
                 ResultSet rs = checkUserStmt.executeQuery();

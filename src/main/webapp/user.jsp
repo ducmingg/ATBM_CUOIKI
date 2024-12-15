@@ -85,7 +85,7 @@
 
         .add-button {
             padding: 10px 20px;
-            background-color: #4CAF50;
+            background-color: dodgerblue;
             color: white;
             text-align: center;
             text-decoration: none;
@@ -93,8 +93,8 @@
         }
 
         .user-table th {
-            background-color: #4CAF50;
-            color: white;
+
+            color: black;
             text-transform: uppercase;
         }
 
@@ -128,21 +128,7 @@
 <body>
 
 <div class="container">
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <ul>
-            <li><a href="admin.jsp">Main Dashboard</a></li>
-            <li><a href="users">Quản lý tài khoản</a></li>
-            <li><a href="home-manager">Quản lý sản phẩm</a></li>
-            <li><a href="top-property.jsp">Quản lý sản phẩm bán chạy</a></li>
-            <li><a href="home-manager">Quản lý nhà phân phối</a></li>
-            <li><a href="top-user-manager">Quản lý top 5 khách</a></li>
-            <li><a href="top-employee-manager.jsp">Quản lý top 5 nhân viên</a></li>
-            <li><a href="orders">Quản lý đơn đặt hàng</a></li>
-            <li><a href="comments-manager.jsp">Quản lý bình luận</a></li>
 
-        </ul>
-    </div>
 
     <!-- Main content -->
     <div class="main-content">

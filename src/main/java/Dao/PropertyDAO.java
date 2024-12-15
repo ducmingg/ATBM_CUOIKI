@@ -1,7 +1,6 @@
 package Dao;
 
 import DBcontext.Database;
-import DBcontext.DbConnection1;
 import Entity.Property1;
 
 import java.sql.*;
@@ -14,7 +13,7 @@ public class PropertyDAO {
     public PropertyDAO() {
         try {
             // Thay đổi các tham số kết nối cho phù hợp với môi trường của bạn
-            this.connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/webbds", "root", "root");
+            this.connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/bds1", "root", "123456");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -90,7 +89,7 @@ public class PropertyDAO {
     public List<Property1> getPropertiesByPage(int start, int total) {
         List<Property1> list = new ArrayList<>();
         try {
-            Connection conn = DbConnection1.initializeDatabase();
+            Connection conn = Database.getConnection();
             String query = "SELECT * FROM properties LIMIT ?, ?";
             PreparedStatement stmt = conn.prepareStatement(query);
             stmt.setInt(1, start);
@@ -120,7 +119,7 @@ public class PropertyDAO {
     public int getTotalRecords() {
         int total = 0;
         try {
-            Connection conn = DbConnection1.initializeDatabase();
+            Connection conn = Database.getConnection();
             String query = "SELECT COUNT(*) FROM properties";
             PreparedStatement stmt = conn.prepareStatement(query);
             ResultSet rs = stmt.executeQuery();
@@ -141,7 +140,7 @@ public class PropertyDAO {
 
     private Connection getConnection() throws SQLException {
 
-        String url = "jdbc:mysql://localhost:3306/webbds";  // Chỉnh sửa tên database nếu cần
+        String url = "jdbc:mysql://localhost:3306/bds1";  // Chỉnh sửa tên database nếu cần
         String user = "root";
         String password = "123456";  // Cập nhật mật khẩu nếu cần
         return DriverManager.getConnection(url, user, password);
@@ -157,7 +156,7 @@ public class PropertyDAO {
 
         try {
             // Kết nối đến cơ sở dữ liệu
-            conn = DbConnection1.initializeDatabase();
+            conn = Database.getConnection();
 
             // Truy vấn tất cả các bất động sản từ bảng 'properties'
             String query = "SELECT property_id, title, price, area, address, type, status, image_url FROM properties";
@@ -312,7 +311,7 @@ public class PropertyDAO {
         }
         String query = queryBuilder.toString();
 
-        try (Connection conn = DbConnection1.initializeDatabase();
+        try (Connection conn = Database.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
             // Thiết lập giá trị cho từng dấu ? trong câu truy vấn
@@ -332,7 +331,7 @@ public class PropertyDAO {
 
                 properties.add(property);
             }
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return properties;
@@ -342,7 +341,7 @@ public class PropertyDAO {
         List<Property1> properties = new ArrayList<>();
         String query = "SELECT property_id,title, description, address, area, image_url, price FROM properties WHERE address LIKE ?";
 
-        try (Connection conn = DbConnection1.initializeDatabase();
+        try (Connection conn = Database.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, "%" + city + "%");
             ResultSet rs = stmt.executeQuery();
@@ -359,8 +358,6 @@ public class PropertyDAO {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
         }
         return properties;
     }
@@ -370,7 +367,7 @@ public class PropertyDAO {
         String query = "SELECT property_id,title, description, address, area, image_url, price FROM properties " +
                 "WHERE address LIKE ? ORDER BY area DESC LIMIT ?"; // Lấy sản phẩm có diện tích lớn nhất
 
-        try (Connection conn = DbConnection1.initializeDatabase();
+        try (Connection conn = Database.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, "%" + city + "%");
             stmt.setInt(2, limit); // Số lượng sản phẩm muốn lấy
@@ -388,8 +385,6 @@ public class PropertyDAO {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
         }
         return properties;
     }
@@ -399,7 +394,7 @@ public class PropertyDAO {
         String query = "SELECT property_id,title, description, address, area, image_url, price FROM properties " +
                 "WHERE address LIKE ? ORDER BY price DESC LIMIT ?"; // Lấy sản phẩm có giá cao nhất
 
-        try (Connection conn = DbConnection1.initializeDatabase();
+        try (Connection conn = Database.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, "%" + city + "%");
             stmt.setInt(2, limit); // Số lượng sản phẩm muốn lấy
@@ -417,8 +412,6 @@ public class PropertyDAO {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
         }
         return properties;
     }
@@ -453,6 +446,7 @@ public class PropertyDAO {
             return false;
         }
     }
+
     public void deleteThumbnail(int propertyId, String imageUrl) {
         String sql = "DELETE FROM property_images WHERE property_id = ? AND image_url = ?";
         try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {

@@ -48,7 +48,7 @@
         }
     %>
 
-    <h1 class="text-2xl font-bold mb-5">Chỉnh sửa Đơn hàng - Mã đơn hàng: <%= order.getOrderId() %> -Tên khách hàng: <%= order.getUserName() %></h1>
+    <h1 class="text-2xl font-bold mb-5">Chỉnh sửa Đơn hàng - Mã đơn hàng: <%= order.getOrderId() %> -Tên khách hàng: <%= order.getUsername() %></h1>
 
     <%-- Form chỉnh sửa đơn hàng --%>
     <form action="updateOrder" method="post" class="bg-white p-5 shadow-md rounded">

@@ -15,7 +15,7 @@ public class PropertyBystatusDAO {
 
     // Phương thức để lấy kết nối đến cơ sở dữ liệu
     private Connection getConnection() throws SQLException {
-        String url = "jdbc:mysql://localhost:3306/webbds";  // Chỉnh sửa tên database nếu cần
+        String url = "jdbc:mysql://localhost:3306/bds1";  // Chỉnh sửa tên database nếu cần
         String user = "root";
         String password = "123456";  // Cập nhật mật khẩu nếu cần
         return DriverManager.getConnection(url, user, password);

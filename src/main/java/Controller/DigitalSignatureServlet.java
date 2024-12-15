@@ -1,6 +1,7 @@
 package Controller;
 
 import Dao.DigitalSignatureDAO;
+import Dao.UserDAO; // Import UserDAO để lấy email
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -13,20 +14,26 @@ import java.io.IOException;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.sql.SQLException;
 import java.util.Base64;
+import java.util.Properties;
+import java.util.UUID; // Dùng để tạo mã xác nhận
+import javax.mail.*;
+import javax.mail.internet.*;
 
 @WebServlet("/digital-signature")
 public class DigitalSignatureServlet extends HttpServlet {
     private DigitalSignatureDAO dao;
+    private UserDAO userDao;
 
     @Override
     public void init() throws ServletException {
         dao = new DigitalSignatureDAO();
+        userDao = new UserDAO(); // Khởi tạo UserDAO để truy vấn thông tin người dùng
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // Lấy giá trị action từ form
         String action = req.getParameter("action");
 
         if ("generateKey".equals(action)) {
@@ -44,33 +51,53 @@ public class DigitalSignatureServlet extends HttpServlet {
                 throw new RuntimeException(e);
             }
 
-            // Gửi giá trị khóa đến trang JSP
-            req.setAttribute("publickey", base64PublicKey);
-            req.setAttribute("privatekey", base64PrivateKey);
-            RequestDispatcher dispatcher = req.getRequestDispatcher("create-key.jsp");
-            dispatcher.forward(req, resp);
-        } else if ("submitForm".equals(action)) {
-            // Xử lý khi người dùng nhấn "Gửi Khóa"
 
-            String publicKey = req.getParameter("publickey");
+            // Lưu publicKey và privateKey vào session
             HttpSession session = req.getSession();
+            session.setAttribute("publicKey", base64PublicKey);  // Lưu publicKey vào session
+            session.setAttribute("privateKey", base64PrivateKey);  // Lưu privateKey vào session
+            System.out.println(base64PublicKey);
+            // Chuyển hướng về trang để hiển thị khóa
+            resp.sendRedirect("create-key.jsp");
 
-            // Xử lý logic gửi khóa (lưu vào database, gửi email, etc.)
-            int userId = (int) session.getAttribute("userId");
-            dao.addPublicKey(userId,publicKey);
-            dao.changeDtReportToNull(userId);
-            dao.update_is_expired_to_0(userId);
-            // Thông báo sau khi gửi
-            req.setAttribute("message", "Khóa đã được gửi thành công.");
-//            RequestDispatcher dispatcher = req.getRequestDispatcher("welcome.jsp");
-//            dispatcher.forward(req, resp);
-            resp.sendRedirect("welcome");
-        } else if ("uploadPublicKey".equals(action)) {
-            // Xử lí gửi khi bấm vào "Tải lên"
-            req.setAttribute("publickey", req.getParameter("publickey"));
-            RequestDispatcher dispatcher = req.getRequestDispatcher("create-key.jsp");
-            dispatcher.forward(req, resp);
 
+        } else if ("submitForm".equals(action)) {
+            // Lấy giá trị publicKey từ session
+            HttpSession session = req.getSession();
+            String publicKey = (String) session.getAttribute("publicKey");
+
+            if (publicKey != null) {
+                Integer userId = (Integer) session.getAttribute("userId");
+                if (userId != null) {
+                    // Lấy email của người dùng từ cơ sở dữ liệu
+                    String userEmail = null;
+                    try {
+                        userEmail = userDao.getEmailByUserId(userId);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    // Tạo mã token và lưu vào session
+                    String token = UUID.randomUUID().toString();
+                    session.setAttribute("token", token);  // Lưu token vào session
+
+                    try {
+                        // Gửi email xác nhận cho người dùng
+                        dao.sendTokenEmail(userEmail, token);
+                    } catch (MessagingException e) {
+                        throw new RuntimeException("Không thể gửi mã xác nhận qua email.", e);
+                    }
+
+                    // Thêm thông báo cho người dùng
+                    session.setAttribute("message", "Mã xác nhận đã được gửi đến email của bạn.");
+
+                    // Chuyển hướng về trang để hiển thị thông báo
+                    resp.sendRedirect("create-key.jsp");
+                }
+            }
         }
     }
 }
+
+
+

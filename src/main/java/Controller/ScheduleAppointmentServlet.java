@@ -86,7 +86,7 @@ public class ScheduleAppointmentServlet extends HttpServlet {
         String email = null;
         String query = "SELECT email FROM users WHERE username = ?";
 
-        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/webbds", "root", "root");
+        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/bds1", "root", "root");
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, username);
             try (ResultSet rs = stmt.executeQuery()) {

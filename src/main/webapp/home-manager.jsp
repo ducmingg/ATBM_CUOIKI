@@ -1,54 +1,14 @@
-<%
-
-    // Sử dụng biến session có sẵn trong JSP
-    String role = (String) session.getAttribute("role");
-
-    if (!"admin".equals(role)) {
-        // Nếu không phải admin, chuyển hướng đến trang không có quyền truy cập
-        response.sendRedirect("access-denied.jsp");
-        return;
-    }
-%>
 <%@ page import="java.util.List" %>
 <%@ page import="Entity.Property1" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
-
-<!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý Bất Động Sản</title>
-
-    <!-- DataTables CSS -->
+    <!-- Tải thư viện CSS và JS cần thiết -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/4.0.1/css/fixedHeader.dataTables.css">
+
     <style>
-        .btn-enable {
-            background-color: green;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .btn-disable {
-            background-color: red;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .btn-enable:hover, .btn-disable:hover {
-            opacity: 0.8;
-        }
-
-
-        /* CSS giữ nguyên như bạn đã tạo */
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
@@ -105,20 +65,13 @@
 
         .add-button {
             padding: 10px 20px;
-
-            background-color: #4CAF50;
-            color: white;
+            background-color: dodgerblue;
+            color: black;
             text-align: center;
             text-decoration: none;
             border-radius: 4px;
-
             margin-left: 700px;
-
-        }
-
-        a {
-            text-align: right;
-            margin-bottom: 20px;
+            display: inline-block;
         }
 
         .property-table {
@@ -133,42 +86,45 @@
             border-bottom: 1px solid #ddd;
         }
 
-        .property-table th {
-            background-color: #4CAF50;
-            color: white;
-        }
-
         .property-table img {
             max-width: 100px;
             height: auto;
             border-radius: 5px;
         }
+
+        .btn-disable {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-enable {
+            background-color: green;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-enable:hover, .btn-disable:hover {
+            opacity: 0.8;
+        }
     </style>
+
+    <title>Danh sách bất động sản</title>
 </head>
 <body>
+
 <div class="container">
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <ul>
-            <li><a href="admin.jsp">Main Dashboard</a></li>
-            <li><a href="users">Quản lý tài khoản</a></li>
-            <li><a href="home-manager">Quản lý sản phẩm</a></li>
-<%--            <li><a href="top-property.jsp">Quản lý sản phẩm bán chạy</a></li>--%>
-            <li><a href="home-manager">Quản lý nhà phân phối</a></li>
-<%--            <li><a href="top-user-manager">Quản lý top 5 khách</a></li>--%>
-<%--            <li><a href="top-employee-manager.jsp">Quản lý top 5 nhân viên</a></li>--%>
-            <li><a href="orders">Quản lý đơn đặt hàng</a></li>
-            <li><a href="comments-manager.jsp">Quản lý bình luận</a></li>
-
-        </ul>
-    </div>
-
-    <!-- Main content -->
     <div class="main-content">
         <h2>Danh sách bất động sản</h2>
         <a href="add-property.jsp" class="add-button">Thêm bất động sản mới</a>
 
-        <!-- Property Table -->
+        <!-- Bảng bất động sản -->
         <table id="propertyTable" class="display property-table">
             <thead>
             <tr>
@@ -179,7 +135,7 @@
                 <th>Diện tích (m²)</th>
                 <th>Hình ảnh</th>
                 <th>Thao tác</th>
-                <th>Vô hiệu hóa</th> <!-- Cột mới cho nút Vô hiệu hóa -->
+                <th>Trạng thái</th> <!-- Cột mới cho nút kích hoạt/vô hiệu hóa -->
             </tr>
             </thead>
             <tbody>
@@ -195,7 +151,7 @@
                 <td><%= property.getAddress() %></td>
                 <td><%= property.getArea() %> m²</td>
                 <td>
-                    <img src="<%= property.getImageUrl() != null ? property.getImageUrl() : "default.jpg" %>" alt="Image" width="100">
+                    <img src="<%= property.getImageUrl() != null ? property.getImageUrl() : "default.jpg" %>" alt="Image">
                 </td>
                 <td>
                     <a href="view-property.jsp?property_id=<%= property.getId() %>">Xem</a> |
@@ -207,16 +163,12 @@
                         <button type="submit" onclick="return confirm('Bạn có chắc chắn muốn xóa bất động sản này không?')">Xóa</button>
                     </form>
                 </td>
-
-                <!-- Thêm cột cho Vô hiệu hóa -->
                 <td>
                     <form action="properties" method="POST" style="display: inline;">
                         <input type="hidden" name="id" value="<%= property.getId() %>">
-                        <input type="hidden" name="action" value="<%= property.getStatus().equals("0") ? "enable" : "disable" %>"> <!-- Đặt action enable hoặc disable -->
-                        <input type="hidden" name="status" value="<%= property.getStatus() %>"> <!-- Trạng thái bất động sản -->
-
-                        <!-- Nút Vô hiệu hóa / Kích hoạt -->
-                        <button type="submit" class="<%= property.getStatus().equals("0") ? "btn-enable" : "btn-disable" %>" onclick="return confirm('Bạn có chắc chắn muốn <%= property.getStatus().equals("0") ? "kích hoạt" : "vô hiệu hóa" %> bất động sản này không?')">
+                        <input type="hidden" name="action" value="<%= property.getStatus().equals("0") ? "enable" : "disable" %>">
+                        <button type="submit" class="<%= property.getStatus().equals("0") ? "btn-enable" : "btn-disable" %>"
+                                onclick="return confirm('Bạn có chắc chắn muốn <%= property.getStatus().equals("0") ? "kích hoạt" : "vô hiệu hóa" %> bất động sản này không?')">
                             <i class="fa <%= property.getStatus().equals("0") ? "fa-check-circle" : "fa-ban" %>"></i>
                             <%= property.getStatus().equals("0") ? "Kích hoạt" : "Vô hiệu hóa" %>
                         </button>
@@ -224,44 +176,21 @@
                 </td>
             </tr>
             <%
-
                 }
             } else {
             %>
             <tr>
                 <td colspan="8" style="text-align: center;">Không có bất động sản nào.</td>
             </tr>
-            <%
-                }
-            %>
+            <% } %>
             </tbody>
         </table>
     </div>
 </div>
 
-<!-- jQuery and DataTables JavaScript -->
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<!-- Các script cho DataTables -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
-<script>
-    $(document).ready(function () {
-        $('#propertyTable').DataTable({
-            "pageLength": 10,
-            "language": {
-                "search": "Tìm kiếm:",
-                "lengthMenu": "Hiển thị _MENU_ mục",
-                "info": "Hiển thị _START_ đến _END_ của _TOTAL_ mục",
-                "paginate": {
-                    "first": "Đầu",
-                    "last": "Cuối",
-                    "next": "Sau",
-                    "previous": "Trước"
-                },
-                "zeroRecords": "Không tìm thấy kết quả phù hợp",
-                "infoEmpty": "Không có dữ liệu",
-                "infoFiltered": "(lọc từ _MAX_ mục)"
-            }
-        });
-    });
-</script>
+
 </body>
 </html>
