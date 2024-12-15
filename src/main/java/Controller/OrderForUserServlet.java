@@ -22,8 +22,7 @@ public class OrderForUserServlet extends HttpServlet {
         List<Order> orders = dao.getOrderByUserId(userId);
 
         req.setAttribute("orders", orders);
-
-        // Chuyển tiếp đến trang JSP
-        req.getRequestDispatcher("orders.jsp").forward(req, resp);
+        req.getRequestDispatcher("order-for-user.jsp").forward(req, resp);
+        System.out.println(orders);
     }
 }

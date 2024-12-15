@@ -67,7 +67,7 @@
     <a href="create-key.jsp" class="btn">Tạo key</a>
 
     <a href="user-posts.jsp?userId=<%= userId %>" class="btn">Quản lý bất động sản đã đăng</a>
-    <a href="order-for-user.jsp" class="btn">Đơn hàng đã đặt</a>
+    <a href="order-for-user" class="btn">Đơn hàng đã đặt</a>
     <a href="change-password.jsp" class="btn">Đổi mật khẩu</a>
     <a href="welcome" class="btn">Quay trở lại trang chính</a>
 

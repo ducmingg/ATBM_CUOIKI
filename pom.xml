@@ -61,11 +61,11 @@
             <version>3.8.1</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.13.0</version> <!-- Phiên bản có thể thay đổi -->
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.fasterxml.jackson.core</groupId>-->
+<!--            <artifactId>jackson-databind</artifactId>-->
+<!--            <version>2.13.0</version> &lt;!&ndash; Phiên bản có thể thay đổi &ndash;&gt;-->
+<!--        </dependency>-->
         <!-- MySQL Connector để kết nối MySQL -->
         <dependency>
             <groupId>mysql</groupId>
@@ -80,11 +80,11 @@
             <version>5.0.0</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-            <version>2.12.3</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.fasterxml.jackson.core</groupId>-->
+<!--            <artifactId>jackson-core</artifactId>-->
+<!--            <version>2.12.3</version>-->
+<!--        </dependency>-->
         <!-- Jakarta JSP API -->
         <dependency>
             <groupId>jakarta.servlet.jsp</groupId>
@@ -125,6 +125,68 @@
             <groupId>org.webjars</groupId>
             <artifactId>jquery</artifactId>
             <version>3.7.1</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-websocket -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-websocket</artifactId>
+            <version>6.1.6</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-websocket -->
+        <!-- https://mvnrepository.com/artifact/org.apache.tomcat/tomcat-websocket -->
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-websocket</artifactId>
+            <version>11.0.2</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/io.debezium/debezium-core -->
+        <dependency>
+            <groupId>io.debezium</groupId>
+            <artifactId>debezium-core</artifactId>
+            <version>3.0.4.Final</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/io.debezium/debezium-embedded -->
+        <dependency>
+            <groupId>io.debezium</groupId>
+            <artifactId>debezium-embedded</artifactId>
+            <version>3.0.4.Final</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/io.debezium/debezium-connector-mysql -->
+        <dependency>
+            <groupId>io.debezium</groupId>
+            <artifactId>debezium-connector-mysql</artifactId>
+            <version>3.0.4.Final</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/io.debezium/debezium-api -->
+        <dependency>
+            <groupId>io.debezium</groupId>
+            <artifactId>debezium-api</artifactId>
+            <version>3.0.4.Final</version>
+        </dependency>
+
+
+        <!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka-clients -->
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
+            <version>3.9.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.18.2</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka-streams -->
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-streams</artifactId>
+            <version>3.9.0</version>
         </dependency>
 
     </dependencies>

@@ -5,6 +5,21 @@ import DBcontext.Database;
 import java.sql.Date;
 
 public class Order {
+    public int getVerify() {
+        return verify;
+    }
+
+    public void setVerify(int verify) {
+        this.verify = verify;
+    }
+
+    public int getIs_report() {
+        return is_report;
+    }
+
+    public void setIs_report(int is_report) {
+        this.is_report = is_report;
+    }
 
     private int orderId;
     private int userId;
