@@ -1,12 +1,12 @@
 {
-  "name": "atbm-connector",
+  "name": "atbmhttt",
   "config": {
     "connector.class": "io.debezium.connector.mysql.MySqlConnector",
     "database.hostname": "mysql",
     "database.port": "3306",
-    "database.user": "debezium",
-    "database.password": "dbz",
-    "topic.prefix": "dbserver1",
+    "database.user": "root",
+    "database.password": "root",
+    "topic.prefix": "db",
     "database.server.id": "184054",
     "database.include.list": "webbds",
     "schema.history.internal.kafka.bootstrap.servers": "kafka:9092",
