@@ -284,7 +284,7 @@ public class DigitalSignatureDAO {
         String subject = "Xác nhận khóa kỹ thuật số";
 
         // Tạo URL xác nhận với token
-        String confirmUrl = "http://localhost:8080/confirm-token?token=" + token + "&action=addPublicKey";
+        String confirmUrl = "http://localhost:8080/Batdongsan/confirm-token?token=" + token + "&action=addPublicKey";
 
         // Nội dung email
         String body = "Xin chào,\n\n" +
